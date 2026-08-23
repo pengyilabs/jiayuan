@@ -211,7 +211,9 @@ tr:hover td{background:var(--surface-warm)}
 .member-email{font-size:var(--text-xs);color:var(--muted)}
 
 /* ── Listing Card Carousel ─────────────────────────────── */
-.card-carousel{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#f0f0f0}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.card-carousel{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#f0f0f0;background-image:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.8s ease-in-out infinite;cursor:pointer}
+.card-carousel img.loaded,.card-carousel video.loaded{animation:none;background-image:none}
 .card-carousel img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity .4s ease}
 .card-carousel img.active{opacity:1}
 .card-carousel video{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity .4s ease}
@@ -1278,10 +1280,10 @@ function renderListings() {
     const mediaItems = hasVideo ? [{type:"video",src:l.video},...l.photos.map(p=>({type:"img",src:p}))] : l.photos.map(p=>({type:"img",src:p}));
     return `
       <div class="card" data-od-id="listing-card-${l.id}" data-listing-id="${l.id}" onmouseenter="startCardCarousel(this)" onmouseleave="stopCardCarousel(this)">
-        <div class="card-carousel">
+        <div class="card-carousel" onclick="event.stopPropagation();openListingModal(${l.id})">
           ${mediaItems.map((m,i) => m.type==="video"
             ? `<video muted loop playsinline preload="metadata" data-idx="${i}" ${i===0?"class='active'":""} src="${m.src}"></video>`
-            : `<img loading="lazy" src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""}>`
+            : `<img loading="lazy" src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""} onload="this.classList.add('loaded')" onerror="this.style.opacity=1;this.style.background='#eee'">`
           ).join("")}
           ${hasVideo ? `<div class="video-badge"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/></svg> Video</div>` : ""}
           <div class="carousel-counter"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> ${totalMedia}</div>
@@ -1289,7 +1291,7 @@ function renderListings() {
           <button class="carousel-arrow next" onclick="event.stopPropagation();slideCard(this.closest('.card'),1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
           <div class="carousel-dots">${mediaItems.map((_,i)=>`<button class="carousel-dot${i===0?' active':''}" onclick="event.stopPropagation();goToCardSlide(this.closest('.card'),${i})"></button>`).join("")}</div>
         </div>
-        <div class="card-body" onclick="openListingModal(${l.id})">
+        <div class="card-body" onclick="event.stopPropagation();openListingModal(${l.id})">
           <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px">
             <div class="card-title">${title}</div>
             <span class="badge ${statusMap[l.status]}"><span class="badge-dot"></span> ${dict[statusKey] || l.status}</span>
@@ -1367,7 +1369,7 @@ function openListingModal(id, editMode) {
       <div class="detail-gallery" id="detail-gallery-${l.id}">
         ${allMedia.map((m,i) => m.type==="video"
           ? `<video muted loop playsinline preload="metadata" data-idx="${i}" ${i===0?"class='active'":""} src="${m.src}"></video>`
-          : `<img loading="lazy" src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""}>`
+          : `<img loading="lazy" src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""} onload="this.classList.add('loaded')" onerror="this.style.opacity=1;this.style.background='#eee'">`
         ).join("")}
         <button class="gallery-close" onclick="closeModal('modal-listing-detail')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         <button class="gallery-arrow prev" onclick="slideDetailGallery(${l.id},-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
