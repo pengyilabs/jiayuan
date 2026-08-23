@@ -286,13 +286,13 @@ tr:hover td{background:var(--surface-warm)}
         </div>
         <div class="lang-switch" data-od-id="lang-switch">
           <button class="lang-trigger" id="lang-trigger" onclick="toggleLangDropdown()">
-            <span id="lang-current">中</span>
+            <span id="lang-current">简</span>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="lang-dropdown" id="lang-dropdown">
             <button class="lang-option active" data-lang="zh" onclick="selectLang('zh')">
               <svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              中文
+              简体中文
             </button>
             <button class="lang-option" data-lang="en" onclick="selectLang('en')">
               <svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -798,7 +798,7 @@ const I18N = {
     th_post_title: "帖子标题", th_listing: "关联房源", th_platform: "平台",
     th_language: "语言", th_status: "状态", th_date: "创建日期", th_actions: "操作",
     platform_wechat: "微信", platform_facebook: "Facebook",
-    lang_zh: "中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "双语",
+    lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "双语",
     scene_sale: "房源出售", scene_rent: "房源出租", scene_brand: "品牌推广",
     wechat_official: "微信公众号", wechat_channels: "微信视频号",
     wechat_channels_desc: "蒙特利尔小朱",
@@ -838,7 +838,7 @@ const I18N = {
     tpl_rent_en_name: "Property For Rent - English",
     tpl_tags_sale: "出售", tpl_tags_rent: "出租", tpl_tags_brand: "品牌",
     tpl_platform_wechat: "微信", tpl_platform_fb: "Facebook",
-    tpl_lang_zh: "中文", tpl_lang_en: "English", tpl_lang_bi: "双语",
+    tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "双语",
   },
   en: {
     brand: "HOME DIRECT Team", nav_main: "Main", nav_management: "Management",
@@ -874,7 +874,7 @@ const I18N = {
     th_post_title: "Post Title", th_listing: "Listing", th_platform: "Platform",
     th_language: "Language", th_status: "Status", th_date: "Date", th_actions: "Actions",
     platform_wechat: "WeChat", platform_facebook: "Facebook",
-    lang_zh: "中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingual",
+    lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingual",
     scene_sale: "For Sale", scene_rent: "For Rent", scene_brand: "Branding",
     wechat_official: "WeChat Official", wechat_channels: "WeChat Channels",
     wechat_channels_desc: "Montreal Xiao Zhu",
@@ -914,7 +914,7 @@ const I18N = {
     tpl_rent_en_name: "For Rent - English",
     tpl_tags_sale: "Sale", tpl_tags_rent: "Rent", tpl_tags_brand: "Brand",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
-    tpl_lang_zh: "中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingual",
+    tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingual",
   },
   fr: {
     brand: "Équipe HOME DIRECT", nav_main: "Principal", nav_management: "Gestion",
@@ -950,7 +950,7 @@ const I18N = {
     th_post_title: "Titre", th_listing: "Annonce", th_platform: "Plateforme",
     th_language: "Langue", th_status: "Statut", th_date: "Date", th_actions: "Actions",
     platform_wechat: "WeChat", platform_facebook: "Facebook",
-    lang_zh: "中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingue",
+    lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingue",
     scene_sale: "Vente", scene_rent: "Location", scene_brand: "Marque",
     wechat_official: "WeChat Officiel", wechat_channels: "WeChat Channels",
     wechat_channels_desc: "Montréal Xiao Zhu",
@@ -990,7 +990,7 @@ const I18N = {
     tpl_rent_en_name: "Location - Anglais",
     tpl_tags_sale: "Vente", tpl_tags_rent: "Location", tpl_tags_brand: "Marque",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
-    tpl_lang_zh: "中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingue",
+    tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingue",
   }
 };
 
@@ -1082,7 +1082,7 @@ function selectLang(lang) {
     o.classList.toggle("active", o.dataset.lang === lang);
   });
   document.getElementById("lang-current").textContent =
-    lang === "zh" ? "中" : lang === "en" ? "EN" : "FR";
+    lang === "zh" ? "简" : lang === "en" ? "EN" : "FR";
   toggleLangDropdown();
   applyI18n(lang);
 }
