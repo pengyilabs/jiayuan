@@ -286,7 +286,7 @@ tr:hover td{background:var(--surface-warm)}
         </div>
         <div class="lang-switch" data-od-id="lang-switch">
           <button class="lang-trigger" id="lang-trigger" onclick="toggleLangDropdown()">
-            <span id="lang-current">简</span>
+            <span id="lang-current">简体</span>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="lang-dropdown" id="lang-dropdown">
@@ -1082,7 +1082,7 @@ function selectLang(lang) {
     o.classList.toggle("active", o.dataset.lang === lang);
   });
   document.getElementById("lang-current").textContent =
-    lang === "zh" ? "简" : lang === "en" ? "EN" : "FR";
+    lang === "zh" ? "简体" : lang === "en" ? "EN" : "FR";
   toggleLangDropdown();
   applyI18n(lang);
 }
