@@ -302,6 +302,10 @@ tr:hover td{background:var(--surface-warm)}
               <svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               Français
             </button>
+            <button class="lang-option" data-lang="es" onclick="selectLang('es')">
+              <svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Español
+            </button>
           </div>
         </div>
         <button class="notif-btn" data-od-id="notif-btn">
@@ -991,6 +995,82 @@ const I18N = {
     tpl_tags_sale: "Vente", tpl_tags_rent: "Location", tpl_tags_brand: "Marque",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingue",
+  },
+  es: {
+    brand: "Equipo HOME DIRECT", nav_main: "Principal", nav_management: "Gestión",
+    nav_dashboard: "Panel", nav_listings: "Propiedades", nav_posts: "Publicaciones",
+    nav_templates: "Plantillas", nav_approvals: "Aprobaciones", nav_settings: "Configuración",
+    role_admin: "Líder del equipo", role_agent: "Agente",
+    search_placeholder: "Buscar propiedades, publicaciones...",
+    stat_total_posts: "Publicaciones", stat_total_reach: "Alcance total",
+    stat_engagement: "Interacción", stat_pending: "Pendiente",
+    stat_vs_last_month: "vs mes anterior", stat_need_review: "Para revisar",
+    dash_recent_activity: "Actividad reciente", view_all: "Ver todo",
+    act_post_published: "Publicación \"Condo de luxe centre-ville\" publicada en Facebook",
+    act_post_pending: "Nueva publicación \"Villa Westmount\" pendiente de aprobación",
+    act_listing_created: "Propiedad \"Vue Mont Royal\" creada",
+    act_template_used: "Plantilla \"Venta - Chino\" usada para crear publicación",
+    act_approved: "Publicación \"Condo de luxe centre-ville\" aprobada",
+    time_hours_ago: "horas", time_day_ago: "día",
+    btn_new_listing: "Nueva propiedad", btn_new_post: "Nueva publicación",
+    btn_back: "← Volver a propiedades", btn_cancel: "Cancelar",
+    btn_save_listing: "Guardar", btn_edit_listing: "Editar",
+    btn_view_centris: "Ver Centris", btn_create_post: "Crear",
+    btn_submit_approval: "Enviar para aprobación", btn_save_draft: "Borrador",
+    btn_use_template: "Usar plantilla", btn_upload_template: "Subir",
+    btn_confirm_reject: "Confirmar rechazo", btn_invite_member: "Invitar",
+    filter_all: "Todos", filter_type_all: "Todos los tipos", filter_price_all: "Todos los precios",
+    filter_lang_all: "Todos los idiomas", filter_scene_all: "Todas las escenas",
+    status_for_sale: "En venta", status_sold: "Vendido",
+    status_for_rent: "En alquiler", status_rented: "Alquilado", status_off: "Fuera del mercado",
+    status_connected: "Conectado", status_pending_auth: "Pendiente",
+    type_apartment: "Apartamento", type_villa: "Villa", type_commercial: "Comercial",
+    tab_all: "Todos", tab_published: "Publicado", tab_pending: "Pendiente",
+    tab_draft: "Borrador", tab_rejected: "Rechazado",
+    th_post_title: "Título", th_listing: "Propiedad", th_platform: "Plataforma",
+    th_language: "Idioma", th_status: "Estado", th_date: "Fecha", th_actions: "Acciones",
+    platform_wechat: "WeChat", platform_facebook: "Facebook",
+    lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingüe",
+    scene_sale: "Venta", scene_rent: "Alquiler", scene_brand: "Marca",
+    wechat_official: "WeChat Oficial", wechat_channels: "WeChat Channels",
+    wechat_channels_desc: "Montréal Xiao Zhu",
+    detail_description: "Descripción", detail_amenities: "Puntos destacados",
+    detail_quick_actions: "Acciones rápidas",
+    detail_desc_text: "Ubicado en el corazón de Montréal, a pocos pasos de la Universidad McGill, estaciones de metro y centros comerciales. Este moderno condominio ofrece un plan abierto con electrodomésticos de acero inoxidable, encimeras de mármol y pisos de madera dura.",
+    amenity_parking: "Estacionamiento subterráneo", amenity_gym: "Gimnasio", amenity_pool: "Piscina",
+    amenity_security: "Seguridad 24/7", amenity_terrace: "Jardín en la azotea", amenity_storage: "Almacenamiento",
+    modal_new_listing: "Nueva propiedad", modal_new_post: "Nueva publicación",
+    modal_reject_reason: "Motivo del rechazo", tpl_preview: "Vista previa de plantilla",
+    form_listing_name: "Nombre de la propiedad", form_listing_name_ph: "ej: Condo de lujo centro",
+    form_centris_id: "Número Centris", form_address: "Dirección",
+    form_address_ph: "Dirección completa", form_price: "Precio (CAD)",
+    form_type: "Tipo", form_bedrooms: "Dormitorios", form_bathrooms: "Baños",
+    form_area: "Superficie (m²)", form_description: "Descripción",
+    form_desc_ph: "Describa los puntos destacados...",
+    form_service_type: "Tipo de servicio", service_buy: "Venta", service_rent: "Alquiler", service_manage: "Gestión",
+    form_select_listing: "Seleccionar propiedad", form_select_listing_ph: "-- Seleccionar --",
+    form_select_platform: "Publicar en", form_select_template: "Plantilla",
+    form_no_template: "Sin plantilla", tpl_sale_zh: "Venta - Chino",
+    tpl_sale_en: "Venta - Inglés", tpl_rent_zh: "Alquiler - Chino",
+    tpl_brand_zh: "Marca - Chino", form_content_lang: "Idioma",
+    form_post_content: "Contenido", form_post_content_ph: "Ingrese el contenido de la publicación...",
+    form_post_hint: "La estructura de la plantilla se completará automáticamente",
+    form_media: "Imágenes/Vídeo", form_media_hint: "Arrastre los archivos aquí",
+    form_media_formats: "JPG, PNG, MP4", form_reject_ph: "Motivo del rechazo...",
+    settings_platform_accounts: "Cuentas de plataformas",
+    settings_notifications: "Notificaciones", settings_team: "Miembros del equipo",
+    notif_approval: "Notificaciones de aprobación", notif_approval_desc: "Notificar para nuevas publicaciones",
+    notif_publish: "Estado de publicación", notif_publish_desc: "Notificar en caso de éxito o fallo",
+    notif_weekly: "Informe semanal", notif_weekly_desc: "Enviar resumen cada lunes",
+    pending_count: "3 pendientes",
+    approve: "Aprobar", reject: "Rechazar",
+    tpl_sale_zh_name: "Venta - Chino", tpl_sale_en_name: "Venta - Inglés",
+    tpl_rent_zh_name: "Alquiler - Chino", tpl_brand_zh_name: "Marca - Chino",
+    tpl_sale_bilingual_name: "Venta - Bilingüe",
+    tpl_rent_en_name: "Alquiler - Inglés",
+    tpl_tags_sale: "Venta", tpl_tags_rent: "Alquiler", tpl_tags_brand: "Marca",
+    tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
+    tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingüe",
   }
 };
 
@@ -1082,7 +1162,7 @@ function selectLang(lang) {
     o.classList.toggle("active", o.dataset.lang === lang);
   });
   document.getElementById("lang-current").textContent =
-    lang === "zh" ? "简体" : lang === "en" ? "EN" : "FR";
+    lang === "zh" ? "简体" : lang === "en" ? "EN" : lang === "fr" ? "FR" : "ES";
   toggleLangDropdown();
   applyI18n(lang);
 }
