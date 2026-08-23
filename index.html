@@ -170,15 +170,6 @@ tr:hover td{background:var(--surface-warm)}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-5)}
 .section-header h2{font-size:var(--text-xl)}
 
-.detail-hero{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:4px;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--space-6);height:320px}
-.detail-hero-main{background:var(--surface-warm);grid-row:span 2}
-.detail-hero-thumb{background:var(--surface-warm)}
-.detail-content{display:grid;grid-template-columns:1fr 380px;gap:var(--space-8)}
-.detail-info h1{font-size:var(--text-2xl);margin-bottom:4px}
-.detail-info .meta{font-size:var(--text-sm);color:var(--muted);margin-bottom:var(--space-5)}
-.detail-amenities{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);margin:var(--space-6) 0}
-.amenity{display:flex;align-items:center;gap:8px;font-size:var(--text-sm);padding:10px 0;border-bottom:1px solid var(--border-soft)}
-
 .booking-panel{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-6);position:sticky;top:24px}
 .booking-price{font-size:var(--text-2xl);font-weight:700;margin-bottom:var(--space-4)}
 .booking-field{margin-bottom:var(--space-3)}
@@ -218,6 +209,99 @@ tr:hover td{background:var(--surface-warm)}
 .member-info{flex:1}
 .member-name{font-size:var(--text-sm);font-weight:600}
 .member-email{font-size:var(--text-xs);color:var(--muted)}
+
+/* ── Listing Card Carousel ─────────────────────────────── */
+.card-carousel{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#f0f0f0}
+.card-carousel img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity .4s ease}
+.card-carousel img.active{opacity:1}
+.card-carousel video{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity .4s ease}
+.card-carousel video.active{opacity:1}
+.carousel-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:5}
+.carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);border:none;cursor:pointer;transition:all .2s;padding:0}
+.carousel-dot.active{background:#fff;width:18px;border-radius:3px}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;opacity:0;transition:opacity .2s;box-shadow:0 1px 4px rgba(0,0,0,0.15)}
+.card:hover .carousel-arrow{opacity:1}
+.carousel-arrow:hover{background:#fff}
+.carousel-arrow svg{width:16px;height:16px;stroke:var(--fg);fill:none;stroke-width:2}
+.carousel-arrow.prev{left:8px}
+.carousel-arrow.next{right:8px}
+.carousel-counter{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:var(--radius-pill);z-index:5;display:flex;align-items:center;gap:4px}
+.carousel-counter svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2}
+.video-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.6);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:var(--radius-pill);z-index:5;display:flex;align-items:center;gap:4px}
+.video-badge svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2}
+
+/* ── Listing Detail Modal ──────────────────────────────── */
+.modal-listing-detail .modal{max-width:920px;max-height:92vh;border-radius:var(--radius-lg);overflow:hidden}
+.modal-listing-detail .modal-body{padding:0;display:flex;flex-direction:column}
+.detail-gallery{position:relative;width:100%;height:400px;background:#111;overflow:hidden}
+.detail-gallery img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity .4s}
+.detail-gallery img.active{opacity:1}
+.detail-gallery video{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;opacity:0;transition:opacity .4s}
+.detail-gallery video.active{opacity:1}
+.gallery-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:5}
+.gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);border:none;cursor:pointer;transition:all .2s;padding:0}
+.gallery-dot.active{background:#fff;width:24px;border-radius:4px}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background .15s}
+.gallery-arrow:hover{background:#fff}
+.gallery-arrow svg{width:20px;height:20px;stroke:var(--fg);fill:none;stroke-width:2}
+.gallery-arrow.prev{left:16px}
+.gallery-arrow.next{right:16px}
+.gallery-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .15s}
+.gallery-close:hover{background:rgba(0,0,0,0.7)}
+.gallery-close svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
+.gallery-thumbs{position:absolute;bottom:14px;right:14px;display:flex;gap:6px;z-index:5}
+.gallery-thumb{width:48px;height:36px;border-radius:6px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:border-color .15s;opacity:0.7}
+.gallery-thumb.active{border-color:#fff;opacity:1}
+.gallery-thumb img,.gallery-thumb video{width:100%;height:100%;object-fit:cover}
+.detail-info-section{padding:var(--space-6) var(--space-8);display:flex;flex-direction:column;gap:var(--space-5)}
+.detail-info-top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4)}
+.detail-info-top h2{font-size:var(--text-xl);font-weight:700;flex:1}
+.detail-info-badges{display:flex;gap:var(--space-2);flex-wrap:wrap}
+.detail-info-price{font-size:var(--text-2xl);font-weight:700;color:var(--fg)}
+.detail-info-meta{font-size:var(--text-sm);color:var(--muted);display:flex;gap:var(--space-4);flex-wrap:wrap}
+.detail-info-desc{font-size:var(--text-sm);color:var(--fg-2);line-height:1.6}
+.detail-info-amenities{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
+.detail-amenity-item{display:flex;align-items:center;gap:8px;font-size:var(--text-sm);padding:8px 0}
+.detail-amenity-icon{width:32px;height:32px;border-radius:50%;background:var(--surface-warm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.detail-actions{display:flex;gap:var(--space-3);padding:0 var(--space-8) var(--space-6);border-top:1px solid var(--border-soft);padding-top:var(--space-5)}
+
+/* ── New/Edit Listing Modal ────────────────────────────── */
+.modal-listing-edit .modal{max-width:720px;border-radius:var(--radius-lg)}
+.modal-listing-edit .modal-body{max-height:70vh;overflow-y:auto}
+.media-upload-zone{border:2px dashed var(--border);border-radius:var(--radius-md);padding:var(--space-8) var(--space-4);text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.media-upload-zone:hover{border-color:var(--accent);background:#fff5f7}
+.media-upload-zone.dragover{border-color:var(--accent);background:#fff5f7}
+.media-upload-zone svg{width:32px;height:32px;stroke:var(--muted);fill:none;stroke-width:1.5;margin-bottom:var(--space-2)}
+.media-upload-zone p{font-size:var(--text-sm);color:var(--muted)}
+.media-upload-zone .upload-hint{font-size:var(--text-xs);color:var(--meta);margin-top:4px}
+.media-preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-2);margin-top:var(--space-3)}
+.media-preview-item{position:relative;aspect-ratio:4/3;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface-warm)}
+.media-preview-item img{width:100%;height:100%;object-fit:cover}
+.media-preview-item .remove-media{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.6);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
+.media-preview-item:hover .remove-media{opacity:1}
+.media-preview-item .remove-media svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2}
+.media-preview-item.is-video::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center}
+
+/* ── Mobile Responsive ─────────────────────────────────── */
+@media(max-width:768px){
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .detail-gallery{height:260px}
+  .detail-info-section{padding:var(--space-4)}
+  .detail-info-amenities{grid-template-columns:repeat(2,1fr)}
+  .detail-actions{padding:0 var(--space-4) var(--space-4);flex-direction:column}
+  .modal-listing-detail .modal{max-width:100%;border-radius:var(--radius-md)}
+  .media-preview-grid{grid-template-columns:repeat(3,1fr)}
+  .detail-info-top{flex-direction:column}
+  .gallery-thumbs{display:none}
+}
+@media(max-width:550px){
+  .grid-3{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+  .detail-gallery{height:220px}
+  .detail-info-amenities{grid-template-columns:1fr}
+  .media-preview-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -378,7 +462,7 @@ tr:hover td{background:var(--surface-warm)}
       <div class="page" id="page-listings" data-od-id="page-listings">
         <div class="section-header">
           <h2 data-i18n="nav_listings">房源管理</h2>
-          <button class="btn btn-primary" data-od-id="btn-new-listing" onclick="openModal('modal-listing')">
+          <button class="btn btn-primary" data-od-id="btn-new-listing" onclick="openNewListingModal()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span data-i18n="btn_new_listing">新建房源</span>
           </button>
@@ -407,50 +491,6 @@ tr:hover td{background:var(--surface-warm)}
         </div>
         <div class="grid-3" id="listings-grid" data-od-id="listings-grid">
           <!-- Listings populated by JS -->
-        </div>
-      </div>
-
-      <!-- ═══ LISTING DETAIL ═══ -->
-      <div class="page" id="page-listing-detail" data-od-id="page-listing-detail">
-        <div style="margin-bottom:var(--space-4)">
-          <button class="btn btn-ghost" onclick="navigateTo('listings')" data-i18n="btn_back">← 返回房源列表</button>
-        </div>
-        <div class="detail-hero" data-od-id="listing-hero">
-          <div class="detail-hero-main"></div>
-          <div class="detail-hero-thumb"></div>
-          <div class="detail-hero-thumb"></div>
-        </div>
-        <div class="detail-content">
-          <div class="detail-info" data-od-id="listing-info">
-            <h1 id="detail-title">市中心豪华公寓</h1>
-            <div class="meta" id="detail-meta">123 Rue Sainte-Catherine O, Montréal · Centris #12345678</div>
-            <div class="card-price" id="detail-price">$850,000 CAD</div>
-            <div style="display:flex;gap:var(--space-3);margin:var(--space-4) 0">
-              <span class="badge badge-success"><span class="badge-dot"></span> <span data-i18n="status_for_sale">在售</span></span>
-              <span class="badge badge-neutral">公寓</span>
-              <span class="badge badge-neutral">3卧 2卫</span>
-              <span class="badge badge-neutral">1,200 sqft</span>
-            </div>
-            <h3 style="margin:var(--space-6) 0 var(--space-3)" data-i18n="detail_description">房源描述</h3>
-            <p style="font-size:var(--text-sm);color:var(--fg-2);line-height:1.6" data-i18n="detail_desc_text">
-              位于蒙特利尔市中心黄金地段，步行可达麦吉尔大学、地铁站和各大商圈。这套现代化公寓拥有开放式格局，配备全套不锈钢电器、大理石台面和硬木地板。大楼提供24小时前台服务、健身房、屋顶花园等高端配套。
-            </p>
-            <h3 style="margin:var(--space-6) 0 var(--space-3)" data-i18n="detail_amenities">房源亮点</h3>
-            <div class="detail-amenities">
-              <div class="amenity">🚗 <span data-i18n="amenity_parking">地下停车位</span></div>
-              <div class="amenity">🏋️ <span data-i18n="amenity_gym">健身房</span></div>
-              <div class="amenity">🏊 <span data-i18n="amenity_pool">游泳池</span></div>
-              <div class="amenity">🔒 <span data-i18n="amenity_security">24小时安保</span></div>
-              <div class="amenity">🌳 <span data-i18n="amenity_terrace">屋顶花园</span></div>
-              <div class="amenity">📦 <span data-i18n="amenity_storage">储物间</span></div>
-            </div>
-          </div>
-          <div class="booking-panel" data-od-id="listing-actions">
-            <div style="font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-4)" data-i18n="detail_quick_actions">快捷操作</div>
-            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:var(--space-3)" onclick="navigateTo('posts');openModal('modal-post')" data-i18n="btn_create_post">创建帖子</button>
-            <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-bottom:var(--space-3)" data-i18n="btn_edit_listing">编辑房源</button>
-            <button class="btn btn-secondary" style="width:100%;justify-content:center" data-i18n="btn_view_centris">查看 Centris</button>
-          </div>
         </div>
       </div>
 
@@ -765,6 +805,12 @@ tr:hover td{background:var(--surface-warm)}
   </div>
 </div>
 
+<!-- Listing Detail Modal -->
+<div class="modal-overlay modal-listing-detail" id="modal-listing-detail"></div>
+
+<!-- Listing Edit Modal -->
+<div class="modal-overlay modal-listing-edit" id="modal-listing-edit"></div>
+
 <script>
 // ── i18n ──────────────────────────────────────────────────
 const I18N = {
@@ -1076,12 +1122,24 @@ const I18N = {
 
 // ── Data ──────────────────────────────────────────────────
 const LISTINGS = [
-  { id:1, title:"市中心豪华公寓", titleEn:"Downtown Luxury Condo", titleFr:"Condo de luxe centre-ville", price:"$850,000", beds:3, baths:2, area:"1,200", type:"公寓", typeEn:"Apartment", typeFr:"Appartement", status:"for_sale", address:"123 Rue Sainte-Catherine O, Montréal", centris:"12345678", color:"#e8d5c4" },
-  { id:2, title:"西山别墅", titleEn:"Westmount Villa", titleFr:"Villa Westmount", price:"$1,250,000", beds:4, baths:3, area:"2,800", type:"别墅", typeEn:"Villa", typeFr:"Villa", status:"for_sale", address:"456 Avenue Belvedere, Westmount", centris:"23456789", color:"#c4d5e8" },
-  { id:3, title:"皇家山景观房", titleEn:"Mount Royal View", titleFr:"Vue Mont Royal", price:"$680,000", beds:2, baths:1, area:"900", type:"公寓", typeEn:"Apartment", typeFr:"Appartement", status:"for_sale", address:"789 Avenue du Parc, Montréal", centris:"34567890", color:"#d5c4e8" },
-  { id:4, title:"Westmount 联排", titleEn:"Westmount Townhouse", titleFr:"Maison en rang Westmount", price:"$920,000", beds:3, baths:2, area:"1,800", type:"别墅", typeEn:"Villa", typeFr:"Villa", status:"sold", address:"321 Rue Green, Westmount", centris:"45678901", color:"#e8c4c4" },
-  { id:5, title:"Outremont 花园洋房", titleEn:"Outremont Garden House", titleFr:"Maison-jardin Outremont", price:"$1,450,000", beds:5, baths:4, area:"3,500", type:"别墅", typeEn:"Villa", typeFr:"Villa", status:"for_rent", address:"654 Avenue Outremont, Montréal", centris:"56789012", color:"#c4e8d5" },
-  { id:6, title:"Griffintown 工业风公寓", titleEn:"Griffintown Loft", titleFr:"Loft Griffintown", price:"$520,000", beds:1, baths:1, area:"750", type:"公寓", typeEn:"Apartment", typeFr:"Appartement", status:"for_sale", address:"987 Rue Peel, Montréal", centris:"67890123", color:"#d5e8c4" },
+  { id:1, title:"市中心豪华公寓", titleEn:"Downtown Luxury Condo", titleFr:"Condo de luxe centre-ville", price:"$850,000", beds:3, baths:2, area:"1,200", type:"公寓", typeEn:"Apartment", typeFr:"Appartement", status:"for_sale", address:"123 Rue Sainte-Catherine O, Montréal", centris:"12345678",
+    photos:["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop"],
+    video:null, desc:"位于蒙特利尔市中心黄金地段，步行可达麦吉尔大学、地铁站和各大商圈。这套现代化公寓拥有开放式格局，配备全套不锈钢电器、大理石台面和硬木地板。", descEn:"Prime downtown Montreal location, walking distance to McGill University, metro stations and shopping centers. Modern open-concept condo with stainless steel appliances, marble countertops and hardwood floors.", descFr:"Emplacement central à Montréal, à distance de marche de l'Université McGill, des stations de métro et des centres commerciaux. Condo moderne ouvert avec électroménagers en acier inoxydable.", amenities:["parking","gym","pool","security","terrace","storage"] },
+  { id:2, title:"西山别墅", titleEn:"Westmount Villa", titleFr:"Villa Westmount", price:"$1,250,000", beds:4, baths:3, area:"2,800", type:"别墅", typeEn:"Villa", typeFr:"Villa", status:"for_sale", address:"456 Avenue Belvedere, Westmount", centris:"23456789",
+    photos:["https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1613977257963-707ba9348228?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop"],
+    video:"https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop", desc:"西山顶级地段独栋别墅，拥有4间宽敞卧室、私人花园和车库。周边环绕蒙特利尔最优质的学校和公园。", descEn:"Premium Westmount detached villa with 4 spacious bedrooms, private garden and garage. Surrounded by Montreal's best schools and parks.", descFr:"Villa détachée de luxe à Westmount avec 4 chambres spacieuses, jardin privé et garage. Entourée des meilleures écoles et parcs de Montréal.", amenities:["parking","gym","security","terrace"] },
+  { id:3, title:"皇家山景观房", titleEn:"Mount Royal View", titleFr:"Vue Mont Royal", price:"$680,000", beds:2, baths:1, area:"900", type:"公寓", typeEn:"Apartment", typeFr:"Appartement", status:"for_sale", address:"789 Avenue du Parc, Montréal", centris:"34567890",
+    photos:["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1560448075-bb7f056e6f3e?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop"],
+    video:null, desc:"紧邻皇家山公园，享有绝美城市景观。2卧1卫精装公寓，适合年轻专业人士或小家庭。", descEn:"Adjacent to Mount Royal Park with stunning city views. 2-bed, 1-bath fully furnished apartment, perfect for young professionals or small families.", descFr:"Adjacent au parc du Mont Royal avec vue imprenable sur la ville. Appartement 2 chambres, 1 salle de bain, meublé, parfait pour les jeunes professionnels.", amenities:["gym","pool","security"] },
+  { id:4, title:"Westmount 联排", titleEn:"Westmount Townhouse", titleFr:"Maison en rang Westmount", price:"$920,000", beds:3, baths:2, area:"1,800", type:"别墅", typeEn:"Villa", typeFr:"Villa", status:"sold", address:"321 Rue Green, Westmount", centris:"45678901",
+    photos:["https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&h=600&fit=crop"],
+    video:null, desc:"Westmount核心地段联排别墅，3卧2卫，带私人车库和花园。步行可达商业街和优质学校。", descEn:"Westmount core townhouse, 3-bed, 2-bath with private garage and garden. Walking distance to shops and top schools.", descFr:"Maison en rang au cœur de Westmount, 3 chambres, 2 salles de bain avec garage et jardin privé. À distance de marche des commerces.", amenities:["parking","security","terrace"] },
+  { id:5, title:"Outremont 花园洋房", titleEn:"Outremont Garden House", titleFr:"Maison-jardin Outremont", price:"$1,450,000", beds:5, baths:4, area:"3,500", type:"别墅", typeEn:"Villa", typeFr:"Villa", status:"for_rent", address:"654 Avenue Outremont, Montréal", centris:"56789012",
+    photos:["https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop"],
+    video:"https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&h=600&fit=crop", desc:"Outremont豪华花园洋房，5卧4卫，宽敞花园和露台。适合大家庭，周边环境优雅安静。", descEn:"Luxurious Outremont garden house, 5-bed, 4-bath with spacious garden and terrace. Ideal for large families in an elegant, quiet neighborhood.", descFr:"Somptueuse maison-jardin à Outremont, 5 chambres, 4 salles de bain avec jardin et terrasse spacieux. Idéale pour les grandes familles.", amenities:["parking","gym","pool","security","terrace","storage"] },
+  { id:6, title:"Griffintown 工业风公寓", titleEn:"Griffintown Loft", titleFr:"Loft Griffintown", price:"$520,000", beds:1, baths:1, area:"750", type:"公寓", typeEn:"Apartment", typeFr:"Appartement", status:"for_sale", address:"987 Rue Peel, Montréal", centris:"67890123",
+    photos:["https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1560185008-b033106af5c8?w=800&h=600&fit=crop","https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop"],
+    video:null, desc:"Griffintown时尚工业风Loft，高层城市景观，开放格局。步行可达Lachine运河和Old Port。", descEn:"Stylish Griffintown industrial loft with high-floor city views and open layout. Walking distance to Lachine Canal and Old Port.", descFr:"Loft industriel élégant à Griffintown avec vue panoramique sur la ville et plan ouvert. À distance de marche du canal Lachine et du Vieux-Port.", amenities:["gym","security"] },
 ];
 
 const POSTS = [
@@ -1136,13 +1194,13 @@ function navigateTo(page) {
   currentPage = page;
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-  const pageId = page === "listing-detail" ? "page-listing-detail" : "page-" + page;
+  const pageId = "page-" + page;
   const el = document.getElementById(pageId);
   if (el) el.classList.add("active");
   const nav = document.querySelector(`.nav-item[data-page="${page}"]`);
   if (nav) nav.classList.add("active");
   const dict = I18N[currentLang];
-  const titleKey = "nav_" + page.replace("listing-detail","listings");
+  const titleKey = "nav_" + page;
   document.getElementById("page-title").textContent = dict[titleKey] || dict["nav_dashboard"];
   document.querySelector(".content").scrollTop = 0;
 }
@@ -1215,10 +1273,23 @@ function renderListings() {
     const type = currentLang === "en" ? l.typeEn : currentLang === "fr" ? l.typeFr : l.type;
     const statusMap = { for_sale: "badge-success", sold: "badge-neutral", for_rent: "badge-accent", rented: "badge-warn", off: "badge-danger" };
     const statusKey = "status_" + l.status;
+    const hasVideo = !!l.video;
+    const totalMedia = l.photos.length + (hasVideo ? 1 : 0);
+    const mediaItems = hasVideo ? [{type:"video",src:l.video},...l.photos.map(p=>({type:"img",src:p}))] : l.photos.map(p=>({type:"img",src:p}));
     return `
-      <div class="card" data-od-id="listing-card-${l.id}" onclick="showListingDetail(${l.id})">
-        <div class="card-img" style="background:${l.color}"></div>
-        <div class="card-body">
+      <div class="card" data-od-id="listing-card-${l.id}" data-listing-id="${l.id}" onmouseenter="startCardCarousel(this)" onmouseleave="stopCardCarousel(this)">
+        <div class="card-carousel">
+          ${mediaItems.map((m,i) => m.type==="video"
+            ? `<video muted loop playsinline preload="metadata" data-idx="${i}" ${i===0?"class='active'":""} src="${m.src}"></video>`
+            : `<img loading="lazy" src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""}>`
+          ).join("")}
+          ${hasVideo ? `<div class="video-badge"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor" stroke="none"/></svg> Video</div>` : ""}
+          <div class="carousel-counter"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> ${totalMedia}</div>
+          <button class="carousel-arrow prev" onclick="event.stopPropagation();slideCard(this.closest('.card'),-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel-arrow next" onclick="event.stopPropagation();slideCard(this.closest('.card'),1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="carousel-dots">${mediaItems.map((_,i)=>`<button class="carousel-dot${i===0?' active':''}" onclick="event.stopPropagation();goToCardSlide(this.closest('.card'),${i})"></button>`).join("")}</div>
+        </div>
+        <div class="card-body" onclick="openListingModal(${l.id})">
           <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px">
             <div class="card-title">${title}</div>
             <span class="badge ${statusMap[l.status]}"><span class="badge-dot"></span> ${dict[statusKey] || l.status}</span>
@@ -1234,15 +1305,318 @@ function renderListings() {
   }).join("");
 }
 
+// ── Card Carousel Logic ───────────────────────────────────
+function slideCard(card, dir) {
+  const items = card.querySelectorAll('.card-carousel img, .card-carousel video');
+  const dots = card.querySelectorAll('.carousel-dot');
+  if (!items.length) return;
+  let idx = [...items].findIndex(i => i.classList.contains('active'));
+  items[idx]?.classList.remove('active');
+  dots[idx]?.classList.remove('active');
+  idx = (idx + dir + items.length) % items.length;
+  items[idx]?.classList.add('active');
+  dots[idx]?.classList.add('active');
+}
+function goToCardSlide(card, idx) {
+  const items = card.querySelectorAll('.card-carousel img, .card-carousel video');
+  const dots = card.querySelectorAll('.carousel-dot');
+  items.forEach(i => i.classList.remove('active'));
+  dots.forEach(d => d.classList.remove('active'));
+  items[idx]?.classList.add('active');
+  dots[idx]?.classList.add('active');
+}
+let cardTimers = new Map();
+function startCardCarousel(card) {
+  const id = card.dataset.listingId;
+  const l = LISTINGS.find(x => x.id == id);
+  if (!l || l.photos.length < 2) return;
+  const timer = setInterval(() => slideCard(card, 1), 3000);
+  cardTimers.set(id, timer);
+  // Auto-play video on hover
+  const vid = card.querySelector('video.active');
+  if (vid) vid.play().catch(()=>{});
+}
+function stopCardCarousel(card) {
+  const id = card.dataset.listingId;
+  clearInterval(cardTimers.get(id));
+  cardTimers.delete(id);
+  card.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+}
+
 function showListingDetail(id) {
+  openListingModal(id);
+}
+
+// ── Listing Detail Modal ──────────────────────────────────
+function openListingModal(id, editMode) {
   const l = LISTINGS.find(x => x.id === id);
   if (!l) return;
   const dict = I18N[currentLang];
   const title = currentLang === "en" ? l.titleEn : currentLang === "fr" ? l.titleFr : l.title;
-  document.getElementById("detail-title").textContent = title;
-  document.getElementById("detail-meta").textContent = l.address + " · Centris #" + l.centris;
-  document.getElementById("detail-price").textContent = l.price;
-  navigateTo("listing-detail");
+  const desc = currentLang === "en" ? l.descEn : currentLang === "fr" ? l.descFr : l.desc;
+  const type = currentLang === "en" ? l.typeEn : currentLang === "fr" ? l.typeFr : l.type;
+  const statusMap = { for_sale: "badge-success", sold: "badge-neutral", for_rent: "badge-accent", rented: "badge-warn", off: "badge-danger" };
+  const amenityIcons = { parking:"🚗", gym:"🏋️", pool:"🏊", security:"🔒", terrace:"🌳", storage:"📦" };
+  const amenityLabels = { parking: dict.amenity_parking, gym: dict.amenity_gym, pool: dict.amenity_pool, security: dict.amenity_security, terrace: dict.amenity_terrace, storage: dict.amenity_storage };
+  const hasVideo = !!l.video;
+  const allMedia = hasVideo ? [{type:"video",src:l.video},...l.photos.map(p=>({type:"img",src:p}))] : l.photos.map(p=>({type:"img",src:p}));
+
+  const modal = document.getElementById('modal-listing-detail');
+  modal.innerHTML = `
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="detail-gallery" id="detail-gallery-${l.id}">
+        ${allMedia.map((m,i) => m.type==="video"
+          ? `<video muted loop playsinline preload="metadata" data-idx="${i}" ${i===0?"class='active'":""} src="${m.src}"></video>`
+          : `<img loading="lazy" src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'':''}>`
+        ).join("")}
+        <button class="gallery-close" onclick="closeModal('modal-listing-detail')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="gallery-arrow prev" onclick="slideDetailGallery(${l.id},-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="gallery-arrow next" onclick="slideDetailGallery(${l.id},1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <div class="gallery-dots" id="detail-dots-${l.id}">${allMedia.map((_,i)=>`<button class="gallery-dot${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})"></button>`).join("")}</div>
+        <div class="gallery-thumbs" id="detail-thumbs-${l.id}">
+          ${allMedia.map((m,i) => `<div class="gallery-thumb${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})"><img src="${m.src}" alt=""></div>`).join("")}
+        </div>
+      </div>
+      <div class="detail-info-section">
+        <div class="detail-info-top">
+          <div style="flex:1">
+            <h2>${title}</h2>
+            <div class="detail-info-meta" style="margin-top:6px">
+              <span>${l.address}</span>
+              <span>Centris #${l.centris}</span>
+            </div>
+          </div>
+          <div class="detail-info-badges">
+            <span class="badge ${statusMap[l.status]}"><span class="badge-dot"></span> ${dict["status_"+l.status]||l.status}</span>
+            <span class="badge badge-neutral">${type}</span>
+            <span class="badge badge-neutral">${l.beds}卧 ${l.baths}卫</span>
+            <span class="badge badge-neutral">${l.area} sqft</span>
+          </div>
+        </div>
+        <div class="detail-info-price">${l.price}</div>
+        <div class="detail-info-desc">${desc}</div>
+        <div>
+          <h3 style="font-size:var(--text-base);font-weight:700;margin-bottom:var(--space-3)">${dict.detail_amenities}</h3>
+          <div class="detail-info-amenities">
+            ${(l.amenities||[]).map(a => `<div class="detail-amenity-item"><div class="detail-amenity-icon">${amenityIcons[a]||"•"}</div><span>${amenityLabels[a]||a}</span></div>`).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-primary" onclick="closeModal('modal-listing-detail');navigateTo('posts');openModal('modal-post')">${dict.btn_create_post}</button>
+        <button class="btn btn-secondary" onclick="openEditListingModal(${l.id})">${dict.btn_edit_listing}</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-listing-detail')">${dict.btn_back}</button>
+      </div>
+    </div>`;
+  modal.classList.add('open');
+  modal.onclick = (e) => { if(e.target===modal) closeModal('modal-listing-detail'); };
+  // Start detail gallery auto-advance
+  startDetailGalleryAuto(l.id, allMedia.length);
+}
+let detailGalleryTimers = new Map();
+function slideDetailGallery(id, dir) {
+  const gallery = document.getElementById('detail-gallery-'+id);
+  if (!gallery) return;
+  const items = gallery.querySelectorAll('img, video');
+  const dots = document.getElementById('detail-dots-'+id)?.querySelectorAll('.gallery-dot');
+  const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
+  let idx = [...items].findIndex(i => i.classList.contains('active'));
+  items[idx]?.classList.remove('active');
+  dots?.[idx]?.classList.remove('active');
+  thumbs?.[idx]?.classList.remove('active');
+  idx = (idx + dir + items.length) % items.length;
+  items[idx]?.classList.add('active');
+  dots?.[idx]?.classList.add('active');
+  thumbs?.[idx]?.classList.add('active');
+  // Auto-play video if active
+  items.forEach(v => { if(v.tagName==='VIDEO') { v.pause(); v.currentTime=0; }});
+  if(items[idx]?.tagName==='VIDEO') items[idx].play().catch(()=>{});
+}
+function goToDetailSlide(id, idx) {
+  const gallery = document.getElementById('detail-gallery-'+id);
+  if (!gallery) return;
+  const items = gallery.querySelectorAll('img, video');
+  const dots = document.getElementById('detail-dots-'+id)?.querySelectorAll('.gallery-dot');
+  const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
+  items.forEach(i => i.classList.remove('active'));
+  dots?.forEach(d => d.classList.remove('active'));
+  thumbs?.forEach(t => t.classList.remove('active'));
+  items[idx]?.classList.add('active');
+  dots?.[idx]?.classList.add('active');
+  thumbs?.[idx]?.classList.add('active');
+  items.forEach(v => { if(v.tagName==='VIDEO') { v.pause(); v.currentTime=0; }});
+  if(items[idx]?.tagName==='VIDEO') items[idx].play().catch(()=>{});
+}
+function startDetailGalleryAuto(id, count) {
+  clearInterval(detailGalleryTimers.get(id));
+  if(count > 1) detailGalleryTimers.set(id, setInterval(()=>slideDetailGallery(id,1), 5000));
+}
+
+// ── Edit Listing Modal ────────────────────────────────────
+function openEditListingModal(id) {
+  const l = LISTINGS.find(x => x.id === id);
+  if (!l) return;
+  const dict = I18N[currentLang];
+  const title = currentLang === "en" ? l.titleEn : currentLang === "fr" ? l.titleFr : l.title;
+  const desc = currentLang === "en" ? l.descEn : currentLang === "fr" ? l.descFr : l.desc;
+  const modal = document.getElementById('modal-listing-edit');
+  modal.innerHTML = `
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>${dict.btn_edit_listing}: ${title}</h3>
+        <button class="btn btn-ghost" onclick="closeModal('modal-listing-edit')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">${dict.form_listing_name}</label>
+            <input type="text" value="${title}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${dict.form_centris_id}</label>
+            <input type="text" value="${l.centris}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">${dict.form_address}</label>
+          <input type="text" value="${l.address}">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">${dict.form_price}</label>
+            <input type="text" value="${l.price}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${dict.form_type}</label>
+            <select>
+              <option ${l.type==='公寓'||l.type==='Apartment'||l.type==='Appartement'?'selected':''}>${dict.type_apartment}</option>
+              <option ${l.type==='别墅'||l.type==='Villa'?'selected':''}>${dict.type_villa}</option>
+              <option ${l.type==='商业'||l.type==='Commercial'?'selected':''}>${dict.type_commercial}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">${dict.form_bedrooms}</label>
+            <input type="number" value="${l.beds}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${dict.form_bathrooms}</label>
+            <input type="number" value="${l.baths}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">${dict.form_area}</label>
+          <input type="text" value="${l.area}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">${dict.form_description}</label>
+          <textarea rows="3">${desc}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Photos & Videos</label>
+          <div class="media-preview-grid">
+            ${l.photos.map(p => `<div class="media-preview-item"><img src="${p}" alt=""><button class="remove-media" onclick="this.parentElement.remove()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`).join("")}
+            ${l.video ? `<div class="media-preview-item is-video"><img src="${l.video}" alt=""><button class="remove-media" onclick="this.parentElement.remove()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>` : ""}
+          </div>
+          <div class="media-upload-zone" style="margin-top:var(--space-3)">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p>${dict.form_media_hint}</p>
+            <div class="upload-hint">${dict.form_media_formats}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-listing-edit')">${dict.btn_cancel}</button>
+        <button class="btn btn-primary" onclick="closeModal('modal-listing-edit')">${dict.btn_save_listing}</button>
+      </div>
+    </div>`;
+  modal.classList.add('open');
+  modal.onclick = (e) => { if(e.target===modal) closeModal('modal-listing-edit'); };
+}
+
+// ── New Listing Modal (enhanced) ──────────────────────────
+function openNewListingModal() {
+  const dict = I18N[currentLang];
+  const modal = document.getElementById('modal-listing');
+  modal.innerHTML = `
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>${dict.modal_new_listing}</h3>
+        <button class="btn btn-ghost" onclick="closeModal('modal-listing')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">${dict.form_listing_name}</label>
+            <input type="text" data-i18n-placeholder="form_listing_name_ph" placeholder="${dict.form_listing_name_ph}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${dict.form_centris_id}</label>
+            <input type="text" placeholder="例: 12345678">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">${dict.form_address}</label>
+          <input type="text" data-i18n-placeholder="form_address_ph" placeholder="${dict.form_address_ph}">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">${dict.form_price}</label>
+            <input type="text" placeholder="$850,000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${dict.form_type}</label>
+            <select>
+              <option>${dict.type_apartment}</option>
+              <option>${dict.type_villa}</option>
+              <option>${dict.type_commercial}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">${dict.form_bedrooms}</label>
+            <input type="number" placeholder="3">
+          </div>
+          <div class="form-group">
+            <label class="form-label">${dict.form_bathrooms}</label>
+            <input type="number" placeholder="2">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">${dict.form_area}</label>
+          <input type="text" placeholder="1,200">
+        </div>
+        <div class="form-group">
+          <label class="form-label">${dict.form_description}</label>
+          <textarea rows="3" data-i18n-placeholder="form_desc_ph" placeholder="${dict.form_desc_ph}"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">${dict.form_service_type}</label>
+          <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+            <button class="filter-chip active">${dict.service_buy}</button>
+            <button class="filter-chip">${dict.service_rent}</button>
+            <button class="filter-chip">${dict.service_manage}</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Photos & Videos</label>
+          <div class="media-upload-zone" id="new-listing-upload">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p>${dict.form_media_hint}</p>
+            <div class="upload-hint">${dict.form_media_formats}</div>
+          </div>
+          <div class="media-preview-grid" id="new-listing-previews"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-listing')">${dict.btn_cancel}</button>
+        <button class="btn btn-primary" onclick="closeModal('modal-listing')">${dict.btn_save_listing}</button>
+      </div>
+    </div>`;
+  modal.classList.add('open');
+  modal.onclick = (e) => { if(e.target===modal) closeModal('modal-listing'); };
 }
 
 // ── Render Posts ───────────────────────────────────────────
