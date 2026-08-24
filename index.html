@@ -170,6 +170,24 @@ tr:hover td{background:var(--surface-warm)}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-5)}
 .section-header h2{font-size:var(--text-xl)}
 
+/* ── Template Ad Previews ──────────────────────────────── */
+.tpl-preview{width:100%;aspect-ratio:3/4;position:relative;overflow:hidden;border-radius:var(--radius-md) var(--radius-md) 0 0}
+.tpl-hero{background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end}
+.tpl-hero-overlay{background:linear-gradient(transparent 40%,rgba(0,0,0,0.85));padding:var(--space-5);color:#fff}
+.tpl-hero-price{font-size:var(--text-xl);font-weight:800;margin-bottom:4px}
+.tpl-hero-title{font-size:var(--text-base);font-weight:600;margin-bottom:4px}
+.tpl-hero-meta{font-size:var(--text-xs);opacity:0.8}
+.tpl-hero-brand{position:absolute;bottom:var(--space-5);right:var(--space-5);background:rgba(255,56,92,0.9);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:var(--radius-pill)}
+.tpl-split{display:flex;aspect-ratio:3/4}
+.tpl-split-img{flex:1;background-size:cover;background-position:center}
+.tpl-split-info{flex:1;padding:var(--space-4);display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.tpl-split-badge{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px}
+.tpl-split-price{font-size:var(--text-lg);font-weight:800;color:var(--fg)}
+.tpl-split-title{font-size:var(--text-sm);font-weight:600;color:var(--fg)}
+.tpl-split-meta{font-size:var(--text-xs);color:var(--muted)}
+.tpl-split-features{display:flex;gap:var(--space-2);font-size:10px;color:var(--muted);margin-top:auto}
+.tpl-split-brand{font-size:9px;font-weight:700;color:var(--accent);margin-top:var(--space-2)}
+
 .booking-panel{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-6);position:sticky;top:24px}
 .booking-price{font-size:var(--text-2xl);font-weight:700;margin-bottom:var(--space-4)}
 .booking-field{margin-bottom:var(--space-3)}
@@ -427,7 +445,7 @@ tr:hover td{background:var(--surface-warm)}
           </div>
         </div>
         <div class="section-header">
-          <h2 data-i18n="nav_posts">帖子管理</h2>
+          <div></div>
           <button class="btn btn-primary" data-od-id="btn-new-post" onclick="openModal('modal-post')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span data-i18n="btn_new_post">新建帖子</span>
@@ -463,7 +481,7 @@ tr:hover td{background:var(--surface-warm)}
       <!-- ═══ LISTINGS ═══ -->
       <div class="page" id="page-listings" data-od-id="page-listings">
         <div class="section-header">
-          <h2 data-i18n="nav_listings">房源管理</h2>
+          <div></div>
           <button class="btn btn-primary" data-od-id="btn-new-listing" onclick="openNewListingModal()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span data-i18n="btn_new_listing">新建房源</span>
@@ -502,7 +520,7 @@ tr:hover td{background:var(--surface-warm)}
       <!-- ═══ TEMPLATES ═══ -->
       <div class="page" id="page-templates" data-od-id="page-templates">
         <div class="section-header">
-          <h2 data-i18n="nav_templates">模板库</h2>
+          <div></div>
           <button class="btn btn-secondary" data-od-id="btn-upload-template">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <span data-i18n="btn_upload_template">上传模板</span>
@@ -535,7 +553,7 @@ tr:hover td{background:var(--surface-warm)}
       <!-- ═══ APPROVALS ═══ -->
       <div class="page" id="page-approvals" data-od-id="page-approvals">
         <div class="section-header">
-          <h2 data-i18n="nav_approvals">审批管理</h2>
+          <div></div>
           <span class="badge badge-accent"><span class="badge-dot"></span> <span data-i18n="pending_count" id="pending-count">3 条待审批</span></span>
         </div>
         <div id="approvals-list" data-od-id="approvals-list">
@@ -546,7 +564,7 @@ tr:hover td{background:var(--surface-warm)}
       <!-- ═══ SETTINGS ═══ -->
       <div class="page" id="page-settings" data-od-id="page-settings">
         <div class="section-header">
-          <h2 data-i18n="nav_settings">平台设置</h2>
+          <div></div>
         </div>
         <div class="settings-section" data-od-id="settings-platform">
           <h3 data-i18n="settings_platform_accounts">平台账号关联</h3>
@@ -778,7 +796,11 @@ tr:hover td{background:var(--surface-warm)}
       <button class="btn btn-ghost" onclick="closeModal('modal-template-preview')">&times;</button>
     </div>
     <div class="modal-body">
-      <div style="background:var(--surface-warm);border-radius:var(--radius-md);aspect-ratio:1/1.2;margin-bottom:var(--space-4)"></div>
+      <div class="form-group" style="margin-bottom:var(--space-4)">
+        <label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:6px" data-i18n="tpl_select_listing">选择房源</label>
+        <select id="tpl-listing-select" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-size:var(--text-sm);color:var(--fg);cursor:pointer" onchange="renderTemplatePreview()"></select>
+      </div>
+      <div id="tpl-preview-design" style="border-radius:var(--radius-md);overflow:hidden;margin-bottom:var(--space-4)"></div>
       <div id="tpl-preview-meta"></div>
     </div>
     <div class="modal-footer">
@@ -860,7 +882,7 @@ const I18N = {
     amenity_parking: "地下停车位", amenity_gym: "健身房", amenity_pool: "游泳池",
     amenity_security: "24小时安保", amenity_terrace: "屋顶花园", amenity_storage: "储物间",
     modal_new_listing: "新建房源", modal_new_post: "新建帖子",
-    modal_reject_reason: "拒绝原因", tpl_preview: "模板预览",
+    modal_reject_reason: "拒绝原因", tpl_preview: "模板预览", tpl_select_listing: "选择房源",
     form_listing_name: "房源名称", form_listing_name_ph: "例: 市中心豪华公寓",
     form_centris_id: "Centris 编号", form_address: "地址",
     form_address_ph: "完整地址", form_price: "价格 (CAD)",
@@ -936,7 +958,7 @@ const I18N = {
     amenity_parking: "Underground Parking", amenity_gym: "Gym", amenity_pool: "Pool",
     amenity_security: "24/7 Security", amenity_terrace: "Rooftop Garden", amenity_storage: "Storage",
     modal_new_listing: "New Listing", modal_new_post: "New Post",
-    modal_reject_reason: "Rejection Reason", tpl_preview: "Template Preview",
+    modal_reject_reason: "Rejection Reason", tpl_preview: "Template Preview", tpl_select_listing: "Select Listing",
     form_listing_name: "Listing Name", form_listing_name_ph: "e.g. Downtown Luxury Condo",
     form_centris_id: "Centris ID", form_address: "Address",
     form_address_ph: "Full address", form_price: "Price (CAD)",
@@ -1012,7 +1034,7 @@ const I18N = {
     amenity_parking: "Parking souterrain", amenity_gym: "Gym", amenity_pool: "Piscine",
     amenity_security: "Sécurité 24/7", amenity_terrace: "Jardin sur le toit", amenity_storage: "Rangement",
     modal_new_listing: "Nouvelle annonce", modal_new_post: "Nouvelle publication",
-    modal_reject_reason: "Motif du refus", tpl_preview: "Aperçu du modèle",
+    modal_reject_reason: "Motif du refus", tpl_preview: "Aperçu du modèle", tpl_select_listing: "Sélectionner une annonce",
     form_listing_name: "Nom de l'annonce", form_listing_name_ph: "ex: Condo de luxe centre-ville",
     form_centris_id: "Numéro Centris", form_address: "Adresse",
     form_address_ph: "Adresse complète", form_price: "Prix (CAD)",
@@ -1088,7 +1110,7 @@ const I18N = {
     amenity_parking: "Estacionamiento subterráneo", amenity_gym: "Gimnasio", amenity_pool: "Piscina",
     amenity_security: "Seguridad 24/7", amenity_terrace: "Jardín en la azotea", amenity_storage: "Almacenamiento",
     modal_new_listing: "Nueva propiedad", modal_new_post: "Nueva publicación",
-    modal_reject_reason: "Motivo del rechazo", tpl_preview: "Vista previa de plantilla",
+    modal_reject_reason: "Motivo del rechazo", tpl_preview: "Vista previa de plantilla", tpl_select_listing: "Seleccionar propiedad",
     form_listing_name: "Nombre de la propiedad", form_listing_name_ph: "ej: Condo de lujo centro",
     form_centris_id: "Número Centris", form_address: "Dirección",
     form_address_ph: "Dirección completa", form_price: "Precio (CAD)",
@@ -1155,12 +1177,18 @@ const POSTS = [
 ];
 
 const TEMPLATES = [
-  { id:1, nameKey:"tpl_sale_zh_name", platforms:["微信","Facebook"], lang:"中文", scene:"出售", color:"#fde8e5" },
-  { id:2, nameKey:"tpl_sale_en_name", platforms:["Facebook"], lang:"English", scene:"Sale", color:"#e8d5f0" },
-  { id:3, nameKey:"tpl_rent_zh_name", platforms:["微信","Facebook"], lang:"中文", scene:"出租", color:"#d5e8f0" },
-  { id:4, nameKey:"tpl_brand_zh_name", platforms:["微信"], lang:"中文", scene:"Brand", color:"#f0e8d5" },
-  { id:5, nameKey:"tpl_sale_bilingual_name", platforms:["Facebook","微信"], lang:"双语", scene:"Sale", color:"#d5f0e8" },
-  { id:6, nameKey:"tpl_rent_en_name", platforms:["Facebook"], lang:"English", scene:"Rent", color:"#e8f0d5" },
+  { id:1, nameKey:"tpl_sale_zh_name", platforms:["微信","Facebook"], lang:"中文", scene:"出售", color:"#fde8e5",
+    layout:"hero", desc:"全幅房源照片背景，叠加价格和标题文字，底部品牌标识", descEn:"Full-width property photo background with price and title overlay, brand logo at bottom" },
+  { id:2, nameKey:"tpl_sale_en_name", platforms:["Facebook"], lang:"English", scene:"Sale", color:"#e8d5f0",
+    layout:"split", desc="左侧大图，右侧房源信息和亮点标签", descEn="Left large image, right side property info and highlight badges" },
+  { id:3, nameKey:"tpl_rent_zh_name", platforms:["微信","Facebook"], lang:"中文", scene:"出租", color:"#d5e8f0",
+    layout:"hero", desc="全幅房源照片背景，叠加租金和设施图标", descEn:"Full-width property photo background with rent price and amenity icons" },
+  { id:4, nameKey:"tpl_brand_zh_name", platforms:["微信"], lang:"中文", scene:"Brand", color:"#f0e8d5",
+    layout:"split", desc="左侧团队照片，右侧品牌标语和联系方式", descEn="Left team photo, right side brand tagline and contact info" },
+  { id:5, nameKey:"tpl_sale_bilingual_name", platforms:["Facebook","微信"], lang:"双语", scene:"Sale", color:"#d5f0e8",
+    layout:"hero", desc="全幅房源照片，中英双语标题和价格", descEn="Full-width property photo, bilingual title and price" },
+  { id:6, nameKey:"tpl_rent_en_name", platforms:["Facebook"], lang:"English", scene:"Rent", color:"#e8f0d5",
+    layout:"split", desc="左侧房源照片，右侧租金和位置信息", descEn="Left property photo, right side rent and location info" },
 ];
 
 const APPROVALS = [
@@ -1654,9 +1682,32 @@ function renderTemplates() {
   if (!grid) return;
   grid.innerHTML = TEMPLATES.map(t => {
     const name = dict[t.nameKey] || t.nameKey;
+    const preview = t.layout === "hero" ? `
+      <div class="tpl-preview tpl-hero" style="background-image:url('images/listings/condo1.jpg')">
+        <div class="tpl-hero-overlay">
+          <div class="tpl-hero-price">$850,000</div>
+          <div class="tpl-hero-title">${currentLang==="zh"?"市中心豪华公寓":"Downtown Luxury Condo"}</div>
+          <div class="tpl-hero-meta">${currentLang==="zh"?"3卧 2卫 · 1,200 sqft":"3 Bed · 2 Bath · 1,200 sqft"}</div>
+        </div>
+        <div class="tpl-hero-brand">加园地产 HOME DIRECT</div>
+      </div>` : `
+      <div class="tpl-preview tpl-split">
+        <div class="tpl-split-img" style="background-image:url('images/listings/villa1.jpg')"></div>
+        <div class="tpl-split-info">
+          <div class="tpl-split-badge">${t.scene}</div>
+          <div class="tpl-split-price">$1,250,000</div>
+          <div class="tpl-split-title">${currentLang==="zh"?"西山别墅":"Westmount Villa"}</div>
+          <div class="tpl-split-meta">${currentLang==="zh"?"4卧 3卫 · 2,800 sqft":"4 Bed · 3 Bath · 2,800 sqft"}</div>
+          <div class="tpl-split-features">
+            <span>🅿️ ${currentLang==="zh"?"车库":"Garage"}</span>
+            <span>🌳 ${currentLang==="zh"?"花园":"Garden"}</span>
+          </div>
+          <div class="tpl-split-brand">加园地产</div>
+        </div>
+      </div>`;
     return `
       <div class="card template-card" data-od-id="template-card-${t.id}" onclick="previewTemplate(${t.id})">
-        <div class="card-img" style="background:${t.color};aspect-ratio:3/4"></div>
+        ${preview}
         <div class="template-overlay">
           <button class="btn btn-primary btn-sm">${dict.btn_use_template || "使用此模板"}</button>
         </div>
@@ -1672,18 +1723,69 @@ function renderTemplates() {
   }).join("");
 }
 
+let currentPreviewTpl = null;
+
 function previewTemplate(id) {
   const t = TEMPLATES.find(x => x.id === id);
   if (!t) return;
+  currentPreviewTpl = t;
   const dict = I18N[currentLang];
   document.getElementById("tpl-preview-title").textContent = dict[t.nameKey] || t.nameKey;
+  const sel = document.getElementById("tpl-listing-select");
+  sel.innerHTML = LISTINGS.map(l => {
+    const name = currentLang==="fr"?l.titleFr:currentLang==="zh"?l.title:l.titleEn;
+    return `<option value="${l.id}">${name} — ${l.price}</option>`;
+  }).join("");
+  renderTemplatePreview();
   document.getElementById("tpl-preview-meta").innerHTML = `
     <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;margin-bottom:var(--space-3)">
       ${t.platforms.map(p=>`<span class="badge badge-neutral">${p}</span>`).join("")}
       <span class="badge badge-accent">${t.lang}</span>
+      <span class="badge badge-neutral">${t.scene}</span>
     </div>
     <p style="font-size:var(--text-sm);color:var(--muted)">${dict.form_post_hint}</p>`;
   openModal("modal-template-preview");
+}
+
+function renderTemplatePreview() {
+  const t = currentPreviewTpl;
+  if (!t) return;
+  const dict = I18N[currentLang];
+  const lid = parseInt(document.getElementById("tpl-listing-select").value);
+  const l = LISTINGS.find(x => x.id === lid);
+  if (!l) return;
+  const name = currentLang==="fr"?l.titleFr:currentLang==="zh"?l.title:l.titleEn;
+  const desc = currentLang==="fr"?l.descFr:currentLang==="zh"?l.desc:l.descEn;
+  const typeLabel = currentLang==="fr"?l.typeFr:currentLang==="zh"?l.type:l.typeEn;
+  const bedsLabel = currentLang==="zh"?"卧":currentLang==="fr"?"ch":"bed";
+  const bathsLabel = currentLang==="zh"?"卫":currentLang==="fr"?"sdb":"bath";
+  const sqftLabel = "sqft";
+  const design = t.layout === "hero" ? `
+    <div class="tpl-preview tpl-hero" style="background-image:url('${l.photos[0]}')">
+      <div class="tpl-hero-overlay">
+        <div class="tpl-hero-price">${l.price}</div>
+        <div class="tpl-hero-title">${name}</div>
+        <div class="tpl-hero-meta">${l.beds}${bedsLabel} ${l.baths}${bathsLabel} · ${l.area} ${sqftLabel}</div>
+      </div>
+      <div class="tpl-hero-brand">加园地产 HOME DIRECT</div>
+    </div>` : `
+    <div class="tpl-preview tpl-split">
+      <div class="tpl-split-img" style="background-image:url('${l.photos[0]}')"></div>
+      <div class="tpl-split-info">
+        <div class="tpl-split-badge">${t.scene} · ${typeLabel}</div>
+        <div class="tpl-split-price">${l.price}</div>
+        <div class="tpl-split-title">${name}</div>
+        <div class="tpl-split-meta">${l.beds}${bedsLabel} ${l.baths}${bathsLabel} · ${l.area} ${sqftLabel}</div>
+        <div class="tpl-split-features">
+          ${l.amenities.slice(0,3).map(a => {
+            const icons = {parking:"🅿️",gym:"🏋️",pool:"🏊",security:"🔒",terrace:"🌿",storage:"📦"};
+            return `<span>${icons[a]||""} ${a}</span>`;
+          }).join("")}
+        </div>
+        <div class="tpl-split-brand">加园地产 HOME DIRECT</div>
+      </div>
+    </div>`;
+  document.getElementById("tpl-preview-design").innerHTML = design;
 }
 
 // ── Render Approvals ──────────────────────────────────────
