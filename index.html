@@ -1369,7 +1369,7 @@ function openListingModal(id, editMode) {
       <div class="detail-gallery" id="detail-gallery-${l.id}">
         ${allMedia.map((m,i) => m.type==="video"
           ? `<video muted loop playsinline preload="metadata" data-idx="${i}" ${i===0?"class='active'":""} src="${m.src}"></video>`
-          : `<img loading="lazy" src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""} onload="this.classList.add('loaded')" onerror="this.style.opacity=1;this.style.background='#eee'">`
+          : `<img src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""}>`
         ).join("")}
         <button class="gallery-close" onclick="closeModal('modal-listing-detail')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         <button class="gallery-arrow prev" onclick="slideDetailGallery(${l.id},-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
