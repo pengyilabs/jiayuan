@@ -252,7 +252,37 @@ tr:hover td{background:var(--surface-warm)}
 
 /* Post status & platform badges on feed cards */
 .feed-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
-.feed-platform-badge{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.55);color:#fff;padding:4px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;backdrop-filter:blur(4px);z-index:2}
+
+/* Colored platform badges */
+.feed-platform-tags{display:flex;gap:4px;flex-wrap:wrap}
+.platform-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;color:#fff;line-height:1}
+.platform-tag-fb{background:#1877F2}
+.platform-tag-wx{background:#07C160}
+.platform-tag-wxch{background:#FF6B2C}
+.platform-tag-xhs{background:#FE2C55}
+.platform-tag-ig{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888)}
+.platform-tag-yt{background:#FF0000}
+.platform-tag-tt{background:#010101}
+.platform-tag-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.7);flex-shrink:0}
+
+/* Image wrapper for overlays */
+.feed-img-wrap{position:relative;overflow:hidden;line-height:0}
+.feed-img-wrap img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.feed-img-wrap.ratio-45 img{aspect-ratio:4/5}
+
+/* Carousel indicators */
+.feed-carousel-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:2}
+.feed-carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);transition:all var(--motion-fast)}
+.feed-carousel-dot.active{background:#fff;width:16px;border-radius:3px}
+.feed-carousel-count{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;z-index:2;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}
+
+/* Video play overlay */
+.feed-video-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none}
+.feed-video-play{width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.feed-video-play svg{width:20px;height:20px;fill:#fff;margin-left:2px}
+
+/* Media type badge (bottom-left of image) */
+.feed-media-badge{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.6);color:#fff;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;z-index:2;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}
 
 /* Platform filter tabs */
 .feed-filters{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);flex-wrap:wrap}
@@ -963,7 +993,7 @@ const I18N = {
     tpl_tags_sale: "出售", tpl_tags_rent: "出租", tpl_tags_brand: "品牌",
     tpl_platform_wechat: "微信", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "双语",
-    feed_images: "张图片", feed_filter_all: "全部",
+    feed_images: "张图片", feed_filter_all: "全部", feed_video: "视频",
   },
   en: {
     brand: "HOME DIRECT Team", nav_main: "Main", nav_management: "Management",
@@ -1040,6 +1070,7 @@ const I18N = {
     tpl_tags_sale: "Sale", tpl_tags_rent: "Rent", tpl_tags_brand: "Brand",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingual",
+    feed_images: "images", feed_filter_all: "All", feed_video: "Video",
   },
   fr: {
     brand: "Équipe HOME DIRECT", nav_main: "Principal", nav_management: "Gestion",
@@ -1116,7 +1147,7 @@ const I18N = {
     tpl_tags_sale: "Vente", tpl_tags_rent: "Location", tpl_tags_brand: "Marque",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingue",
-    feed_images: "images", feed_filter_all: "Tous",
+    feed_images: "images", feed_filter_all: "Tous", feed_video: "Vidéo",
   },
   es: {
     brand: "Equipo HOME DIRECT", nav_main: "Principal", nav_management: "Gestión",
@@ -1193,7 +1224,7 @@ const I18N = {
     tpl_tags_sale: "Venta", tpl_tags_rent: "Alquiler", tpl_tags_brand: "Marca",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingüe",
-    feed_images: "imágenes", feed_filter_all: "Todos",
+    feed_images: "imágenes", feed_filter_all: "Todos", feed_video: "Video",
   }
 };
 
@@ -1739,23 +1770,60 @@ function renderPosts() {
     const mainPlatform = p.platforms[0];
     const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
     const isCarousel = p.media === "carousel" && p.images && p.images.length > 1;
+    const isVideo = p.media === "video";
     const isWeChat = mainPlatform === "微信公众号" || mainPlatform === "微信视频号";
+
+    // Platform badge helper
+    const platformTag = name => {
+      const cls = {
+        "Facebook":"platform-tag-fb","微信公众号":"platform-tag-wx",
+        "微信视频号":"platform-tag-wxch","小红书":"platform-tag-xhs",
+        "Instagram":"platform-tag-ig","YouTube":"platform-tag-yt","TikTok":"platform-tag-tt"
+      }[name] || "platform-tag-fb";
+      return `<span class="platform-tag ${cls}"><span class="platform-tag-dot"></span>${name}</span>`;
+    };
+
+    // Media type label
+    const mediaLabel = () => {
+      if (isCarousel) return `<div class="feed-media-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="14" height="14" rx="2" opacity="0.5"/></svg> ${p.images.length} ${dict.feed_images || "张图片"}</div>`;
+      if (isVideo) return `<div class="feed-media-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg> ${dict.feed_video || "视频"}</div>`;
+      return "";
+    };
+
+    // Carousel dots
+    const carouselDots = () => {
+      if (!isCarousel) return "";
+      const dots = p.images.slice(0, 5).map((_, i) => `<div class="feed-carousel-dot${i===0?' active':''}"></div>`).join("");
+      return `<div class="feed-carousel-dots">${dots}</div>`;
+    };
+
+    // Video overlay
+    const videoOverlay = () => {
+      if (!isVideo) return "";
+      return `<div class="feed-video-overlay"><div class="feed-video-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>`;
+    };
 
     if (isWeChat) {
       // ── WeChat Article Card ──
+      const wxColor = mainPlatform === "微信视频号" ? "#FF6B2C" : "#07C160";
+      const wxLabel = mainPlatform === "微信视频号" ? "视频号" : "公众号";
       return `<div class="feed-card feed-wechat" data-od-id="feed-post-${p.id}">
         <div class="feed-header">
-          <div class="feed-wx-icon">W</div>
+          <div class="feed-wx-icon" style="background:${wxColor}">W</div>
           <div class="feed-wx-info">
-            <div class="feed-wx-account">加园地产 HOME DIRECT</div>
+            <div class="feed-wx-account">加园地产 HOME DIRECT · ${wxLabel}</div>
             <div class="feed-wx-time">${p.date}</div>
           </div>
-          ${statusBadge(p.status)}
+          <div class="feed-platform-tags">${p.platforms.map(platformTag).join("")}</div>
         </div>
         <div class="feed-wx-body">
           <div class="feed-wx-title">${p.title}</div>
           <div class="feed-wx-excerpt">${p.description}</div>
-          <img class="feed-wx-thumb" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+          <div class="feed-img-wrap" style="border-radius:4px;overflow:hidden">
+            <img class="feed-wx-thumb" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+            ${videoOverlay()}
+            ${mediaLabel()}
+          </div>
         </div>
       </div>`;
     }
@@ -1767,16 +1835,20 @@ function renderPosts() {
         <div class="feed-avatar">HD</div>
         <div class="feed-byline">
           <div class="feed-author">加园地产 HOME DIRECT</div>
-          <div class="feed-meta">${p.date} · ${p.platforms.join(", ")}</div>
+          <div class="feed-meta">${p.date}</div>
         </div>
-        ${statusBadge(p.status)}
+        <div class="feed-platform-tags">${p.platforms.map(platformTag).join("")}</div>
       </div>
-      <img class="feed-image ${aspectClass}" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+      <div class="feed-img-wrap ${aspectClass}">
+        <img src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+        ${carouselDots()}
+        ${videoOverlay()}
+        ${mediaLabel()}
+      </div>
       <div class="feed-body">
         <div class="feed-title">${p.title}</div>
         <div class="feed-text">${p.description}</div>
         ${p.price !== "—" ? `<div style="margin-top:6px;font-size:var(--text-sm);font-weight:700;color:var(--accent)">${p.price}${p.beds ? ` · ${p.beds}🛏 ${p.baths}🚿` : ""}</div>` : ""}
-        ${isCarousel ? `<div style="margin-top:6px;font-size:10px;color:var(--meta)">🖼 ${p.images.length} ${dict.feed_images || "张图片"}</div>` : ""}
       </div>
       <div class="feed-actions">
         <div class="feed-action">👍 Like</div>
