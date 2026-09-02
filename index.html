@@ -990,6 +990,7 @@ tr:hover td{background:var(--surface-warm)}
           <label style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);cursor:pointer;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-sm)"><input type="checkbox" checked> <span data-i18n="wechat_official">微信公众号</span></label>
           <label style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);cursor:pointer;padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-sm)"><input type="checkbox"> <span data-i18n="wechat_channels">微信视频号</span></label>
         </div>
+        <div class="form-hint" data-i18n="form_platform_hint">每个平台将生成独立帖子，可分别编辑内容和尺寸</div>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -1166,6 +1167,7 @@ const I18N = {
     fmt_article: "图文消息", fmt_short_video: "短视频",
     fmt_live: "直播", fmt_link_post: "链接图文",
     fmt_carousel_hint: "最多10张，统一比例",
+    form_platform_hint: "每个平台将生成独立帖子，可分别编辑内容和尺寸",
   },
   en: {
     brand: "HOME DIRECT Team", nav_main: "Main", nav_management: "Management",
@@ -1251,6 +1253,7 @@ const I18N = {
     fmt_article: "Article", fmt_short_video: "Short Video",
     fmt_live: "Live", fmt_link_post: "Link Article",
     fmt_carousel_hint: "Up to 10, same ratio",
+    form_platform_hint: "Each platform creates a separate post with its own content and dimensions",
   },
   fr: {
     brand: "Équipe HOME DIRECT", nav_main: "Principal", nav_management: "Gestion",
@@ -1336,6 +1339,7 @@ const I18N = {
     fmt_article: "Article", fmt_short_video: "Vidéo courte",
     fmt_live: "En direct", fmt_link_post: "Article lien",
     fmt_carousel_hint: "Jusqu'à 10, même ratio",
+    form_platform_hint: "Chaque plateforme crée une publication séparée avec son propre contenu et dimensions",
   },
   es: {
     brand: "Equipo HOME DIRECT", nav_main: "Principal", nav_management: "Gestión",
@@ -1421,6 +1425,7 @@ const I18N = {
     fmt_article: "Artículo", fmt_short_video: "Video corto",
     fmt_live: "En vivo", fmt_link_post: "Artículo enlace",
     fmt_carousel_hint: "Hasta 10, mismo ratio",
+    form_platform_hint: "Cada plataforma crea una publicación independiente con su propio contenido y dimensiones",
   }
 };
 
@@ -1447,13 +1452,17 @@ const LISTINGS = [
 ];
 
 const POSTS = [
-  { id:1, title:"市中心豪华公寓 · 好房推荐", listing:"市中心豪华公寓", platforms:["Facebook","微信公众号"], lang:"中文", status:"published", date:"2026-08-22", media:"carousel", images:["images/listings/condo1.jpg","images/listings/condo2.jpg","images/listings/condo3.jpg"], description:"蒙特利尔市中心黄金地段，步行可达麦吉尔大学和地铁站。现代开放式格局，配备全套不锈钢电器。", price:"$850,000", beds:3, baths:2 },
-  { id:2, title:"Westmount Villa · Luxury Living", listing:"西山别墅", platforms:["Facebook"], lang:"English", status:"published", date:"2026-08-21", media:"single", images:["images/listings/villa1.jpg"], description:"Prestigious Westmount estate with stunning mountain views. Renovated kitchen, private garden, and ample parking.", price:"$1,250,000", beds:5, baths:4 },
-  { id:3, title:"皇家山景观房 · 限时优惠", listing:"皇家山景观房", platforms:["微信公众号","微信视频号"], lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/view1.jpg"], description:"皇家山脚下优质学区房，俯瞰城市天际线。全新装修，拎包入住。限时优惠中！", price:"$720,000", beds:3, baths:2 },
-  { id:4, title:"蒙特利尔房产市场周报", listing:"—", platforms:["Facebook","微信公众号"], lang:"中文", status:"pending", date:"2026-08-22", media:"carousel", images:["images/listings/condo2.jpg","images/listings/loft1.jpg"], description:"本周蒙特利尔房产市场数据分析：均价微涨3.2%，成交量回升。详解各区域热点趋势。", price:"—", beds:0, baths:0 },
-  { id:5, title:"Outremont Garden House · Exclusive", listing:"Outremont 花园洋房", platforms:["Facebook"], lang:"English", status:"draft", date:"2026-08-20", media:"single", images:["images/listings/garden1.jpg"], description:"Rare Outremont gem with private garden oasis. Classic architecture meets modern comfort in this boutique residence.", price:"$980,000", beds:4, baths:3 },
-  { id:6, title:"Griffintown Loft · Studio Living", listing:"Griffintown 工业风公寓", platforms:["Facebook","微信公众号"], lang:"双语", status:"rejected", date:"2026-08-19", media:"carousel", images:["images/listings/loft1.jpg","images/listings/loft2.jpg"], description:"Industrial-chic loft in Griffintown. Exposed brick, 14ft ceilings, and open-concept living. Steps from the Lachine Canal.", price:"$425,000", beds:1, baths:1 },
-  { id:7, title:"加园地产 · 品牌宣传", listing:"—", platforms:["微信公众号"], lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/condo3.jpg"], description:"加园地产 — 蒙特利尔华人信赖的房产服务团队。专注买房、卖房、租赁一站式服务。", price:"—", beds:0, baths:0 },
+  { id:1, listingId:1, title:"市中心豪华公寓 · 好房推荐", platform:"Facebook", lang:"中文", status:"published", date:"2026-08-22", media:"carousel", images:["images/listings/condo1.jpg","images/listings/condo2.jpg","images/listings/condo3.jpg"], description:"蒙特利尔市中心黄金地段，步行可达麦吉尔大学和地铁站。现代开放式格局，配备全套不锈钢电器。", hashtags:"#蒙特利尔 #房产 #公寓 #市中心", price:"$850,000", beds:3, baths:2 },
+  { id:2, listingId:1, title:"市中心豪华公寓 · 好房推荐", platform:"微信公众号", lang:"中文", status:"published", date:"2026-08-22", media:"single", images:["images/listings/condo1.jpg"], description:"蒙特利尔市中心黄金地段，步行可达麦吉尔大学和地铁站。现代开放式格局，配备全套不锈钢电器。限时优惠！", hashtags:"", price:"$850,000", beds:3, baths:2 },
+  { id:3, listingId:2, title:"Westmount Villa · Luxury Living", platform:"Facebook", lang:"English", status:"published", date:"2026-08-21", media:"single", images:["images/listings/villa1.jpg"], description:"Prestigious Westmount estate with stunning mountain views. Renovated kitchen, private garden, and ample parking.", hashtags:"#Westmount #LuxuryHome #MontrealRealEstate", price:"$1,250,000", beds:5, baths:4 },
+  { id:4, listingId:3, title:"皇家山景观房 · 限时优惠", platform:"微信公众号", lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/view1.jpg"], description:"皇家山脚下优质学区房，俯瞰城市天际线。全新装修，拎包入住。限时优惠中！", hashtags:"", price:"$720,000", beds:3, baths:2 },
+  { id:5, listingId:3, title:"皇家山景观房 · Mount Royal View", platform:"微信视频号", lang:"中文", status:"pending", date:"2026-08-22", media:"video", images:["images/listings/view1.jpg"], description:"皇家山脚下优质学区房，俯瞰城市天际线。全新装修，拎包入住。", hashtags:"#皇家山 #蒙特利尔 #学区房", price:"$720,000", beds:3, baths:2 },
+  { id:6, listingId:null, title:"蒙特利尔房产市场周报", platform:"Facebook", lang:"中文", status:"pending", date:"2026-08-22", media:"carousel", images:["images/listings/condo2.jpg","images/listings/loft1.jpg"], description:"本周蒙特利尔房产市场数据分析：均价微涨3.2%，成交量回升。详解各区域热点趋势。", hashtags:"#蒙特利尔 #房产市场 #数据分析", price:"—", beds:0, baths:0 },
+  { id:7, listingId:null, title:"蒙特利尔房产市场周报", platform:"微信公众号", lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/condo2.jpg"], description:"本周蒙特利尔房产市场数据分析：均价微涨3.2%，成交量回升。详解各区域热点趋势。", hashtags:"", price:"—", beds:0, baths:0 },
+  { id:8, listingId:5, title:"Outremont Garden House · Exclusive", platform:"Facebook", lang:"English", status:"draft", date:"2026-08-20", media:"single", images:["images/listings/garden1.jpg"], description:"Rare Outremont gem with private garden oasis. Classic architecture meets modern comfort in this boutique residence.", hashtags:"#Outremont #GardenHome #Montreal", price:"$980,000", beds:4, baths:3 },
+  { id:9, listingId:6, title:"Griffintown Loft · Studio Living", platform:"Facebook", lang:"双语", status:"rejected", date:"2026-08-19", media:"carousel", images:["images/listings/loft1.jpg","images/listings/loft2.jpg"], description:"Industrial-chic loft in Griffintown. Exposed brick, 14ft ceilings, and open-concept living. Steps from the Lachine Canal.", hashtags:"#Griffintown #Loft #IndustrialChic", price:"$425,000", beds:1, baths:1 },
+  { id:10, listingId:6, title:"Griffintown 工业风公寓 · 精品推荐", platform:"微信公众号", lang:"中文", status:"rejected", date:"2026-08-19", media:"single", images:["images/listings/loft1.jpg"], description:"Griffintown时尚工业风Loft，高层城市景观，开放格局。步行可达Lachine运河和Old Port。", hashtags:"", price:"$425,000", beds:1, baths:1 },
+  { id:11, listingId:null, title:"加园地产 · 品牌宣传", platform:"微信公众号", lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/condo3.jpg"], description:"加园地产 — 蒙特利尔华人信赖的房产服务团队。专注买房、卖房、租赁一站式服务。", hashtags:"", price:"—", beds:0, baths:0 },
 ];
 
 const TEMPLATES = [
@@ -1472,9 +1481,11 @@ const TEMPLATES = [
 ];
 
 const APPROVALS = [
-  { id:3, title:"皇家山景观房 · 限时优惠", author:"李明", listing:"皇家山景观房", platforms:["微信公众号","微信视频号"], lang:"中文", date:"2026-08-22" },
-  { id:4, title:"蒙特利尔房产市场周报", author:"王芳", listing:"—", platforms:["Facebook","微信公众号"], lang:"中文", date:"2026-08-22" },
-  { id:7, title:"加园地产 · 品牌宣传", author:"李明", listing:"—", platforms:["微信公众号"], lang:"中文", date:"2026-08-22" },
+  { id:4, postId:4, title:"皇家山景观房 · 限时优惠", author:"李明", listing:"皇家山景观房", platform:"微信公众号", lang:"中文", date:"2026-08-22" },
+  { id:5, postId:5, title:"皇家山景观房 · Mount Royal View", author:"李明", listing:"皇家山景观房", platform:"微信视频号", lang:"中文", date:"2026-08-22" },
+  { id:6, postId:6, title:"蒙特利尔房产市场周报", author:"王芳", listing:"—", platform:"Facebook", lang:"中文", date:"2026-08-22" },
+  { id:7, postId:7, title:"蒙特利尔房产市场周报", author:"王芳", listing:"—", platform:"微信公众号", lang:"中文", date:"2026-08-22" },
+  { id:8, postId:11, title:"加园地产 · 品牌宣传", author:"李明", listing:"—", platform:"微信公众号", lang:"中文", date:"2026-08-22" },
 ];
 
 let currentLang = "zh";
@@ -1944,7 +1955,7 @@ function renderPosts() {
   const grid = document.getElementById("posts-feed");
   if (!grid) return;
 
-  const filtered = feedFilter === "all" ? POSTS : POSTS.filter(p => p.platforms.includes(feedFilter));
+  const filtered = feedFilter === "all" ? POSTS : POSTS.filter(p => p.platform === feedFilter);
 
   // Update filter counts
   const ca = document.getElementById("feed-count-all");
@@ -1952,9 +1963,9 @@ function renderPosts() {
   const cw = document.getElementById("feed-count-wechat");
   const cc = document.getElementById("feed-count-channels");
   if (ca) ca.textContent = POSTS.length;
-  if (cf) cf.textContent = POSTS.filter(p => p.platforms.includes("Facebook")).length;
-  if (cw) cw.textContent = POSTS.filter(p => p.platforms.includes("微信公众号")).length;
-  if (cc) cc.textContent = POSTS.filter(p => p.platforms.includes("微信视频号")).length;
+  if (cf) cf.textContent = POSTS.filter(p => p.platform === "Facebook").length;
+  if (cw) cw.textContent = POSTS.filter(p => p.platform === "微信公众号").length;
+  if (cc) cc.textContent = POSTS.filter(p => p.platform === "微信视频号").length;
 
   const statusBadge = s => {
     const m = { published:"badge-success", pending:"badge-warn", draft:"badge-neutral", rejected:"badge-danger" };
@@ -1963,11 +1974,11 @@ function renderPosts() {
   };
 
   grid.innerHTML = filtered.map(p => {
-    const mainPlatform = p.platforms[0];
+    const platform = p.platform;
     const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
     const isCarousel = p.media === "carousel" && p.images && p.images.length > 1;
     const isVideo = p.media === "video";
-    const isWeChat = mainPlatform === "微信公众号" || mainPlatform === "微信视频号";
+    const isWeChat = platform === "微信公众号" || platform === "微信视频号";
 
     // Platform badge helper
     const platformTag = name => {
@@ -1999,10 +2010,13 @@ function renderPosts() {
       return `<div class="feed-video-overlay"><div class="feed-video-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>`;
     };
 
+    // Hashtags display
+    const hashtags = p.hashtags ? `<div style="margin-top:4px;font-size:10px;color:var(--accent);line-height:1.3">${p.hashtags}</div>` : "";
+
     if (isWeChat) {
       // ── WeChat Article Card ──
-      const wxColor = mainPlatform === "微信视频号" ? "#FF6B2C" : "#07C160";
-      const wxLabel = mainPlatform === "微信视频号" ? "视频号" : "公众号";
+      const wxColor = platform === "微信视频号" ? "#FF6B2C" : "#07C160";
+      const wxLabel = platform === "微信视频号" ? "视频号" : "公众号";
       return `<div class="feed-card feed-wechat" data-od-id="feed-post-${p.id}">
         <div class="feed-header">
           <div class="feed-wx-icon" style="background:${wxColor}">W</div>
@@ -2010,12 +2024,13 @@ function renderPosts() {
             <div class="feed-wx-account">加园地产 HOME DIRECT · ${wxLabel}</div>
             <div class="feed-wx-time">${p.date}</div>
           </div>
-          <div class="feed-platform-tags">${p.platforms.map(platformTag).join("")}</div>
+          <div class="feed-platform-tags">${platformTag(platform)}</div>
         </div>
         <div class="feed-wx-body">
           <div class="feed-wx-title">${p.title}</div>
           <div class="feed-wx-excerpt">${p.description}</div>
-          <div class="feed-img-wrap" style="border-radius:4px;overflow:hidden">
+          ${hashtags}
+          <div class="feed-img-wrap" style="border-radius:4px;overflow:hidden;margin-top:8px">
             <img class="feed-wx-thumb" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
             ${videoOverlay()}
             ${mediaLabel()}
@@ -2024,7 +2039,7 @@ function renderPosts() {
       </div>`;
     }
 
-    // ── Facebook / Instagram Card ──
+    // ── Facebook Card ──
     const aspectClass = p.media === "single" ? "" : "ratio-45";
     return `<div class="feed-card feed-fb" data-od-id="feed-post-${p.id}">
       <div class="feed-header">
@@ -2033,7 +2048,7 @@ function renderPosts() {
           <div class="feed-author">加园地产 HOME DIRECT</div>
           <div class="feed-meta">${p.date}</div>
         </div>
-        <div class="feed-platform-tags">${p.platforms.map(platformTag).join("")}</div>
+        <div class="feed-platform-tags">${platformTag(platform)}</div>
       </div>
       <div class="feed-img-wrap ${aspectClass}">
         <img src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
@@ -2045,6 +2060,7 @@ function renderPosts() {
         <div class="feed-title">${p.title}</div>
         <div class="feed-text">${p.description}</div>
         ${p.price !== "—" ? `<div style="margin-top:6px;font-size:var(--text-sm);font-weight:700;color:var(--accent)">${p.price}${p.beds ? ` · ${p.beds}🛏 ${p.baths}🚿` : ""}</div>` : ""}
+        ${hashtags}
       </div>
       <div class="feed-actions">
         <div class="feed-action">👍 Like</div>
@@ -2183,7 +2199,7 @@ function renderApprovals() {
           <div class="approval-meta">${a.author} · ${a.date}</div>
         </div>
         <div style="display:flex;gap:var(--space-2)">
-          ${a.platforms.map(p=>`<span class="badge badge-neutral">${p}</span>`).join("")}
+          <span class="badge badge-neutral">${a.platform}</span>
           <span class="badge badge-accent">${a.lang}</span>
         </div>
       </div>
