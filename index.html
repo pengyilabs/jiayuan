@@ -199,6 +199,72 @@ tr:hover td{background:var(--surface-warm)}
 .activity-text{font-size:var(--text-sm);color:var(--fg)}
 .activity-time{font-size:var(--text-xs);color:var(--meta);margin-top:2px}
 
+/* ── Platform Feed Cards ──────────────────────────────── */
+.feed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+.feed-card{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--bg);transition:box-shadow var(--motion-fast)}
+.feed-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+
+/* Facebook card */
+.feed-fb .feed-header{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.feed-fb .feed-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:var(--text-xs);flex-shrink:0}
+.feed-fb .feed-byline{flex:1;min-width:0}
+.feed-fb .feed-author{font-size:var(--text-sm);font-weight:600;line-height:1.2}
+.feed-fb .feed-meta{font-size:var(--text-xs);color:var(--muted)}
+.feed-fb .feed-image{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.feed-fb .feed-image.ratio-45{aspect-ratio:4/5}
+.feed-fb .feed-body{padding:10px 14px}
+.feed-fb .feed-title{font-size:var(--text-sm);font-weight:600;line-height:1.35;margin-bottom:4px}
+.feed-fb .feed-text{font-size:var(--text-xs);color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.feed-fb .feed-actions{display:flex;gap:0;border-top:1px solid var(--border-soft);padding:0 14px}
+.feed-fb .feed-action{flex:1;padding:8px 0;font-size:var(--text-xs);color:var(--muted);text-align:center;cursor:pointer;font-weight:500;transition:color var(--motion-fast)}
+.feed-fb .feed-action:hover{color:var(--accent)}
+
+/* WeChat card */
+.feed-wechat{border:1px solid var(--border);background:var(--bg)}
+.feed-wechat .feed-header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border-soft)}
+.feed-wechat .feed-wx-icon{width:28px;height:28px;border-radius:6px;background:#07c160;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.feed-wechat .feed-wx-info{flex:1;min-width:0}
+.feed-wechat .feed-wx-account{font-size:var(--text-xs);font-weight:600;color:var(--fg)}
+.feed-wechat .feed-wx-time{font-size:10px;color:var(--meta)}
+.feed-wechat .feed-wx-body{padding:14px}
+.feed-wechat .feed-wx-title{font-size:var(--text-sm);font-weight:700;line-height:1.4;margin-bottom:6px}
+.feed-wechat .feed-wx-excerpt{font-size:var(--text-xs);color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
+.feed-wechat .feed-wx-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;display:block}
+
+/* Xiaohongshu card */
+.feed-xhs .feed-xhs-img{position:relative;width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.feed-xhs .feed-xhs-overlay{position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(0,0,0,0.7));display:flex;flex-direction:column;justify-content:flex-end;padding:var(--space-4)}
+.feed-xhs .feed-xhs-title{color:#fff;font-size:var(--text-sm);font-weight:700;line-height:1.35;margin-bottom:4px}
+.feed-xhs .feed-xhs-user{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,0.85);font-size:10px}
+.feed-xhs .feed-xhs-avatar{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
+.feed-xhs .feed-xhs-stats{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+.feed-xhs .feed-xhs-stat{background:rgba(0,0,0,0.4);color:#fff;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;backdrop-filter:blur(4px)}
+
+/* Instagram card */
+.feed-ig .feed-ig-top{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.feed-ig .feed-ig-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:2px}
+.feed-ig .feed-ig-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #fff}
+.feed-ig .feed-ig-name{font-size:var(--text-sm);font-weight:600;flex:1}
+.feed-ig .feed-ig-image{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.feed-ig .feed-ig-actions{padding:8px 14px;display:flex;gap:12px}
+.feed-ig .feed-ig-body{padding:0 14px 12px}
+.feed-ig .feed-ig-text{font-size:var(--text-xs);line-height:1.4}
+
+/* Post status & platform badges on feed cards */
+.feed-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
+.feed-platform-badge{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.55);color:#fff;padding:4px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;backdrop-filter:blur(4px);z-index:2}
+
+/* Platform filter tabs */
+.feed-filters{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);flex-wrap:wrap}
+.feed-filter{padding:7px 16px;border-radius:var(--radius-pill);border:1px solid var(--border);font-size:var(--text-sm);font-weight:500;color:var(--muted);cursor:pointer;transition:all var(--motion-fast);background:var(--bg);display:flex;align-items:center;gap:6px}
+.feed-filter:hover{border-color:var(--fg);color:var(--fg)}
+.feed-filter.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.feed-filter-count{font-size:10px;background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:var(--radius-pill);font-weight:700}
+.feed-filter.active .feed-filter-count{background:rgba(255,255,255,0.2)}
+
+@media(max-width:768px){.feed-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:550px){.feed-grid{grid-template-columns:1fr}}
+
 .template-card{position:relative}
 .template-card .card-img{aspect-ratio:3/4}
 .template-card .template-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--motion-base);border-radius:var(--radius-md);pointer-events:none}
@@ -451,30 +517,14 @@ tr:hover td{background:var(--surface-warm)}
             <span data-i18n="btn_new_post">新建帖子</span>
           </button>
         </div>
-        <div class="tabs" data-od-id="post-tabs">
-          <div class="tab active" data-i18n="tab_all">全部</div>
-          <div class="tab" data-i18n="tab_published">已发布</div>
-          <div class="tab" data-i18n="tab_pending">待审批</div>
-          <div class="tab" data-i18n="tab_draft">草稿</div>
-          <div class="tab" data-i18n="tab_rejected">已拒绝</div>
+        <div class="feed-filters" data-od-id="feed-filters">
+          <button class="feed-filter active" data-platform="all" onclick="filterFeed('all',this)"><span data-i18n="tab_all">全部</span> <span class="feed-filter-count" id="feed-count-all">7</span></button>
+          <button class="feed-filter" data-platform="Facebook" onclick="filterFeed('Facebook',this)">Facebook <span class="feed-filter-count" id="feed-count-facebook">5</span></button>
+          <button class="feed-filter" data-platform="微信公众号" onclick="filterFeed('微信公众号',this)"><span data-i18n="wechat_official">微信公众号</span> <span class="feed-filter-count" id="feed-count-wechat">4</span></button>
+          <button class="feed-filter" data-platform="微信视频号" onclick="filterFeed('微信视频号',this)"><span data-i18n="wechat_channels">微信视频号</span> <span class="feed-filter-count" id="feed-count-channels">1</span></button>
         </div>
-        <div class="table-wrap" data-od-id="posts-table">
-          <table>
-            <thead>
-              <tr>
-                <th data-i18n="th_post_title">帖子标题</th>
-                <th data-i18n="th_listing">关联房源</th>
-                <th data-i18n="th_platform">平台</th>
-                <th data-i18n="th_language">语言</th>
-                <th data-i18n="th_status">状态</th>
-                <th data-i18n="th_date">创建日期</th>
-                <th data-i18n="th_actions">操作</th>
-              </tr>
-            </thead>
-            <tbody id="posts-tbody">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
+        <div class="feed-grid" data-od-id="posts-feed" id="posts-feed">
+          <!-- Populated by JS -->
         </div>
       </div>
 
@@ -913,6 +963,7 @@ const I18N = {
     tpl_tags_sale: "出售", tpl_tags_rent: "出租", tpl_tags_brand: "品牌",
     tpl_platform_wechat: "微信", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "双语",
+    feed_images: "张图片", feed_filter_all: "全部",
   },
   en: {
     brand: "HOME DIRECT Team", nav_main: "Main", nav_management: "Management",
@@ -1065,6 +1116,7 @@ const I18N = {
     tpl_tags_sale: "Vente", tpl_tags_rent: "Location", tpl_tags_brand: "Marque",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingue",
+    feed_images: "images", feed_filter_all: "Tous",
   },
   es: {
     brand: "Equipo HOME DIRECT", nav_main: "Principal", nav_management: "Gestión",
@@ -1141,6 +1193,7 @@ const I18N = {
     tpl_tags_sale: "Venta", tpl_tags_rent: "Alquiler", tpl_tags_brand: "Marca",
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingüe",
+    feed_images: "imágenes", feed_filter_all: "Todos",
   }
 };
 
@@ -1167,13 +1220,13 @@ const LISTINGS = [
 ];
 
 const POSTS = [
-  { id:1, title:"市中心豪华公寓 · 好房推荐", listing:"市中心豪华公寓", platforms:["Facebook","微信公众号"], lang:"中文", status:"published", date:"2026-08-22" },
-  { id:2, title:"Westmount Villa · Luxury Living", listing:"西山别墅", platforms:["Facebook"], lang:"English", status:"published", date:"2026-08-21" },
-  { id:3, title:"皇家山景观房 · 限时优惠", listing:"皇家山景观房", platforms:["微信公众号","微信视频号"], lang:"中文", status:"pending", date:"2026-08-22" },
-  { id:4, title:"蒙特利尔房产市场周报", listing:"—", platforms:["Facebook","微信公众号"], lang:"中文", status:"pending", date:"2026-08-22" },
-  { id:5, title:"Outremont Garden House · Exclusive", listing:"Outremont 花园洋房", platforms:["Facebook"], lang:"English", status:"draft", date:"2026-08-20" },
-  { id:6, title:"Griffintown Loft · Studio Living", listing:"Griffintown 工业风公寓", platforms:["Facebook","微信公众号"], lang:"双语", status:"rejected", date:"2026-08-19" },
-  { id:7, title:"加园地产 · 品牌宣传", listing:"—", platforms:["微信公众号"], lang:"中文", status:"pending", date:"2026-08-22" },
+  { id:1, title:"市中心豪华公寓 · 好房推荐", listing:"市中心豪华公寓", platforms:["Facebook","微信公众号"], lang:"中文", status:"published", date:"2026-08-22", media:"carousel", images:["images/listings/condo1.jpg","images/listings/condo2.jpg","images/listings/condo3.jpg"], description:"蒙特利尔市中心黄金地段，步行可达麦吉尔大学和地铁站。现代开放式格局，配备全套不锈钢电器。", price:"$850,000", beds:3, baths:2 },
+  { id:2, title:"Westmount Villa · Luxury Living", listing:"西山别墅", platforms:["Facebook"], lang:"English", status:"published", date:"2026-08-21", media:"single", images:["images/listings/villa1.jpg"], description:"Prestigious Westmount estate with stunning mountain views. Renovated kitchen, private garden, and ample parking.", price:"$1,250,000", beds:5, baths:4 },
+  { id:3, title:"皇家山景观房 · 限时优惠", listing:"皇家山景观房", platforms:["微信公众号","微信视频号"], lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/mountain1.jpg"], description:"皇家山脚下优质学区房，俯瞰城市天际线。全新装修，拎包入住。限时优惠中！", price:"$720,000", beds:3, baths:2 },
+  { id:4, title:"蒙特利尔房产市场周报", listing:"—", platforms:["Facebook","微信公众号"], lang:"中文", status:"pending", date:"2026-08-22", media:"carousel", images:["images/listings/condo2.jpg","images/listings/loft1.jpg"], description:"本周蒙特利尔房产市场数据分析：均价微涨3.2%，成交量回升。详解各区域热点趋势。", price:"—", beds:0, baths:0 },
+  { id:5, title:"Outremont Garden House · Exclusive", listing:"Outremont 花园洋房", platforms:["Facebook"], lang:"English", status:"draft", date:"2026-08-20", media:"single", images:["images/listings/garden1.jpg"], description:"Rare Outremont gem with private garden oasis. Classic architecture meets modern comfort in this boutique residence.", price:"$980,000", beds:4, baths:3 },
+  { id:6, title:"Griffintown Loft · Studio Living", listing:"Griffintown 工业风公寓", platforms:["Facebook","微信公众号"], lang:"双语", status:"rejected", date:"2026-08-19", media:"carousel", images:["images/listings/loft1.jpg","images/listings/loft2.jpg"], description:"Industrial-chic loft in Griffintown. Exposed brick, 14ft ceilings, and open-concept living. Steps from the Lachine Canal.", price:"$425,000", beds:1, baths:1 },
+  { id:7, title:"加园地产 · 品牌宣传", listing:"—", platforms:["微信公众号"], lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/condo3.jpg"], description:"加园地产 — 蒙特利尔华人信赖的房产服务团队。专注买房、卖房、租赁一站式服务。", price:"—", beds:0, baths:0 },
 ];
 
 const TEMPLATES = [
@@ -1649,30 +1702,89 @@ function openNewListingModal() {
   modal.onclick = (e) => { if(e.target===modal) closeModal('modal-listing'); };
 }
 
-// ── Render Posts ───────────────────────────────────────────
+// ── Render Posts (Platform Feed) ────────────────────────
+let feedFilter = "all";
+
+function filterFeed(platform, el) {
+  feedFilter = platform;
+  document.querySelectorAll(".feed-filter").forEach(f => f.classList.remove("active"));
+  if (el) el.classList.add("active");
+  renderPosts();
+}
+
 function renderPosts() {
   const dict = I18N[currentLang];
-  const tbody = document.getElementById("posts-tbody");
-  if (!tbody) return;
+  const grid = document.getElementById("posts-feed");
+  if (!grid) return;
+
+  const filtered = feedFilter === "all" ? POSTS : POSTS.filter(p => p.platforms.includes(feedFilter));
+
+  // Update filter counts
+  const ca = document.getElementById("feed-count-all");
+  const cf = document.getElementById("feed-count-facebook");
+  const cw = document.getElementById("feed-count-wechat");
+  const cc = document.getElementById("feed-count-channels");
+  if (ca) ca.textContent = POSTS.length;
+  if (cf) cf.textContent = POSTS.filter(p => p.platforms.includes("Facebook")).length;
+  if (cw) cw.textContent = POSTS.filter(p => p.platforms.includes("微信公众号")).length;
+  if (cc) cc.textContent = POSTS.filter(p => p.platforms.includes("微信视频号")).length;
+
   const statusBadge = s => {
     const m = { published:"badge-success", pending:"badge-warn", draft:"badge-neutral", rejected:"badge-danger" };
     const k = "tab_" + s;
-    return `<span class="badge ${m[s]}"><span class="badge-dot"></span> ${dict[k]||s}</span>`;
+    return `<span class="feed-status badge ${m[s]}"><span class="badge-dot"></span> ${dict[k]||s}</span>`;
   };
-  tbody.innerHTML = POSTS.map(p => `
-    <tr data-od-id="post-row-${p.id}">
-      <td><strong>${p.title}</strong></td>
-      <td>${p.listing}</td>
-      <td>${p.platforms.map(x=>`<span class="badge badge-neutral" style="margin-right:4px">${x}</span>`).join("")}</td>
-      <td>${p.lang}</td>
-      <td>${statusBadge(p.status)}</td>
-      <td>${p.date}</td>
-      <td>
-        <button class="btn btn-ghost btn-sm" style="padding:4px 8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-        </button>
-      </td>
-    </tr>`).join("");
+
+  grid.innerHTML = filtered.map(p => {
+    const mainPlatform = p.platforms[0];
+    const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
+    const isCarousel = p.media === "carousel" && p.images && p.images.length > 1;
+    const isWeChat = mainPlatform === "微信公众号" || mainPlatform === "微信视频号";
+
+    if (isWeChat) {
+      // ── WeChat Article Card ──
+      return `<div class="feed-card feed-wechat" data-od-id="feed-post-${p.id}">
+        <div class="feed-header">
+          <div class="feed-wx-icon">W</div>
+          <div class="feed-wx-info">
+            <div class="feed-wx-account">加园地产 HOME DIRECT</div>
+            <div class="feed-wx-time">${p.date}</div>
+          </div>
+          ${statusBadge(p.status)}
+        </div>
+        <div class="feed-wx-body">
+          <div class="feed-wx-title">${p.title}</div>
+          <div class="feed-wx-excerpt">${p.description}</div>
+          <img class="feed-wx-thumb" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+        </div>
+      </div>`;
+    }
+
+    // ── Facebook / Instagram Card ──
+    const aspectClass = p.media === "single" ? "" : "ratio-45";
+    return `<div class="feed-card feed-fb" data-od-id="feed-post-${p.id}">
+      <div class="feed-header">
+        <div class="feed-avatar">HD</div>
+        <div class="feed-byline">
+          <div class="feed-author">加园地产 HOME DIRECT</div>
+          <div class="feed-meta">${p.date} · ${p.platforms.join(", ")}</div>
+        </div>
+        ${statusBadge(p.status)}
+      </div>
+      <img class="feed-image ${aspectClass}" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+      <div class="feed-body">
+        <div class="feed-title">${p.title}</div>
+        <div class="feed-text">${p.description}</div>
+        ${p.price !== "—" ? `<div style="margin-top:6px;font-size:var(--text-sm);font-weight:700;color:var(--accent)">${p.price}${p.beds ? ` · ${p.beds}🛏 ${p.baths}🚿` : ""}</div>` : ""}
+        ${isCarousel ? `<div style="margin-top:6px;font-size:10px;color:var(--meta)">🖼 ${p.images.length} ${dict.feed_images || "张图片"}</div>` : ""}
+      </div>
+      <div class="feed-actions">
+        <div class="feed-action">👍 Like</div>
+        <div class="feed-action">💬 Comment</div>
+        <div class="feed-action">↗ Share</div>
+      </div>
+    </div>`;
+  }).join("");
 }
 
 // ── Render Templates ──────────────────────────────────────
