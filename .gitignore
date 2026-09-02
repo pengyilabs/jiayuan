@@ -1,0 +1,19 @@
+# Open Design tooling
+.od-frames/
+.od-skills/
+.open-design/
+
+# Open Design artifacts
+*.artifact.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node (if used)
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+build/
