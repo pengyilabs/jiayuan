@@ -286,6 +286,40 @@ tr:hover td{background:var(--surface-warm)}
 
 /* Platform filter tabs */
 .feed-filters{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);flex-wrap:wrap}
+
+/* ── Platform Format Reference ────────────────────────── */
+.format-section{margin-bottom:var(--space-6)}
+.format-section>h3{font-size:var(--text-base);font-weight:700;margin-bottom:var(--space-4)}
+.format-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+.format-card{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--bg)}
+.format-card-header{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border-soft)}
+.format-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0}
+.format-card-name{font-size:var(--text-sm);font-weight:700}
+.format-card-desc{font-size:var(--text-xs);color:var(--muted)}
+.format-card-body{padding:16px}
+.format-type{margin-bottom:16px}
+.format-type:last-child{margin-bottom:0}
+.format-type-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.format-type-name{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.03em;color:var(--fg)}
+.format-type-ratio{font-size:10px;color:var(--muted);font-weight:500}
+.format-mockups{display:flex;gap:8px;align-items:flex-end}
+.format-mockup{position:relative;border-radius:4px;overflow:hidden;border:1px solid var(--border);background:linear-gradient(135deg,#f8e8f0,#e8f0f8)}
+.format-mockup-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.format-mockup-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.65);color:#fff;font-size:8px;font-weight:600;text-align:center;padding:2px 4px;line-height:1.2}
+.format-mockup-11{width:52px;height:52px}
+.format-mockup-45{width:44px;height:55px}
+.format-mockup-169{width:64px;height:36px}
+.format-mockup-916{width:32px;height:57px}
+.format-mockup-wide{width:72px;height:30px}
+.format-mockup-stack{position:relative;width:48px;height:48px}
+.format-mockup-stack .format-mockup-stack-card{position:absolute;border-radius:3px;border:1px solid rgba(0,0,0,0.1)}
+.format-mockup-stack .format-mockup-stack-card:nth-child(1){inset:0;background:linear-gradient(135deg,#fde8e5,#e8d5f0)}
+.format-mockup-stack .format-mockup-stack-card:nth-child(2){top:3px;left:3px;right:-3px;bottom:-3px;background:linear-gradient(135deg,#e8d5f0,#d5e8f0)}
+.format-mockup-stack .format-mockup-stack-card:nth-child(3){top:6px;left:6px;right:-6px;bottom:-6px;background:linear-gradient(135deg,#d5e8f0,#e8f0d5)}
+.format-mockup-video{position:relative}
+.format-mockup-video::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-size:10px;text-shadow:0 1px 3px rgba(0,0,0,0.4)}
+.format-mockup-icon{font-size:14px;opacity:0.5}
+@media(max-width:768px){.format-grid{grid-template-columns:1fr}}
 .feed-filter{padding:7px 16px;border-radius:var(--radius-pill);border:1px solid var(--border);font-size:var(--text-sm);font-weight:500;color:var(--muted);cursor:pointer;transition:all var(--motion-fast);background:var(--bg);display:flex;align-items:center;gap:6px}
 .feed-filter:hover{border-color:var(--fg);color:var(--fg)}
 .feed-filter.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -670,6 +704,136 @@ tr:hover td{background:var(--surface-warm)}
             <span class="badge badge-warn"><span class="badge-dot"></span> <span data-i18n="status_pending_auth">待授权</span></span>
           </div>
         </div>
+        <div class="settings-section format-section" data-od-id="settings-formats">
+          <h3 data-i18n="settings_post_formats">帖子格式参考</h3>
+          <div class="format-grid">
+            <!-- Facebook -->
+            <div class="format-card">
+              <div class="format-card-header">
+                <div class="format-card-icon" style="background:#1877F2">f</div>
+                <div>
+                  <div class="format-card-name">Facebook</div>
+                  <div class="format-card-desc" data-i18n="fmt_fb_desc">Feed, Reels, Stories</div>
+                </div>
+              </div>
+              <div class="format-card-body">
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_single_image">单图</span>
+                    <span class="format-type-ratio">1:1 · 4:5 · 16:9</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-11"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#fde8e5,#e8d5f0)"></div><div class="format-mockup-label">1:1</div></div>
+                    <div class="format-mockup format-mockup-45"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#e8d5f0,#d5e8f0)"></div><div class="format-mockup-label">4:5</div></div>
+                    <div class="format-mockup format-mockup-169"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#d5e8f0,#e8f0d5)"></div><div class="format-mockup-label">16:9</div></div>
+                  </div>
+                </div>
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_carousel">轮播</span>
+                    <span class="format-type-ratio">1:1 · 4:5 × 2-10</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup-stack">
+                      <div class="format-mockup-stack-card"></div>
+                      <div class="format-mockup-stack-card"></div>
+                      <div class="format-mockup-stack-card"></div>
+                    </div>
+                    <div style="font-size:var(--text-xs);color:var(--muted);padding-bottom:4px" data-i18n="fmt_carousel_hint">最多10张，统一比例</div>
+                  </div>
+                </div>
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_video">视频</span>
+                    <span class="format-type-ratio">16:9 · 9:16 · 1:1</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-169 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#2d1b4e,#1b3a4e)"></div></div>
+                    <div class="format-mockup format-mockup-916 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#4e1b2d,#1b2d4e)"></div><div class="format-mockup-label">Reels</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- WeChat Official -->
+            <div class="format-card">
+              <div class="format-card-header">
+                <div class="format-card-icon" style="background:#07C160">W</div>
+                <div>
+                  <div class="format-card-name" data-i18n="wechat_official">微信公众号</div>
+                  <div class="format-card-desc" data-i18n="fmt_wx_desc">图文消息, 单图, 视频</div>
+                </div>
+              </div>
+              <div class="format-card-body">
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_article">图文消息</span>
+                    <span class="format-type-ratio">2.35:1 封面</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-wide"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#d5f0e8,#e8f0d5)"></div><div class="format-mockup-label">900×383</div></div>
+                  </div>
+                </div>
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_single_image">单图</span>
+                    <span class="format-type-ratio">1:1 · 原图</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-11"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#fde8e5,#f0e8d5)"></div><div class="format-mockup-label">1:1</div></div>
+                  </div>
+                </div>
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_video">视频</span>
+                    <span class="format-type-ratio">16:9 · 3:4</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-169 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#2d4e1b,#1b4e3a)"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- WeChat Channels -->
+            <div class="format-card">
+              <div class="format-card-header">
+                <div class="format-card-icon" style="background:#FF6B2C">W</div>
+                <div>
+                  <div class="format-card-name" data-i18n="wechat_channels">微信视频号</div>
+                  <div class="format-card-desc" data-i18n="fmt_wxch_desc">短视频, 直播</div>
+                </div>
+              </div>
+              <div class="format-card-body">
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_short_video">短视频</span>
+                    <span class="format-type-ratio">9:16 ≤ 60min</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-916 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#4e2d1b,#1b3a4e)"></div><div class="format-mockup-label">9:16</div></div>
+                  </div>
+                </div>
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_live">直播</span>
+                    <span class="format-type-ratio">9:16</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-916" style="border:2px solid #FF6B2C"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#FF6B2C,#ff8f5e)"><span class="format-mockup-icon" style="color:#fff">●</span></div><div class="format-mockup-label" style="background:#FF6B2C">LIVE</div></div>
+                  </div>
+                </div>
+                <div class="format-type">
+                  <div class="format-type-header">
+                    <span class="format-type-name" data-i18n="fmt_link_post">链接图文</span>
+                    <span class="format-type-ratio">2.35:1 封面</span>
+                  </div>
+                  <div class="format-mockups">
+                    <div class="format-mockup format-mockup-wide"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#f0d5e8,#d5e8f0)"></div><div class="format-mockup-label">封面</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="settings-section" data-od-id="settings-notifications">
           <h3 data-i18n="settings_notifications">通知偏好</h3>
           <div class="settings-row">
@@ -994,6 +1158,14 @@ const I18N = {
     tpl_platform_wechat: "微信", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "双语",
     feed_images: "张图片", feed_filter_all: "全部", feed_video: "视频",
+    settings_post_formats: "帖子格式参考",
+    fmt_fb_desc: "Feed, Reels, Stories",
+    fmt_wx_desc: "图文消息, 单图, 视频",
+    fmt_wxch_desc: "短视频, 直播",
+    fmt_single_image: "单图", fmt_carousel: "轮播", fmt_video: "视频",
+    fmt_article: "图文消息", fmt_short_video: "短视频",
+    fmt_live: "直播", fmt_link_post: "链接图文",
+    fmt_carousel_hint: "最多10张，统一比例",
   },
   en: {
     brand: "HOME DIRECT Team", nav_main: "Main", nav_management: "Management",
@@ -1071,6 +1243,14 @@ const I18N = {
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingual",
     feed_images: "images", feed_filter_all: "All", feed_video: "Video",
+    settings_post_formats: "Post Format Reference",
+    fmt_fb_desc: "Feed, Reels, Stories",
+    fmt_wx_desc: "Article, Single Image, Video",
+    fmt_wxch_desc: "Short Video, Live",
+    fmt_single_image: "Single Image", fmt_carousel: "Carousel", fmt_video: "Video",
+    fmt_article: "Article", fmt_short_video: "Short Video",
+    fmt_live: "Live", fmt_link_post: "Link Article",
+    fmt_carousel_hint: "Up to 10, same ratio",
   },
   fr: {
     brand: "Équipe HOME DIRECT", nav_main: "Principal", nav_management: "Gestion",
@@ -1148,6 +1328,14 @@ const I18N = {
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingue",
     feed_images: "images", feed_filter_all: "Tous", feed_video: "Vidéo",
+    settings_post_formats: "Référence des formats",
+    fmt_fb_desc: "Fil, Reels, Stories",
+    fmt_wx_desc: "Article, Image, Vidéo",
+    fmt_wxch_desc: "Vidéo courte, Live",
+    fmt_single_image: "Image", fmt_carousel: "Carrousel", fmt_video: "Vidéo",
+    fmt_article: "Article", fmt_short_video: "Vidéo courte",
+    fmt_live: "En direct", fmt_link_post: "Article lien",
+    fmt_carousel_hint: "Jusqu'à 10, même ratio",
   },
   es: {
     brand: "Equipo HOME DIRECT", nav_main: "Principal", nav_management: "Gestión",
@@ -1225,6 +1413,14 @@ const I18N = {
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingüe",
     feed_images: "imágenes", feed_filter_all: "Todos", feed_video: "Video",
+    settings_post_formats: "Referencia de formatos",
+    fmt_fb_desc: "Feed, Reels, Historias",
+    fmt_wx_desc: "Artículo, Imagen, Video",
+    fmt_wxch_desc: "Video corto, En vivo",
+    fmt_single_image: "Imagen", fmt_carousel: "Carrusel", fmt_video: "Video",
+    fmt_article: "Artículo", fmt_short_video: "Video corto",
+    fmt_live: "En vivo", fmt_link_post: "Artículo enlace",
+    fmt_carousel_hint: "Hasta 10, mismo ratio",
   }
 };
 
