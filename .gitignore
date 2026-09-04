@@ -17,3 +17,7 @@ package-lock.json
 # Build output
 dist/
 build/
+
+# Design artifacts (screenshots, drawings)
+screenshot-*.png
+drawing-*.png

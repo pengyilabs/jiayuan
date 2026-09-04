@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>加园地产 · 移动端</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--surface:#f7f8fa;--surface-warm:#fafafa;
+  --fg:#111111;--muted:#6b7280;--meta:#9ca3af;--border:#e5e7eb;--border-soft:#f3f4f6;
+  --accent:#ff385c;--accent-soft:#fff0f3;
+  --success:#22c55e;--warn:#f59e0b;--danger:#ef4444;
+  --radius:12px;--radius-sm:8px;--radius-pill:999px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06);--shadow-md:0 4px 12px rgba(0,0,0,0.08);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;font-family:var(--font);background:var(--surface);color:var(--fg);-webkit-font-smoothing:antialiased;overflow:hidden}
+body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
+
+/* ── Status bar spacer ── */
+.status-bar{height:env(safe-area-inset-top,0px);background:var(--bg);flex-shrink:0}
+
+/* ── Top bar ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border-soft);flex-shrink:0}
+.topbar-brand{display:flex;align-items:center;gap:8px}
+.topbar-logo{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px}
+.topbar-title{font-size:17px;font-weight:700}
+.topbar-actions{display:flex;gap:4px;align-items:center}
+.topbar-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;color:var(--fg)}
+.topbar-icon:active{background:var(--surface)}
+.topbar-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+.topbar-lang{padding:4px 10px;border-radius:var(--radius-pill);border:1px solid var(--border);background:var(--bg);font-size:12px;font-weight:600;color:var(--fg);cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.topbar-lang:active{background:var(--surface)}
+
+/* ── Feed ── */
+.feed{flex:1;overflow-y:auto;padding:0 0 20px;-webkit-overflow-scrolling:touch}
+
+/* Date group header */
+.date-group{padding:16px 16px 8px;position:sticky;top:0;background:var(--surface);z-index:5}
+.date-group-label{font-size:13px;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:8px}
+.date-group-count{font-size:11px;font-weight:500;color:var(--meta);background:var(--border-soft);padding:2px 8px;border-radius:var(--radius-pill)}
+
+/* Post card */
+.post-card{background:var(--bg);margin:0 12px 12px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--border-soft)}
+.post-header{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.post-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0}
+.post-byline{flex:1;min-width:0}
+.post-author{font-size:14px;font-weight:600;line-height:1.2}
+.post-meta{font-size:11px;color:var(--meta);margin-top:1px}
+.post-platform-tag{font-size:10px;font-weight:600;color:#fff;padding:3px 8px;border-radius:var(--radius-pill);flex-shrink:0}
+.tag-fb{background:#1877F2}.tag-wx{background:#07C160}.tag-wxch{background:#FF6B2C}.tag-ig{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888)}.tag-xhs{background:#FE2C55}
+
+/* Post image */
+.post-img-wrap{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--surface)}
+.post-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.post-img-wrap.ratio-45{aspect-ratio:4/5}
+.post-img-wrap.ratio-169{aspect-ratio:16/9}
+.post-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.6);color:#fff;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;backdrop-filter:blur(4px);display:flex;align-items:center;gap:4px}
+.post-video-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.post-video-play div{width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.post-video-play svg{width:20px;height:20px;fill:#fff;margin-left:2px}
+
+/* Carousel */
+.carousel{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden}
+.carousel-track{display:flex;height:100%;transition:transform 0.3s ease}
+.carousel-track img{width:100%;min-width:100%;height:100%;object-fit:cover;flex-shrink:0}
+.carousel-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.carousel-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);transition:all 0.2s}
+.carousel-dot.active{background:#fff;width:16px;border-radius:3px}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;box-shadow:0 1px 4px rgba(0,0,0,0.15)}
+.carousel-btn:active{background:#fff}
+.carousel-btn svg{width:14px;height:14px;stroke:#333;fill:none;stroke-width:2.5}
+.carousel-prev{left:8px}.carousel-next{right:8px}
+
+/* Post body */
+.post-body{padding:10px 14px}
+.post-title{font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px}
+.post-text{font-size:12px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.post-price{margin-top:6px;font-size:14px;font-weight:700;color:var(--accent)}
+.post-hashtags{margin-top:4px;font-size:11px;color:var(--accent);line-height:1.3}
+.post-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;margin-top:6px}
+.status-published{background:#dcfce7;color:#166534}
+.status-pending{background:#fef3c7;color:#92400e}
+.status-draft{background:var(--border-soft);color:var(--muted)}
+.status-rejected{background:#fee2e2;color:#991b1b}
+
+/* Post actions */
+.post-actions{display:flex;border-top:1px solid var(--border-soft);padding:0}
+.post-action{flex:1;padding:10px 0;font-size:12px;color:var(--muted);text-align:center;cursor:pointer;font-weight:500;border:none;background:transparent;font-family:var(--font)}
+.post-action:active{background:var(--surface)}
+.post-action.liked{color:var(--accent)}
+
+/* ── Bottom nav ── */
+.bottom-nav{display:flex;align-items:flex-end;background:var(--bg);border-top:1px solid var(--border-soft);padding:6px 0 calc(6px + var(--safe-bottom));flex-shrink:0;position:relative;z-index:40}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:transparent;cursor:pointer;padding:4px 0;font-family:var(--font);color:var(--meta)}
+.nav-btn.active{color:var(--accent)}
+.nav-btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8}
+.nav-btn span{font-size:10px;font-weight:600}
+.nav-btn-create{position:relative}
+.nav-create-icon{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:-16px;box-shadow:0 2px 10px rgba(255,56,92,0.35);transition:transform 0.15s}
+.nav-create-icon:active{transform:scale(0.9)}
+.nav-create-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2.5}
+.nav-btn-create span{margin-top:14px}
+
+/* ── Bottom sheet ── */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.sheet-overlay.open{display:flex}
+.sheet{background:var(--bg);border-radius:16px 16px 0 0;width:100%;max-width:430px;height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp 0.25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:10px auto 0}
+.sheet-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--border-soft);flex-shrink:0}
+.sheet-title{font-size:17px;font-weight:700}
+.sheet-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)}
+.sheet-close svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.sheet-body{padding:16px 20px 24px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+
+/* Create flow steps */
+.create-steps{display:flex;gap:4px;margin-bottom:20px}
+.create-step{flex:1;height:3px;border-radius:2px;background:var(--border-soft);transition:background 0.2s}
+.create-step.active{background:var(--accent)}
+.create-step.done{background:var(--success)}
+
+.step-label{font-size:13px;font-weight:600;color:var(--meta);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.03em}
+.step-title{font-size:18px;font-weight:700;margin-bottom:16px}
+
+/* Listing picker */
+.listing-option{display:flex;align-items:center;gap:12px;padding:12px;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;margin-bottom:8px}
+.listing-option:active,.listing-option.selected{border-color:var(--accent);background:var(--accent-soft)}
+.listing-thumb{width:52px;height:52px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0}
+.listing-info{flex:1;min-width:0}
+.listing-name{font-size:14px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.listing-detail{font-size:12px;color:var(--muted);margin-top:2px}
+.listing-price{font-size:13px;font-weight:700;color:var(--accent);margin-top:2px}
+
+/* Platform picker */
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.platform-option{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;transition:all 0.15s}
+.platform-option:active,.platform-option.selected{border-color:var(--accent);background:var(--accent-soft)}
+.platform-option.selected::after{content:'✓';position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.platform-option{position:relative}
+.platform-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+.platform-name{font-size:13px;font-weight:600}
+
+/* Template picker */
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tpl-card{border-radius:var(--radius);border:2px solid var(--border);cursor:pointer;transition:all 0.15s;overflow:hidden;background:var(--bg)}
+.tpl-card:active,.tpl-card.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.tpl-preview{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden}
+/* Template A: Bold accent color block with listing photo inset */
+.tpl-design-a{width:100%;height:100%;background:#ff385c;display:flex;flex-direction:column;padding:10px;position:relative}
+.tpl-design-a .tpl-photo{width:100%;flex:1;border-radius:6px;object-fit:cover;margin-top:auto}
+.tpl-design-a .tpl-brand{position:absolute;top:10px;left:10px;color:#fff;font-size:8px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;background:rgba(0,0,0,0.25);padding:3px 6px;border-radius:3px}
+.tpl-design-a .tpl-price{position:absolute;top:10px;right:10px;color:#fff;font-size:12px;font-weight:800;text-align:right}
+.tpl-design-a .tpl-title{position:absolute;top:50%;left:10px;right:10px;color:#fff;font-size:9px;font-weight:600;line-height:1.3;transform:translateY(-50%);text-shadow:0 1px 3px rgba(0,0,0,0.4)}
+/* Template B: White card with colored accent strip + photo */
+.tpl-design-b{width:100%;height:100%;background:#fff;display:flex;flex-direction:column;position:relative}
+.tpl-design-b .tpl-photo{width:100%;height:55%;object-fit:cover}
+.tpl-design-b .tpl-info{flex:1;padding:8px 10px;display:flex;flex-direction:column;justify-content:center}
+.tpl-design-b .tpl-badge{font-size:7px;font-weight:700;color:#fff;background:#ff385c;padding:2px 6px;border-radius:3px;align-self:flex-start;margin-bottom:4px;text-transform:uppercase}
+.tpl-design-b .tpl-price{font-size:13px;font-weight:800;color:#1a1a2e}
+.tpl-design-b .tpl-address{font-size:8px;color:#666;margin-top:2px;line-height:1.2}
+.tpl-design-b .tpl-brand{position:absolute;bottom:8px;right:8px;font-size:7px;font-weight:700;color:#ff385c;letter-spacing:0.03em}
+/* Template C: Dark overlay style with gradient */
+.tpl-design-c{width:100%;height:100%;position:relative;background:#1a1a2e}
+.tpl-design-c .tpl-photo{width:100%;height:100%;object-fit:cover;opacity:0.6}
+.tpl-design-c .tpl-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.1) 0%,rgba(26,26,46,0.85) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:10px}
+.tpl-design-c .tpl-brand{position:absolute;top:10px;left:10px;color:#fff;font-size:7px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.4);padding:2px 6px;border-radius:3px}
+.tpl-design-c .tpl-price{color:#fff;font-size:13px;font-weight:800}
+.tpl-design-c .tpl-title{color:rgba(255,255,255,0.9);font-size:9px;font-weight:500;margin-top:2px;line-height:1.3}
+.tpl-design-c .tpl-tag{display:inline-block;margin-top:4px;background:rgba(255,255,255,0.15);color:#fff;font-size:7px;font-weight:600;padding:2px 6px;border-radius:3px;align-self:flex-start;backdrop-filter:blur(4px)}
+/* Template D: Split bilingual with colored left panel */
+.tpl-design-d{width:100%;height:100%;display:flex;position:relative}
+.tpl-design-d .tpl-left{width:45%;background:#ff385c;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8px;text-align:center}
+.tpl-design-d .tpl-brand{color:rgba(255,255,255,0.7);font-size:6px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+.tpl-design-d .tpl-zh{color:#fff;font-size:11px;font-weight:700;line-height:1.3}
+.tpl-design-d .tpl-en{color:rgba(255,255,255,0.8);font-size:8px;font-weight:500;margin-top:3px;line-height:1.2}
+.tpl-design-d .tpl-photo{width:55%;height:100%;object-fit:cover}
+.tpl-design-d .tpl-price{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);color:#fff;font-size:12px;font-weight:800;padding:6px 8px;text-align:center}
+/* Blank template */
+.tpl-blank{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:var(--surface);color:var(--meta)}
+.tpl-blank svg{width:28px;height:28px;stroke:var(--border);margin-bottom:4px}
+.tpl-blank span{font-size:10px;font-weight:600}
+.tpl-label{padding:6px 8px;text-align:center}
+.tpl-label-name{font-size:11px;font-weight:600;color:var(--fg);line-height:1.2}
+.tpl-label-desc{font-size:9px;color:var(--meta);margin-top:1px;line-height:1.2}
+/* Format selector */
+.format-grid{display:flex;gap:8px;margin-top:12px}
+.format-option{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:var(--radius);border:2px solid var(--border);cursor:pointer;transition:all 0.15s;text-align:center;background:var(--bg)}
+.format-option:active,.format-option.selected{border-color:var(--accent);background:var(--accent-soft)}
+.format-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--surface);color:var(--fg);font-size:16px}
+.format-option.selected .format-icon{background:var(--accent);color:#fff}
+.format-name{font-size:11px;font-weight:600;color:var(--fg)}
+.format-desc{font-size:9px;color:var(--meta);line-height:1.2}
+
+/* ── Feed template-styled cards ──────────────────────── */
+.feed-tpl{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border-soft);background:var(--bg)}
+.feed-tpl .post-header{padding:10px 14px;display:flex;align-items:center;gap:10px}
+.feed-tpl .post-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.feed-tpl .post-byline{flex:1;min-width:0}
+.feed-tpl .post-author{font-size:13px;font-weight:600;color:var(--fg)}
+.feed-tpl .post-meta{font-size:11px;color:var(--meta)}
+.feed-tpl .post-actions{display:flex;border-top:1px solid var(--border-soft)}
+.feed-tpl .post-action{flex:1;padding:10px;border:none;background:transparent;font-size:13px;font-weight:500;color:var(--fg);cursor:pointer;font-family:var(--font);transition:background 0.15s}
+.feed-tpl .post-action:active{background:var(--surface)}
+.feed-tpl .post-action.liked{color:var(--accent)}
+
+/* Feed: Design A — red accent block */
+.feed-tpl .feed-design-a{width:100%;aspect-ratio:4/5;background:#ff385c;display:flex;flex-direction:column;padding:14px;position:relative}
+.feed-tpl .feed-design-a .feed-photo{width:100%;flex:1;border-radius:8px;object-fit:cover;margin-top:auto}
+.feed-tpl .feed-design-a .feed-brand{position:absolute;top:14px;left:14px;color:#fff;font-size:10px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;background:rgba(0,0,0,0.25);padding:4px 8px;border-radius:4px}
+.feed-tpl .feed-design-a .feed-price{position:absolute;top:14px;right:14px;color:#fff;font-size:15px;font-weight:800;text-align:right}
+.feed-tpl .feed-design-a .feed-title{position:absolute;top:50%;left:14px;right:14px;color:#fff;font-size:13px;font-weight:600;line-height:1.4;transform:translateY(-50%);text-shadow:0 1px 4px rgba(0,0,0,0.4)}
+.feed-tpl .feed-design-a .feed-body{padding:0 14px 10px}
+.feed-tpl .feed-design-a .feed-hashtags{font-size:11px;color:var(--meta);margin-top:4px}
+
+/* Feed: Design B — white card */
+.feed-tpl .feed-design-b{width:100%;display:flex;flex-direction:column;position:relative;background:#fff}
+.feed-tpl .feed-design-b .feed-photo{width:100%;height:240px;object-fit:cover}
+.feed-tpl .feed-design-b .feed-info{padding:12px 14px}
+.feed-tpl .feed-design-b .feed-badge{font-size:10px;font-weight:700;color:#fff;background:#ff385c;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;text-transform:uppercase}
+.feed-tpl .feed-design-b .feed-price{font-size:16px;font-weight:800;color:#1a1a2e}
+.feed-tpl .feed-design-b .feed-address{font-size:11px;color:#666;margin-top:2px;line-height:1.3}
+.feed-tpl .feed-design-b .feed-brand{position:absolute;bottom:10px;right:14px;font-size:10px;font-weight:700;color:#ff385c;letter-spacing:0.03em}
+.feed-tpl .feed-design-b .feed-body{padding:0 14px 10px}
+
+/* Feed: Design C — dark overlay */
+.feed-tpl .feed-design-c{width:100%;position:relative;background:#1a1a2e}
+.feed-tpl .feed-design-c .feed-photo{width:100%;height:280px;object-fit:cover;opacity:0.6}
+.feed-tpl .feed-design-c .feed-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.05) 0%,rgba(26,26,46,0.85) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px}
+.feed-tpl .feed-design-c .feed-brand{position:absolute;top:14px;left:14px;color:#fff;font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.4);padding:3px 8px;border-radius:4px}
+.feed-tpl .feed-design-c .feed-price{color:#fff;font-size:16px;font-weight:800}
+.feed-tpl .feed-design-c .feed-title{color:rgba(255,255,255,0.9);font-size:12px;font-weight:500;margin-top:2px;line-height:1.4}
+.feed-tpl .feed-design-c .feed-tag{display:inline-block;margin-top:6px;background:rgba(255,255,255,0.15);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;align-self:flex-start;backdrop-filter:blur(4px)}
+.feed-tpl .feed-design-c .feed-body{padding:0 14px 10px}
+
+/* Feed: Design D — split bilingual */
+.feed-tpl .feed-design-d{width:100%;display:flex;position:relative}
+.feed-tpl .feed-design-d .feed-left{width:45%;background:#ff385c;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:16px;text-align:center}
+.feed-tpl .feed-design-d .feed-brand{color:rgba(255,255,255,0.7);font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
+.feed-tpl .feed-design-d .feed-zh{color:#fff;font-size:14px;font-weight:700;line-height:1.4}
+.feed-tpl .feed-design-d .feed-en{color:rgba(255,255,255,0.8);font-size:11px;font-weight:500;margin-top:4px;line-height:1.3}
+.feed-tpl .feed-design-d .feed-photo{width:55%;height:220px;object-fit:cover}
+.feed-tpl .feed-design-d .feed-price-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);color:#fff;font-size:14px;font-weight:800;padding:8px 14px;text-align:center}
+.feed-tpl .feed-design-d .feed-body{padding:0 14px 10px}
+
+/* Sheet footer */
+.sheet-footer{display:flex;gap:8px;padding:12px 20px calc(12px + var(--safe-bottom));border-top:1px solid var(--border-soft);flex-shrink:0;background:var(--bg)}
+.btn{flex:1;padding:12px;border-radius:var(--radius);font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.btn:active{transform:scale(0.97)}
+.btn-ghost{background:var(--surface);color:var(--fg)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+
+/* Toast */
+.toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 60px);left:50%;transform:translateX(-50%) translateY(-20px);background:var(--fg);color:#fff;padding:10px 20px;border-radius:var(--radius-pill);font-size:13px;font-weight:600;opacity:0;transition:all 0.3s;z-index:200;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;color:var(--meta)}
+.empty-state svg{width:48px;height:48px;stroke:var(--border);margin-bottom:12px}
+.empty-state p{font-size:14px;line-height:1.5}
+
+/* Hide scrollbar */
+.feed::-webkit-scrollbar,.sheet::-webkit-scrollbar,.sheet-body::-webkit-scrollbar{display:none}
+.feed,.sheet,.sheet-body{scrollbar-width:none}
+</style>
+</head>
+<body>
+
+<div class="status-bar"></div>
+
+<!-- Top Bar -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">HD</div>
+    <div class="topbar-title">HOME DIRECT</div>
+  </div>
+  <div class="topbar-actions">
+    <button class="topbar-lang" id="lang-toggle" onclick="toggleLang()">简体</button>
+    <button class="topbar-icon" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+    <button class="topbar-icon" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></button>
+  </div>
+</header>
+
+<!-- Feed -->
+<div class="feed" id="feed"></div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-tab="feed"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span id="nav-feed">首页</span></button>
+  <button class="nav-btn nav-btn-create" data-tab="create" id="nav-create-btn"><div class="nav-create-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><span id="nav-create">发布</span></button>
+  <button class="nav-btn" data-tab="listings"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span id="nav-listings">房源</span></button>
+</nav>
+
+<!-- Create Sheet -->
+<div class="sheet-overlay" id="sheet-overlay">
+  <div class="sheet" id="create-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title" id="sheet-title">发布</div>
+      <button class="sheet-close" id="sheet-close"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+    <div class="sheet-footer" id="sheet-footer"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────
+const LISTINGS = [
+  { id:1, title:"市中心豪华公寓", titleEn:"Downtown Luxury Condo", price:"$850,000", beds:3, baths:2, type:"公寓", photo:"images/listings/condo1.jpg" },
+  { id:2, title:"西山别墅", titleEn:"Westmount Villa", price:"$1,250,000", beds:4, baths:3, type:"别墅", photo:"images/listings/villa1.jpg" },
+  { id:3, title:"皇家山景观房", titleEn:"Mount Royal View", price:"$680,000", beds:2, baths:1, type:"公寓", photo:"images/listings/view1.jpg" },
+  { id:5, title:"Outremont 花园洋房", titleEn:"Outremont Garden House", price:"$1,450,000", beds:5, baths:4, type:"别墅", photo:"images/listings/garden1.jpg" },
+  { id:6, title:"Griffintown 工业风公寓", titleEn:"Griffintown Loft", price:"$520,000", beds:1, baths:1, type:"公寓", photo:"images/listings/loft1.jpg" },
+];
+
+const PLATFORMS = [
+  { id:"Facebook", name:"Facebook", color:"#1877F2", icon:"f" },
+  { id:"微信公众号", name:"微信公众号", color:"#07C160", icon:"W" },
+  { id:"微信视频号", name:"微信视频号", color:"#FF6B2C", icon:"W" },
+  { id:"Instagram", name:"Instagram", color:"#E1306C", icon:"ig" },
+];
+
+const TEMPLATES = [
+  { id:1, name:"出售 · 中文", desc:"全幅房源照片，叠加价格标题", color:"#fde8e5", scene:"出售", lang:"中文" },
+  { id:2, name:"出售 · English", desc:"Left image, right property info", color:"#e8d5f0", scene:"Sale", lang:"English" },
+  { id:3, name:"出租 · 中文", desc:"全幅照片，叠加租金和设施", color:"#d5e8f0", scene:"出租", lang:"中文" },
+  { id:5, name:"出售 · 双语", desc:"全幅照片，中英双语标题价格", color:"#d5f0e8", scene:"Sale", lang:"双语" },
+];
+
+let POSTS = [
+  { id:1, listingId:1, title:"市中心豪华公寓 · 好房推荐", platform:"Facebook", status:"published", date:"2026-08-22", media:"carousel", images:["images/listings/condo1.jpg","images/listings/condo2.jpg","images/listings/condo3.jpg"], description:"蒙特利尔市中心黄金地段，步行可达麦吉尔大学和地铁站。现代开放式格局，配备全套不锈钢电器。", price:"$850,000", beds:3, baths:2, hashtags:"#蒙特利尔 #房产 #公寓" },
+  { id:2, listingId:1, title:"市中心豪华公寓 · 好房推荐", platform:"微信公众号", status:"published", date:"2026-08-22", media:"single", images:["images/listings/condo1.jpg"], description:"蒙特利尔市中心黄金地段，限时优惠！", price:"$850,000", beds:3, baths:2, hashtags:"" },
+  { id:3, listingId:2, title:"Westmount Villa · Luxury Living", platform:"Facebook", status:"published", date:"2026-08-21", media:"single", images:["images/listings/villa1.jpg"], description:"Prestigious Westmount estate with stunning mountain views.", price:"$1,250,000", beds:5, baths:4, hashtags:"#Westmount #LuxuryHome" },
+  { id:4, listingId:3, title:"皇家山景观房 · 限时优惠", platform:"微信公众号", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/view1.jpg"], description:"皇家山脚下优质学区房，俯瞰城市天际线。", price:"$720,000", beds:3, baths:2, hashtags:"" },
+  { id:5, listingId:3, title:"皇家山景观房 · Mount Royal View", platform:"微信视频号", status:"pending", date:"2026-08-22", media:"video", images:["images/listings/view1.jpg"], description:"皇家山脚下优质学区房，全新装修。", price:"$720,000", beds:3, baths:2, hashtags:"#皇家山 #学区房" },
+  { id:6, listingId:null, title:"蒙特利尔房产市场周报", platform:"Facebook", status:"pending", date:"2026-08-22", media:"carousel", images:["images/listings/condo2.jpg","images/listings/loft1.jpg"], description:"本周蒙特利尔房产市场数据分析：均价微涨3.2%。", price:"—", beds:0, baths:0, hashtags:"#蒙特利尔 #房产市场" },
+  { id:8, listingId:5, title:"Outremont Garden House · Exclusive", platform:"Facebook", status:"draft", date:"2026-08-20", media:"single", images:["images/listings/garden1.jpg"], description:"Rare Outremont gem with private garden oasis.", price:"$980,000", beds:4, baths:3, hashtags:"#Outremont #GardenHome" },
+  { id:9, listingId:6, title:"Griffintown Loft · Studio Living", platform:"Facebook", status:"rejected", date:"2026-08-19", media:"carousel", images:["images/listings/loft1.jpg","images/listings/loft2.jpg"], description:"Industrial-chic loft in Griffintown. Exposed brick, 14ft ceilings.", price:"$425,000", beds:1, baths:1, hashtags:"#Griffintown #Loft" },
+  { id:11, listingId:null, title:"加园地产 · 品牌宣传", platform:"微信公众号", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/condo3.jpg"], description:"加园地产 — 蒙特利尔华人信赖的房产服务团队。", price:"—", beds:0, baths:0, hashtags:"" },
+];
+
+let currentLang = "en";
+const LANGS = [
+  { id:"zh", label:"简体", navFeed:"首页", navCreate:"发布", navListings:"房源", step1:"选择要推广的房源", step2:"发布到哪些平台？", step3:"选择帖子模板", next:"下一步", prev:"上一步", cancel:"取消", confirm:"发布", noTemplate:"不使用模板", blankDesc:"从零开始创建", noListing:"无关联房源", noListingDesc:"品牌宣传 / 市场分析等内容", selectListing:"选择房源", selectPlatform:"选择平台", selectTemplate:"选择模板", posted:"条帖子已添加到待审批队列", statusPublished:"已发布", statusPending:"待审批", statusDraft:"草稿", statusRejected:"已拒绝", like:"👍 赞", liked:"❤ 已赞", comment:"💬 评论", share:"↗ 分享", brand:"加园地产 HOME DIRECT", heroPrice:"$850,000", heroTitle:"市中心豪华公寓", saleLabel:"出售", rentLabel:"出租", forSale:"FOR SALE", rentPrice:"$2,800/月", biTitle:"市中心豪华公寓", biSub:"Downtown Luxury Condo", emptyTpl:"空白模板", postsUnit:"条", formatTitle:"选择帖子格式", formatCarousel:"轮播图", formatCarouselDesc:"多张图片，左右滑动", formatSingle:"单图", formatSingleDesc:"一张精选大图", formatVideo:"视频", formatVideoDesc:"视频封面 + 播放按钮" },
+  { id:"en", label:"EN", navFeed:"Feed", navCreate:"Post", navListings:"Listings", step1:"Select a listing to promote", step2:"Post to which platforms?", step3:"Choose a template", next:"Next", prev:"Back", cancel:"Cancel", confirm:"Post", noTemplate:"No template", blankDesc:"Start from scratch", noListing:"No listing", noListingDesc:"Brand content / market analysis", selectListing:"Select listing", selectPlatform:"Select platforms", selectTemplate:"Choose template", posted:"posts added to pending queue", statusPublished:"Published", statusPending:"Pending", statusDraft:"Draft", statusRejected:"Rejected", like:"👍 Like", liked:"❤ Liked", comment:"💬 Comment", share:"↗ Share", brand:"HOME DIRECT", heroPrice:"$850,000", heroTitle:"Downtown Luxury Condo", saleLabel:"Sale", rentLabel:"Rent", forSale:"FOR SALE", rentPrice:"$2,800/mo", biTitle:"Downtown Luxury Condo", biSub:"市中心豪华公寓", emptyTpl:"Blank", postsUnit:"posts", formatTitle:"Choose post format", formatCarousel:"Carousel", formatCarouselDesc:"Multiple images, swipe", formatSingle:"Single image", formatSingleDesc:"One featured image", formatVideo:"Video", formatVideoDesc:"Video thumbnail + play" },
+  { id:"fr", label:"FR", navFeed:"Fil", navCreate:"Publier", navListings:"Propriétés", step1:"Sélectionner une propriété", step2:"Publier sur quels plateformes ?", step3:"Choisir un modèle", next:"Suivant", prev:"Retour", cancel:"Annuler", confirm:"Publier", noTemplate:"Sans modèle", blankDesc:"Commencer à zéro", noListing:"Sans propriété", noListingDesc:"Contenu de marque / analyse", selectListing:"Sélectionner", selectPlatform:"Plateformes", selectTemplate:"Modèle", posted:"publications en attente", statusPublished:"Publié", statusPending:"En attente", statusDraft:"Brouillon", statusRejected:"Rejeté", like:"👍 J'aime", liked:"❤ Aimé", comment:"💬 Commenter", share:"↗ Partager", brand:"HOME DIRECT", heroPrice:"850 000 $", heroTitle:"Condo de luxe centre-ville", saleLabel:"Vente", rentLabel:"Location", forSale:"À VENDRE", rentPrice:"2 800 $/mo", biTitle:"Condo de luxe centre-ville", biSub:"Downtown Luxury Condo", emptyTpl:"Vide", postsUnit:"publications", formatTitle:"Choisir le format", formatCarousel:"Carrousel", formatCarouselDesc:"Plusieurs images, glisser", formatSingle:"Image unique", formatSingleDesc:"Une image vedette", formatVideo:"Vidéo", formatVideoDesc:"Miniature + lecture" },
+  { id:"es", label:"ES", navFeed:"Inicio", navCreate:"Publicar", navListings:"Propiedades", step1:"Seleccionar una propiedad", step2:"¿Publicar en qué plataformas?", step3:"Elegir plantilla", next:"Siguiente", prev:"Atrás", cancel:"Cancelar", confirm:"Publicar", noTemplate:"Sin plantilla", blankDesc:"Empezar desde cero", noListing:"Sin propiedad", noListingDesc:"Contenido de marca / análisis", selectListing:"Seleccionar", selectPlatform:"Plataformas", selectTemplate:"Plantilla", posted:"publicaciones en cola", statusPublished:"Publicado", statusPending:"Pendiente", statusDraft:"Borrador", statusRejected:"Rechazado", like:"👍 Me gusta", liked:"❤ Gustó", comment:"💬 Comentar", share:"↗ Compartir", brand:"HOME DIRECT", heroPrice:"$850,000", heroTitle:"Condo de lujo centro", saleLabel:"Venta", rentLabel:"Alquiler", forSale:"EN VENTA", rentPrice:"$2,800/mes", biTitle:"Condo de lujo centro", biSub:"Downtown Luxury Condo", emptyTpl:"Vacío", postsUnit:"publicaciones", formatTitle:"Elegir formato", formatCarousel:"Carrusel", formatCarouselDesc:"Múltiples imágenes, deslizar", formatSingle:"Imagen única", formatSingleDesc:"Una imagen destacada", formatVideo:"Video", formatVideoDesc:"Miniatura + reproducir" }
+];
+
+function t(key) { return LANGS.find(l => l.id === currentLang)?.[key] || LANGS[0][key] || key; }
+
+function toggleLang() {
+  const order = ["zh","en","fr","es"];
+  const idx = order.indexOf(currentLang);
+  currentLang = order[(idx + 1) % order.length];
+  document.getElementById("lang-toggle").textContent = LANGS.find(l => l.id === currentLang).label;
+  document.getElementById("nav-feed").textContent = t('navFeed');
+  document.getElementById("nav-create").textContent = t('navCreate');
+  document.getElementById("nav-listings").textContent = t('navListings');
+  renderFeed();
+  if (document.getElementById("sheet-overlay").classList.contains("open")) renderCreateStep();
+}
+
+let nextPostId = 100;
+let createStep = 0;
+let createState = {};
+
+// ── Helpers ─────────────────────────────────────────────
+const WEEKDAYS = ["日","一","二","三","四","五","六"];
+const MONTHS = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+const parseDate = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const today = new Date(); today.setHours(0,0,0,0);
+const todayStr = today.toISOString().slice(0,10);
+
+const platformTag = id => {
+  const p = PLATFORMS.find(x => x.id === id);
+  if (!p) return `<span class="post-platform-tag" style="background:#999">${id}</span>`;
+  const cls = {"Facebook":"tag-fb","微信公众号":"tag-wx","微信视频号":"tag-wxch","Instagram":"tag-ig"}[id] || "";
+  return `<span class="post-platform-tag ${cls}">${p.name}</span>`;
+};
+
+const statusLabel = s => {
+  const m = { published:"statusPublished", pending:"statusPending", draft:"statusDraft", rejected:"statusRejected" };
+  const cls = { published:"status-published", pending:"status-pending", draft:"status-draft", rejected:"status-rejected" };
+  return `<span class="post-status ${cls[s]}">${t(m[s])||s}</span>`;
+};
+
+const toast = msg => {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2000);
+};
+
+// ── Render Feed ─────────────────────────────────────────
+function renderFeed() {
+  const feed = document.getElementById("feed");
+  const grouped = {};
+  POSTS.forEach(p => {
+    if (!grouped[p.date]) grouped[p.date] = [];
+    grouped[p.date].push(p);
+  });
+  const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+
+  feed.innerHTML = dates.map(d => {
+    const dt = parseDate(d);
+    const isToday = d === todayStr;
+    const wd = WEEKDAYS[dt.getDay()];
+    const label = isToday ? `今天 · ${wd} · ${MONTHS[dt.getMonth()]}${dt.getDate()}日` : `${wd} · ${MONTHS[dt.getMonth()]}${dt.getDate()}日`;
+    const cards = grouped[d].map(renderCard).join("");
+    return `<div class="date-group"><div class="date-group-label">${label}<span class="date-group-count">${grouped[d].length} ${t('postsUnit')}</span></div></div>${cards}`;
+  }).join("");
+
+  initCarousels();
+}
+
+function renderCard(p) {
+  const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
+  const isCarousel = p.media === "carousel" && p.images && p.images.length > 1;
+  const isVideo = p.media === "video";
+  const hasTemplate = p.templateId && p.templateId !== null;
+  const statusMap = { published:t('statusPublished'), pending:t('statusPending'), draft:t('statusDraft'), rejected:t('statusRejected') };
+  const statusCls = { published:"status-published", pending:"status-pending", draft:"status-draft", rejected:"status-rejected" };
+
+  // ── Template-styled posts ──────────────────────────────
+  if (hasTemplate) {
+    const listing = LISTINGS.find(l => l.id === p.listingId);
+    const tplId = p.templateId;
+    const priceDisplay = p.price !== "—" ? p.price : "";
+    const addressDisplay = listing ? `${listing.titleEn || listing.title} · ${p.beds} Bed ${p.baths} Bath` : "";
+    const brandLabel = t('brand');
+
+    let tplDesign = "";
+
+    if (tplId === 1) {
+      // Design A: red accent block
+      if (isCarousel) {
+        const imgs = p.images.map(src => `<img src="${src}" alt="" loading="lazy">`).join("");
+        const dots = p.images.slice(0,7).map((_,i) => `<div class="carousel-dot${i===0?' active':''}" data-dot="${i}"></div>`).join("");
+        tplDesign = `<div class="feed-design-a">
+          <div class="feed-brand">${brandLabel}</div>
+          <div class="feed-price">${priceDisplay}</div>
+          <div class="feed-title">${p.title}</div>
+          <div class="carousel" data-carousel="${p.id}" style="width:100%;flex:1;border-radius:8px;overflow:hidden;position:relative">
+            <div class="carousel-track" style="height:100%">${imgs}</div>
+            <div class="carousel-dots" style="position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:4px">${dots}</div>
+            <button class="carousel-btn carousel-prev" data-dir="-1"><svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20"/></svg></button>
+            <button class="carousel-btn carousel-next" data-dir="1"><svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20"/></svg></button>
+          </div>
+        </div>`;
+      } else if (isVideo) {
+        tplDesign = `<div class="feed-design-a">
+          <div class="feed-brand">${brandLabel}</div>
+          <div class="feed-price">${priceDisplay}</div>
+          <div class="feed-title">${p.title}</div>
+          <div style="width:100%;flex:1;border-radius:8px;overflow:hidden;position:relative">
+            <img src="${img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+            <div class="post-video-play"><div><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>
+          </div>
+        </div>`;
+      } else {
+        tplDesign = `<div class="feed-design-a">
+          <div class="feed-brand">${brandLabel}</div>
+          <div class="feed-price">${priceDisplay}</div>
+          <div class="feed-title">${p.title}</div>
+          <img class="feed-photo" src="${img}" alt="">
+        </div>`;
+      }
+    }
+
+    else if (tplId === 2) {
+      // Design B: white card
+      if (isCarousel) {
+        const imgs = p.images.map(src => `<img src="${src}" alt="" loading="lazy">`).join("");
+        const dots = p.images.slice(0,7).map((_,i) => `<div class="carousel-dot${i===0?' active':''}" data-dot="${i}"></div>`).join("");
+        tplDesign = `<div class="feed-design-b">
+          <div class="carousel" data-carousel="${p.id}" style="width:100%;height:240px;overflow:hidden;position:relative">
+            <div class="carousel-track" style="height:100%">${imgs}</div>
+            <div class="carousel-dots" style="position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:4px">${dots}</div>
+            <button class="carousel-btn carousel-prev" data-dir="-1"><svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20"/></svg></button>
+            <button class="carousel-btn carousel-next" data-dir="1"><svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20"/></svg></button>
+          </div>
+          <div class="feed-info">
+            <div class="feed-badge">${t('forSale')}</div>
+            <div class="feed-price">${priceDisplay}</div>
+            <div class="feed-address">${addressDisplay}</div>
+          </div>
+          <div class="feed-brand">HOME DIRECT</div>
+        </div>`;
+      } else if (isVideo) {
+        tplDesign = `<div class="feed-design-b">
+          <div style="width:100%;height:240px;position:relative">
+            <img src="${img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+            <div class="post-video-play"><div><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>
+          </div>
+          <div class="feed-info">
+            <div class="feed-badge">${t('forSale')}</div>
+            <div class="feed-price">${priceDisplay}</div>
+            <div class="feed-address">${addressDisplay}</div>
+          </div>
+          <div class="feed-brand">HOME DIRECT</div>
+        </div>`;
+      } else {
+        tplDesign = `<div class="feed-design-b">
+          <img class="feed-photo" src="${img}" alt="">
+          <div class="feed-info">
+            <div class="feed-badge">${t('forSale')}</div>
+            <div class="feed-price">${priceDisplay}</div>
+            <div class="feed-address">${addressDisplay}</div>
+          </div>
+          <div class="feed-brand">HOME DIRECT</div>
+        </div>`;
+      }
+    }
+
+    else if (tplId === 3) {
+      // Design C: dark overlay
+      if (isCarousel) {
+        const imgs = p.images.map(src => `<img src="${src}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;opacity:0.6">`).join("");
+        const dots = p.images.slice(0,7).map((_,i) => `<div class="carousel-dot${i===0?' active':''}" data-dot="${i}"></div>`).join("");
+        tplDesign = `<div class="feed-design-c">
+          <div class="carousel" data-carousel="${p.id}" style="width:100%;height:280px;overflow:hidden;position:relative">
+            <div class="carousel-track" style="height:100%">${imgs}</div>
+            <div class="carousel-dots" style="position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:4px;z-index:2">${dots}</div>
+            <button class="carousel-btn carousel-prev" data-dir="-1"><svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20"/></svg></button>
+            <button class="carousel-btn carousel-next" data-dir="1"><svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20"/></svg></button>
+          </div>
+          <div class="feed-overlay">
+            <div class="feed-brand">${brandLabel}</div>
+            <div class="feed-price">${priceDisplay}</div>
+            <div class="feed-title">${p.title}</div>
+            <div class="feed-tag">${t('rentLabel')}</div>
+          </div>
+        </div>`;
+      } else if (isVideo) {
+        tplDesign = `<div class="feed-design-c">
+          <div style="width:100%;height:280px;position:relative">
+            <img src="${img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;opacity:0.6">
+            <div class="post-video-play"><div><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>
+          </div>
+          <div class="feed-overlay">
+            <div class="feed-brand">${brandLabel}</div>
+            <div class="feed-price">${priceDisplay}</div>
+            <div class="feed-title">${p.title}</div>
+            <div class="feed-tag">${t('rentLabel')}</div>
+          </div>
+        </div>`;
+      } else {
+        tplDesign = `<div class="feed-design-c">
+          <img class="feed-photo" src="${img}" alt="">
+          <div class="feed-overlay">
+            <div class="feed-brand">${brandLabel}</div>
+            <div class="feed-price">${priceDisplay}</div>
+            <div class="feed-title">${p.title}</div>
+            <div class="feed-tag">${t('rentLabel')}</div>
+          </div>
+        </div>`;
+      }
+    }
+
+    else if (tplId === 5) {
+      // Design D: split bilingual
+      if (isCarousel) {
+        const imgs = p.images.map(src => `<img src="${src}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">`).join("");
+        const dots = p.images.slice(0,7).map((_,i) => `<div class="carousel-dot${i===0?' active':''}" data-dot="${i}"></div>`).join("");
+        tplDesign = `<div class="feed-design-d">
+          <div class="feed-left">
+            <div class="feed-brand">HOME DIRECT</div>
+            <div class="feed-zh">${listing ? listing.title : p.title}</div>
+            <div class="feed-en">${listing ? listing.titleEn : ""}</div>
+          </div>
+          <div class="carousel" data-carousel="${p.id}" style="width:55%;height:220px;overflow:hidden;position:relative">
+            <div class="carousel-track" style="height:100%">${imgs}</div>
+            <div class="carousel-dots" style="position:absolute;bottom:6px;left:0;right:0;display:flex;justify-content:center;gap:4px">${dots}</div>
+            <button class="carousel-btn carousel-prev" data-dir="-1"><svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20"/></svg></button>
+            <button class="carousel-btn carousel-next" data-dir="1"><svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20"/></svg></button>
+          </div>
+          <div class="feed-price-bar">${priceDisplay}</div>
+        </div>`;
+      } else if (isVideo) {
+        tplDesign = `<div class="feed-design-d">
+          <div class="feed-left">
+            <div class="feed-brand">HOME DIRECT</div>
+            <div class="feed-zh">${listing ? listing.title : p.title}</div>
+            <div class="feed-en">${listing ? listing.titleEn : ""}</div>
+          </div>
+          <div style="width:55%;height:220px;position:relative">
+            <img src="${img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+            <div class="post-video-play"><div><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>
+          </div>
+          <div class="feed-price-bar">${priceDisplay}</div>
+        </div>`;
+      } else {
+        tplDesign = `<div class="feed-design-d">
+          <div class="feed-left">
+            <div class="feed-brand">HOME DIRECT</div>
+            <div class="feed-zh">${listing ? listing.title : p.title}</div>
+            <div class="feed-en">${listing ? listing.titleEn : ""}</div>
+          </div>
+          <img class="feed-photo" src="${img}" alt="">
+          <div class="feed-price-bar">${priceDisplay}</div>
+        </div>`;
+      }
+    }
+
+    const hashtagLine = p.hashtags ? `<div style="font-size:11px;color:var(--meta);padding:0 14px;margin-top:4px">${p.hashtags}</div>` : "";
+
+    return `<div class="feed-tpl" data-od-id="post-${p.id}">
+      <div class="post-header">
+        <div class="post-avatar">HD</div>
+        <div class="post-byline">
+          <div class="post-author">${t('brand')}</div>
+          <div class="post-meta">${p.date}</div>
+        </div>
+        ${platformTag(p.platform)}
+      </div>
+      ${tplDesign}
+      ${hashtagLine}
+      <div class="post-actions">
+        <button class="post-action" onclick="this.classList.toggle('liked');this.textContent=this.classList.contains('liked')?'${t('liked')}':'${t('like')}';">${t('like')}</button>
+        <button class="post-action">${t('comment')}</button>
+        <button class="post-action">${t('share')}</button>
+      </div>
+    </div>`;
+  }
+
+  // ── Plain posts (no template) ───────────────────────────
+  let media = "";
+  if (isCarousel) {
+    const imgs = p.images.map(src => `<img src="${src}" alt="" loading="lazy">`).join("");
+    const dots = p.images.slice(0,7).map((_,i) => `<div class="carousel-dot${i===0?' active':''}" data-dot="${i}"></div>`).join("");
+    media = `<div class="carousel" data-carousel="${p.id}">
+      <div class="carousel-track">${imgs}</div>
+      <div class="carousel-dots">${dots}</div>
+      <button class="carousel-btn carousel-prev" data-dir="-1"><svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20"/></svg></button>
+      <button class="carousel-btn carousel-next" data-dir="1"><svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20"/></svg></button>
+    </div>`;
+  } else if (isVideo) {
+    media = `<div class="post-img-wrap ratio-169">
+      <img src="${img}" alt="" loading="lazy">
+      <div class="post-video-play"><div><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div></div>
+      <div class="post-badge">▶ ${t('statusPending')}</div>
+    </div>`;
+  } else {
+    media = `<div class="post-img-wrap"><img src="${img}" alt="" loading="lazy"></div>`;
+  }
+
+  const priceLine = p.price !== "—" ? `<div class="post-price">${p.price}${p.beds ? ` · ${p.beds}🛏 ${p.baths}🚿` : ""}</div>` : "";
+  const hashtagLine = p.hashtags ? `<div class="post-hashtags">${p.hashtags}</div>` : "";
+
+  return `<div class="post-card" data-od-id="post-${p.id}">
+    <div class="post-header">
+      <div class="post-avatar">HD</div>
+      <div class="post-byline">
+        <div class="post-author">${t('brand')}</div>
+        <div class="post-meta">${p.date}</div>
+      </div>
+      ${platformTag(p.platform)}
+    </div>
+    ${media}
+    <div class="post-body">
+      <div class="post-title">${p.title}</div>
+      <div class="post-text">${p.description}</div>
+      ${priceLine}${hashtagLine}
+      <span class="post-status ${statusCls[p.status]}">${statusMap[p.status]||p.status}</span>
+    </div>
+    <div class="post-actions">
+      <button class="post-action" onclick="this.classList.toggle('liked');this.textContent=this.classList.contains('liked')?'${t('liked')}':'${t('like')}';">${t('like')}</button>
+      <button class="post-action">${t('comment')}</button>
+      <button class="post-action">${t('share')}</button>
+    </div>
+  </div>`;
+}
+
+// ── Carousel interaction ────────────────────────────────
+function initCarousels() {
+  document.querySelectorAll("[data-carousel]").forEach(el => {
+    const track = el.querySelector(".carousel-track");
+    const dots = el.querySelectorAll(".carousel-dot");
+    const prev = el.querySelector(".carousel-prev");
+    const next = el.querySelector(".carousel-next");
+    if (!track) return;
+    let idx = 0;
+    const total = el.querySelectorAll("img").length;
+    const update = i => { idx = (i + total) % total; track.style.transform = `translateX(-${idx*100}%)`; dots.forEach((d,j) => d.classList.toggle("active", j===idx)); };
+    if (prev) prev.onclick = e => { e.stopPropagation(); update(idx-1); };
+    if (next) next.onclick = e => { e.stopPropagation(); update(idx+1); };
+    dots.forEach((d,j) => { d.onclick = e => { e.stopPropagation(); update(j); }; });
+    let startX = 0;
+    track.addEventListener("touchstart", e => { startX = e.touches[0].clientX; }, {passive:true});
+    track.addEventListener("touchend", e => { const diff = startX - e.changedTouches[0].clientX; if (Math.abs(diff) > 40) update(idx + (diff > 0 ? 1 : -1)); }, {passive:true});
+  });
+}
+
+// ── Create Flow ─────────────────────────────────────────
+function openCreate() {
+  createStep = 0;
+  createState = { platforms: [], templateFormat: "single" };
+  document.getElementById("sheet-overlay").classList.add("open");
+  renderCreateStep();
+}
+
+function closeCreate() {
+  document.getElementById("sheet-overlay").classList.remove("open");
+}
+
+function renderCreateStep() {
+  const body = document.getElementById("sheet-body");
+  const footer = document.getElementById("sheet-footer");
+  const title = document.getElementById("sheet-title");
+  const steps = document.querySelectorAll(".create-steps");
+
+  if (createStep === 0) {
+    title.textContent = t('selectListing');
+    body.innerHTML = `
+      <div class="create-steps"><div class="create-step active"></div><div class="create-step"></div><div class="create-step"></div></div>
+      <div class="step-label">Step 1 of 3</div>
+      <div class="step-title">${t('step1')}</div>
+      ${LISTINGS.map(l => `
+        <div class="listing-option${createState.listingId===l.id?' selected':''}" onclick="selectListing(${l.id})">
+          <img class="listing-thumb" src="${l.photo}" alt="">
+          <div class="listing-info">
+            <div class="listing-name">${l.title}</div>
+            <div class="listing-detail">${l.beds}卧 ${l.baths}卫 · ${l.type}</div>
+            <div class="listing-price">${l.price}</div>
+          </div>
+        </div>
+      `).join("")}
+      <div class="listing-option${createState.listingId===null?' selected':''}" onclick="selectListing(null)">
+        <div class="listing-thumb" style="background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--meta)">📝</div>
+        <div class="listing-info">
+          <div class="listing-name">${t('noListing')}</div>
+          <div class="listing-detail">${t('noListingDesc')}</div>
+        </div>
+      </div>`;
+    footer.innerHTML = `<button class="btn btn-ghost" onclick="closeCreate()">${t('cancel')}</button><button class="btn btn-primary" id="btn-next" onclick="nextStep()"${createState.listingId===undefined?' disabled':''}>${t('next')}</button>`;
+  }
+
+  else if (createStep === 1) {
+    title.textContent = t('selectPlatform');
+    const selCount = createState.platforms.length;
+    body.innerHTML = `
+      <div class="create-steps"><div class="create-step done"></div><div class="create-step active"></div><div class="create-step"></div></div>
+      <div class="step-label">Step 2 of 3</div>
+      <div class="step-title">${t('step2')}${selCount ? ` (${selCount})` : ""}</div>
+      <div class="platform-grid">
+        ${PLATFORMS.map(p => `
+          <div class="platform-option${createState.platforms.includes(p.id)?' selected':''}" onclick="selectPlatform('${p.id}')">
+            <div class="platform-icon" style="background:${p.color}">${p.icon}</div>
+            <div class="platform-name">${p.name}</div>
+          </div>
+        `).join("")}
+      </div>`;
+    footer.innerHTML = `<button class="btn btn-ghost" onclick="prevStep()">${t('prev')}</button><button class="btn btn-primary" id="btn-next" onclick="nextStep()"${!selCount?' disabled':''}>${t('next')}</button>`;
+  }
+
+  else if (createStep === 2) {
+    title.textContent = t('selectTemplate');
+    const sampleImg = "images/listings/condo1.jpg";
+    const sampleImg2 = "images/listings/villa1.jpg";
+    body.innerHTML = `
+      <div class="create-steps"><div class="create-step done"></div><div class="create-step done"></div><div class="create-step active"></div></div>
+      <div class="step-label">Step 3 of 3</div>
+      <div class="step-title">${t('step3')}</div>
+      <div class="template-grid">
+        <div class="tpl-card${createState.templateId===1?' selected':''}" onclick="selectTemplate(1)">
+          <div class="tpl-preview">
+            <div class="tpl-design-a">
+              <div class="tpl-brand">${t('brand')}</div>
+              <div class="tpl-price">${t('heroPrice')}</div>
+              <div class="tpl-title">${t('heroTitle')}</div>
+              <img class="tpl-photo" src="${sampleImg}" alt="">
+            </div>
+          </div>
+          <div class="tpl-label"><div class="tpl-label-name">${t('saleLabel')} · 中文</div><div class="tpl-label-desc">Red accent, bold branding</div></div>
+        </div>
+        <div class="tpl-card${createState.templateId===2?' selected':''}" onclick="selectTemplate(2)">
+          <div class="tpl-preview">
+            <div class="tpl-design-b">
+              <img class="tpl-photo" src="${sampleImg2}" alt="">
+              <div class="tpl-info">
+                <div class="tpl-badge">${t('forSale')}</div>
+                <div class="tpl-price">$1,250,000</div>
+                <div class="tpl-address">Westmount Villa · 4 Bed 3 Bath</div>
+              </div>
+              <div class="tpl-brand">HOME DIRECT</div>
+            </div>
+          </div>
+          <div class="tpl-label"><div class="tpl-label-name">${t('saleLabel')} · English</div><div class="tpl-label-desc">Clean white card layout</div></div>
+        </div>
+        <div class="tpl-card${createState.templateId===3?' selected':''}" onclick="selectTemplate(3)">
+          <div class="tpl-preview">
+            <div class="tpl-design-c">
+              <img class="tpl-photo" src="${sampleImg}" alt="">
+              <div class="tpl-overlay">
+                <div class="tpl-brand">${t('brand')}</div>
+                <div class="tpl-price">${t('rentPrice')}</div>
+                <div class="tpl-title">${t('heroTitle')} · ${t('rentLabel')}</div>
+                <div class="tpl-tag">${t('rentLabel')}</div>
+              </div>
+            </div>
+          </div>
+          <div class="tpl-label"><div class="tpl-label-name">${t('rentLabel')} · 中文</div><div class="tpl-label-desc">Dark overlay, rent focus</div></div>
+        </div>
+        <div class="tpl-card${createState.templateId===5?' selected':''}" onclick="selectTemplate(5)">
+          <div class="tpl-preview">
+            <div class="tpl-design-d">
+              <div class="tpl-left">
+                <div class="tpl-brand">HOME DIRECT</div>
+                <div class="tpl-zh">${t('biTitle')}</div>
+                <div class="tpl-en">${t('biSub')}</div>
+              </div>
+              <img class="tpl-photo" src="${sampleImg2}" alt="">
+              <div class="tpl-price">${t('heroPrice')}</div>
+            </div>
+          </div>
+          <div class="tpl-label"><div class="tpl-label-name">${t('saleLabel')} · 双语</div><div class="tpl-label-desc">Split panel, bilingual</div></div>
+        </div>
+        <div class="tpl-card${createState.templateId===null?' selected':''}" onclick="selectTemplate(null)" style="grid-column:span 2">
+          <div class="tpl-preview">
+            <div class="tpl-blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              <span>${t('noTemplate')}</span>
+            </div>
+          </div>
+          <div class="tpl-label"><div class="tpl-label-name">${t('emptyTpl')}</div><div class="tpl-label-desc">${t('blankDesc')}</div></div>
+        </div>
+      </div>
+      ${createState.templateId && createState.templateId !== null ? `
+      <div style="margin-top:16px">
+        <div class="step-title" style="font-size:14px;margin-bottom:10px">${t('formatTitle')}</div>
+        <div class="format-grid">
+          <div class="format-option${createState.templateFormat==='carousel'?' selected':''}" onclick="selectFormat('carousel')">
+            <div class="format-icon">🖼</div>
+            <div class="format-name">${t('formatCarousel')}</div>
+            <div class="format-desc">${t('formatCarouselDesc')}</div>
+          </div>
+          <div class="format-option${createState.templateFormat==='single'?' selected':''}" onclick="selectFormat('single')">
+            <div class="format-icon">📷</div>
+            <div class="format-name">${t('formatSingle')}</div>
+            <div class="format-desc">${t('formatSingleDesc')}</div>
+          </div>
+          <div class="format-option${createState.templateFormat==='video'?' selected':''}" onclick="selectFormat('video')">
+            <div class="format-icon">▶</div>
+            <div class="format-name">${t('formatVideo')}</div>
+            <div class="format-desc">${t('formatVideoDesc')}</div>
+          </div>
+        </div>
+      </div>
+      ` : ''}`;
+    footer.innerHTML = `<button class="btn btn-ghost" onclick="prevStep()">${t('prev')}</button><button class="btn btn-primary" id="btn-next" onclick="confirmPost()">${t('confirm')}</button>`;
+  }
+}
+
+function selectListing(id) { createState.listingId = id; renderCreateStep(); }
+function selectPlatform(id) {
+  const idx = createState.platforms.indexOf(id);
+  if (idx === -1) createState.platforms.push(id);
+  else createState.platforms.splice(idx, 1);
+  renderCreateStep();
+}
+function selectTemplate(id) { createState.templateId = id; renderCreateStep(); }
+function selectFormat(fmt) { createState.templateFormat = fmt; renderCreateStep(); }
+
+function nextStep() { createStep++; renderCreateStep(); }
+function prevStep() { createStep--; renderCreateStep(); }
+
+function confirmPost() {
+  const listing = LISTINGS.find(l => l.id === createState.listingId);
+  const title = listing ? `${listing.title} · 好房推荐` : "加园地产 · 新内容";
+  const today = new Date().toISOString().slice(0,10);
+  const hasTemplate = createState.templateId && createState.templateId !== null;
+  const fmt = createState.templateFormat || "single";
+
+  // Find carousel images from existing posts for this listing
+  let carouselImages = [];
+  if (listing) {
+    const existingCarousel = POSTS.find(p => p.listingId === listing.id && p.media === "carousel" && p.images && p.images.length > 1);
+    if (existingCarousel) carouselImages = existingCarousel.images;
+  }
+
+  // Determine media type and images based on format choice
+  let mediaType = "single";
+  let images = [listing ? listing.photo : "images/listings/condo3.jpg"];
+
+  if (hasTemplate) {
+    if (fmt === "carousel" && carouselImages.length > 1) {
+      mediaType = "carousel";
+      images = carouselImages;
+    } else if (fmt === "video") {
+      mediaType = "video";
+    }
+    // else fmt === "single" → keep default single image
+  }
+
+  createState.platforms.forEach(platform => {
+    const newPost = {
+      id: nextPostId++,
+      listingId: createState.listingId,
+      title,
+      platform,
+      status: "pending",
+      date: today,
+      media: mediaType,
+      images: images,
+      description: listing ? `${listing.title}，${listing.beds}卧${listing.baths}卫，${listing.price}` : "新内容即将发布",
+      price: listing ? listing.price : "—",
+      beds: listing ? listing.beds : 0,
+      baths: listing ? listing.baths : 0,
+      hashtags: "",
+      templateId: hasTemplate ? createState.templateId : null
+    };
+    POSTS.unshift(newPost);
+  });
+
+  closeCreate();
+  renderFeed();
+  const count = createState.platforms.length;
+  toast(`${count} ${t('posted')}`);
+  document.getElementById("feed").scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ── Events ──────────────────────────────────────────────
+document.getElementById("nav-create").onclick = openCreate;
+document.getElementById("sheet-close").onclick = closeCreate;
+document.getElementById("sheet-overlay").onclick = e => { if (e.target.id === "sheet-overlay") closeCreate(); };
+
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    if (btn.dataset.tab === "create") openCreate();
+  };
+});
+
+// ── Init ────────────────────────────────────────────────
+document.getElementById("lang-toggle").textContent = "EN";
+document.getElementById("nav-feed").textContent = t('navFeed');
+document.getElementById("nav-create").textContent = t('navCreate');
+document.getElementById("nav-listings").textContent = t('navListings');
+renderFeed();
+</script>
+</body>
+</html>
