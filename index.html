@@ -155,7 +155,15 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:var(--le
 .filter-chip{padding:6px 14px;border-radius:var(--radius-pill);border:1px solid var(--border);font-size:var(--text-sm);font-weight:500;color:var(--muted);cursor:pointer;transition:all var(--motion-fast);background:var(--bg)}
 .filter-chip:hover{border-color:var(--fg);color:var(--fg)}
 .filter-chip.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.filter-select{padding:7px 28px 7px 12px;border-radius:var(--radius-pill);border:1px solid var(--border);font-size:var(--text-sm);color:var(--fg);background:var(--bg);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236a6a6a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.filter-chip svg{margin-left:4px;flex-shrink:0;transition:transform var(--motion-fast)}
+.filter-dropdown{position:relative}
+.filter-dropdown.open .filter-chip{border-color:var(--fg);color:var(--fg)}
+.filter-dropdown.open .filter-chip svg{transform:rotate(180deg)}
+.filter-dropdown-menu{position:absolute;top:calc(100% + 6px);left:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--elev-raised);min-width:100%;z-index:50;display:none;padding:4px}
+.filter-dropdown.open .filter-dropdown-menu{display:block}
+.filter-option{display:block;width:100%;padding:8px 12px;border:none;background:none;font-size:var(--text-sm);font-weight:500;color:var(--fg);cursor:pointer;border-radius:4px;transition:background var(--motion-fast);text-align:left;white-space:nowrap}
+.filter-option:hover{background:var(--surface-warm)}
+.filter-option.active{background:var(--surface-warm);font-weight:600}
 
 .table-wrap{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
 table{width:100%;border-collapse:collapse}
@@ -345,31 +353,48 @@ tr:hover td{background:var(--surface-warm)}
 .feed-carousel-strip .feed-carousel-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%)}
 
 /* Facebook card */
+.feed-fb{border:1px solid var(--border);border-radius:8px;background:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 .feed-fb .feed-header{display:flex;align-items:center;gap:10px;padding:12px 14px}
-.feed-fb .feed-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:var(--text-xs);flex-shrink:0}
+.feed-fb .feed-avatar{width:40px;height:40px;border-radius:50%;background:#1877F2;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.feed-fb .feed-avatar svg{width:20px;height:20px}
 .feed-fb .feed-byline{flex:1;min-width:0}
-.feed-fb .feed-author{font-size:var(--text-sm);font-weight:600;line-height:1.2}
-.feed-fb .feed-meta{font-size:var(--text-xs);color:var(--muted)}
-.feed-fb .feed-image{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.feed-fb .feed-author{font-size:14px;font-weight:600;line-height:1.2;color:#050505}
+.feed-fb .feed-meta{font-size:12px;color:#65676b;margin-top:1px}
+.feed-fb .feed-image{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-top:1px solid #e4e6eb;border-bottom:1px solid #e4e6eb}
 .feed-fb .feed-image.ratio-45{aspect-ratio:4/5}
 .feed-fb .feed-body{padding:10px 14px}
-.feed-fb .feed-title{font-size:var(--text-sm);font-weight:600;line-height:1.35;margin-bottom:4px}
-.feed-fb .feed-text{font-size:var(--text-xs);color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.feed-fb .feed-actions{display:flex;gap:0;border-top:1px solid var(--border-soft);padding:0 14px}
-.feed-fb .feed-action{flex:1;padding:8px 0;font-size:var(--text-xs);color:var(--muted);text-align:center;cursor:pointer;font-weight:500;transition:color var(--motion-fast)}
-.feed-fb .feed-action:hover{color:var(--accent)}
+.feed-fb .feed-title{font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;color:#050505}
+.feed-fb .feed-text{font-size:13px;color:#65676b;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.feed-fb .feed-reactions{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;font-size:12px;color:#65676b}
+.feed-fb .feed-reactions-left{display:flex;align-items:center;gap:4px}
+.feed-fb .feed-reactions-icons{display:flex}
+.feed-fb .feed-reactions-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;margin-right:-4px;border:2px solid #fff}
+.feed-fb .feed-reactions-icon:nth-child(1){background:#1877F2;z-index:3}
+.feed-fb .feed-reactions-icon:nth-child(2){background:#F7B928;z-index:2}
+.feed-fb .feed-reactions-icon:nth-child(3){background:#F33E58;z-index:1}
+.feed-fb .feed-reactions-count{margin-left:6px}
+.feed-fb .feed-reactions-comments{cursor:pointer}
+.feed-fb .feed-reactions-comments:hover{text-decoration:underline}
+.feed-fb .feed-actions{display:flex;gap:0;border-top:1px solid #e4e6eb;padding:0 14px}
+.feed-fb .feed-action{flex:1;padding:8px 0;font-size:13px;color:#65676b;text-align:center;cursor:pointer;font-weight:600;transition:background var(--motion-fast);border-radius:4px;display:flex;align-items:center;justify-content:center;gap:6px}
+.feed-fb .feed-action:hover{background:#f2f2f2}
+.feed-fb .feed-action svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* WeChat card */
-.feed-wechat{border:1px solid var(--border);background:var(--bg)}
-.feed-wechat .feed-header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border-soft)}
-.feed-wechat .feed-wx-icon{width:28px;height:28px;border-radius:6px;background:#07c160;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.feed-wechat{border:1px solid var(--border);background:#fff;border-radius:4px;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Roboto,sans-serif}
+.feed-wechat .feed-header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #f0f0f0}
+.feed-wechat .feed-wx-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.feed-wechat .feed-wx-icon svg{width:18px;height:18px}
 .feed-wechat .feed-wx-info{flex:1;min-width:0}
-.feed-wechat .feed-wx-account{font-size:var(--text-xs);font-weight:600;color:var(--fg)}
-.feed-wechat .feed-wx-time{font-size:10px;color:var(--meta)}
+.feed-wechat .feed-wx-account{font-size:13px;font-weight:600;color:#353535;line-height:1.3}
+.feed-wechat .feed-wx-time{font-size:11px;color:#b2b2b2;margin-top:1px}
 .feed-wechat .feed-wx-body{padding:14px}
-.feed-wechat .feed-wx-title{font-size:var(--text-sm);font-weight:700;line-height:1.4;margin-bottom:6px}
-.feed-wechat .feed-wx-excerpt{font-size:var(--text-xs);color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
+.feed-wechat .feed-wx-title{font-size:16px;font-weight:700;line-height:1.4;margin-bottom:8px;color:#353535}
+.feed-wechat .feed-wx-excerpt{font-size:13px;color:#888;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
 .feed-wechat .feed-wx-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:4px;display:block}
+.feed-wechat .feed-wx-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid #f0f0f0;font-size:12px;color:#b2b2b2}
+.feed-wechat .feed-wx-read-more{color:#576b95;font-weight:500;cursor:pointer}
+.feed-wechat .feed-wx-read-more:hover{text-decoration:underline}
 
 /* Xiaohongshu card */
 .feed-xhs .feed-xhs-img{position:relative;width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
@@ -381,14 +406,22 @@ tr:hover td{background:var(--surface-warm)}
 .feed-xhs .feed-xhs-stat{background:rgba(0,0,0,0.4);color:#fff;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;backdrop-filter:blur(4px)}
 
 /* Instagram card */
-.feed-ig .feed-ig-top{display:flex;align-items:center;gap:10px;padding:12px 14px}
-.feed-ig .feed-ig-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:2px}
-.feed-ig .feed-ig-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #fff}
-.feed-ig .feed-ig-name{font-size:var(--text-sm);font-weight:600;flex:1}
+.feed-ig{border:1px solid var(--border);background:#fff;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.feed-ig .feed-ig-top{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.feed-ig .feed-ig-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:2px;flex-shrink:0}
+.feed-ig .feed-ig-avatar-inner{width:100%;height:100%;border-radius:50%;background:#fff;padding:2px;display:flex;align-items:center;justify-content:center}
+.feed-ig .feed-ig-avatar-inner img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.feed-ig .feed-ig-name{font-size:14px;font-weight:600;flex:1;color:#262626}
 .feed-ig .feed-ig-image{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
-.feed-ig .feed-ig-actions{padding:8px 14px;display:flex;gap:12px}
-.feed-ig .feed-ig-body{padding:0 14px 12px}
-.feed-ig .feed-ig-text{font-size:var(--text-xs);line-height:1.4}
+.feed-ig .feed-ig-actions{padding:8px 12px;display:flex;gap:14px}
+.feed-ig .feed-ig-actions svg{width:24px;height:24px;cursor:pointer;transition:transform 0.15s}
+.feed-ig .feed-ig-actions svg:active{transform:scale(0.9)}
+.feed-ig .feed-ig-body{padding:0 14px 6px}
+.feed-ig .feed-ig-likes{font-size:14px;font-weight:600;color:#262626;margin-bottom:4px}
+.feed-ig .feed-ig-text{font-size:14px;line-height:1.4;color:#262626}
+.feed-ig .feed-ig-text b{font-weight:600}
+.feed-ig .feed-ig-tags{font-size:14px;color:#00376b;line-height:1.4}
+.feed-ig .feed-ig-time{font-size:10px;color:#8e8e8e;padding:4px 14px 12px;text-transform:uppercase;letter-spacing:0.02em}
 
 /* Post status & platform badges on feed cards */
 .feed-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
@@ -477,10 +510,52 @@ tr:hover td{background:var(--surface-warm)}
 
 .settings-section{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-6);margin-bottom:var(--space-4)}
 .settings-section h3{font-size:var(--text-base);font-weight:700;margin-bottom:var(--space-4)}
+.settings-hint{font-size:var(--text-sm);color:var(--muted);margin-bottom:var(--space-4);line-height:1.5}
 .settings-row{display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) 0;border-bottom:1px solid var(--border-soft)}
 .settings-row:last-child{border-bottom:none}
 .settings-label{font-size:var(--text-sm);font-weight:500}
 .settings-desc{font-size:var(--text-xs);color:var(--muted);margin-top:2px}
+/* Settings tabs */
+.settings-tabs{display:flex;gap:2px;margin-bottom:var(--space-5);border-bottom:1px solid var(--border);padding-bottom:0}
+.settings-tab{padding:10px 20px;font-size:var(--text-sm);font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all var(--motion-fast)}
+.settings-tab:hover{color:var(--fg)}
+.settings-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.settings-tab-panel{display:none}
+.settings-tab-panel.active{display:block}
+/* Platform connection cards */
+.platform-card{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:var(--space-3)}
+.platform-card-header{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.platform-card-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.platform-card-info{flex:1;min-width:0}
+.platform-card-name{font-size:var(--text-sm);font-weight:700}
+.platform-card-desc{font-size:var(--text-xs);color:var(--muted);margin-top:1px}
+.platform-card-status{display:flex;align-items:center;gap:8px}
+.platform-card-account{font-size:var(--text-xs);color:var(--muted);text-align:right}
+.platform-card-body{padding:0 16px 14px;border-top:1px solid var(--border-soft)}
+.platform-post-types{display:flex;flex-wrap:wrap;gap:6px;padding-top:12px}
+.platform-post-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--radius-pill);font-size:11px;font-weight:600;border:1px solid var(--border);color:var(--fg);background:var(--bg)}
+.platform-post-tag.active{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+.platform-post-tag:not(.active){opacity:0.5}
+/* Cross-platform similarity grid */
+.cross-platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-3)}
+.cross-platform-card{border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;background:var(--bg)}
+.cross-platform-card-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cross-platform-card-icon{width:28px;height:28px;border-radius:6px;background:var(--surface-warm);display:flex;align-items:center;justify-content:center;font-size:14px}
+.cross-platform-card-name{font-size:var(--text-sm);font-weight:700}
+.cross-platform-card-desc{font-size:var(--text-xs);color:var(--muted);margin-bottom:10px;line-height:1.4}
+.cross-platform-platforms{display:flex;flex-wrap:wrap;gap:4px}
+.cross-platform-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;color:#fff}
+/* WeChat comparison */
+.wechat-compare{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+.wechat-compare-card{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border-soft)}
+.wechat-compare-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wechat-compare-name{font-size:var(--text-sm);font-weight:700}
+.wechat-compare-type{font-size:var(--text-xs);color:var(--muted)}
+.wechat-compare-body{padding:12px 16px}
+.wechat-compare-row{display:flex;justify-content:space-between;padding:6px 0;font-size:var(--text-xs);border-bottom:1px solid var(--border-soft)}
+.wechat-compare-row:last-child{border-bottom:none}
+.wechat-compare-label{font-weight:600;color:var(--fg);min-width:70px}
+@media(max-width:768px){.cross-platform-grid{grid-template-columns:1fr}}
 .toggle{width:44px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background var(--motion-fast)}
 .toggle.on{background:var(--accent)}
 .toggle::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform var(--motion-fast);box-shadow:0 1px 3px rgba(0,0,0,0.2)}
@@ -702,6 +777,7 @@ tr:hover td{background:var(--surface-warm)}
           <button class="feed-filter" data-platform="Facebook" onclick="filterFeed('Facebook',this)">Facebook <span class="feed-filter-count" id="feed-count-facebook">5</span></button>
           <button class="feed-filter" data-platform="微信公众号" onclick="filterFeed('微信公众号',this)"><span data-i18n="wechat_official">微信公众号</span> <span class="feed-filter-count" id="feed-count-wechat">4</span></button>
           <button class="feed-filter" data-platform="微信视频号" onclick="filterFeed('微信视频号',this)"><span data-i18n="wechat_channels">微信视频号</span> <span class="feed-filter-count" id="feed-count-channels">1</span></button>
+          <button class="feed-filter" data-platform="Instagram" onclick="filterFeed('Instagram',this)">Instagram <span class="feed-filter-count" id="feed-count-ig">2</span></button>
         </div>
         <div class="stats-row" data-od-id="stats-overview">
           <div class="stat-card">
@@ -737,13 +813,7 @@ tr:hover td{background:var(--surface-warm)}
 
       <!-- ═══ LISTINGS ═══ -->
       <div class="page" id="page-listings" data-od-id="page-listings">
-        <div class="section-header">
-          <div></div>
-          <button class="btn btn-primary" data-od-id="btn-new-listing" onclick="openNewListingModal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span data-i18n="btn_new_listing">新建房源</span>
-          </button>
-        </div>
+
         <div class="filters" data-od-id="listing-filters">
           <div class="filter-group">
             <button class="filter-chip active" data-i18n="filter_all">全部</button>
@@ -752,19 +822,25 @@ tr:hover td{background:var(--surface-warm)}
             <button class="filter-chip" data-i18n="status_for_rent">在租</button>
             <button class="filter-chip" data-i18n="status_rented">已租</button>
           </div>
-          <select class="filter-select">
-            <option data-i18n="filter_type_all">所有类型</option>
-            <option data-i18n="type_apartment">公寓</option>
-            <option data-i18n="type_villa">别墅</option>
-            <option data-i18n="type_commercial">商业</option>
-          </select>
-          <select class="filter-select">
-            <option data-i18n="filter_price_all">所有价格</option>
-            <option>&lt; $300K</option>
-            <option>$300K - $600K</option>
-            <option>$600K - $1M</option>
-            <option>&gt; $1M</option>
-          </select>
+          <div class="filter-dropdown">
+            <button class="filter-chip" data-i18n="filter_type_all">所有类型<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="filter-dropdown-menu">
+              <button class="filter-option active" data-i18n="filter_type_all">所有类型</button>
+              <button class="filter-option" data-i18n="type_apartment">公寓</button>
+              <button class="filter-option" data-i18n="type_villa">别墅</button>
+              <button class="filter-option" data-i18n="type_commercial">商业</button>
+            </div>
+          </div>
+          <div class="filter-dropdown">
+            <button class="filter-chip" data-i18n="filter_price_all">所有价格<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="filter-dropdown-menu">
+              <button class="filter-option active" data-i18n="filter_price_all">所有价格</button>
+              <button class="filter-option">&lt; $300K</button>
+              <button class="filter-option">$300K - $600K</button>
+              <button class="filter-option">$600K - $1M</button>
+              <button class="filter-option">&gt; $1M</button>
+            </div>
+          </div>
         </div>
         <div class="grid-3" id="listings-grid" data-od-id="listings-grid">
           <!-- Listings populated by JS -->
@@ -820,215 +896,163 @@ tr:hover td{background:var(--surface-warm)}
 
       <!-- ═══ SETTINGS ═══ -->
       <div class="page" id="page-settings" data-od-id="page-settings">
-        <div class="section-header">
-          <div></div>
+        <div class="settings-tabs" data-od-id="settings-tabs">
+          <button class="settings-tab active" onclick="switchSettingsTab('platforms',this)" data-i18n="settings_tab_platforms">平台管理</button>
+          <button class="settings-tab" onclick="switchSettingsTab('posttypes',this)" data-i18n="settings_tab_posttypes">帖子类型</button>
+          <button class="settings-tab" onclick="switchSettingsTab('notifications',this)" data-i18n="settings_tab_notifications">通知设置</button>
+          <button class="settings-tab" onclick="switchSettingsTab('team',this)" data-i18n="settings_tab_team">团队成员</button>
         </div>
-        <div class="settings-section" data-od-id="settings-platform">
-          <h3 data-i18n="settings_platform_accounts">平台账号关联</h3>
-          <div class="settings-row">
-            <div>
-              <div class="settings-label">Facebook Page</div>
-              <div class="settings-desc">HOME DIRECT · 加园地产</div>
+
+        <!-- Platform Management Tab -->
+        <div class="settings-tab-panel active" id="settings-panel-platforms">
+          <div class="settings-section" data-od-id="settings-platforms-list">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
+              <h3 data-i18n="settings_platform_accounts">平台账号管理</h3>
+              <button class="btn btn-primary btn-sm" onclick="alert('连接新平台功能开发中...')" data-i18n="btn_connect_platform">+ 连接新平台</button>
             </div>
-            <span class="badge badge-success"><span class="badge-dot"></span> <span data-i18n="status_connected">已关联</span></span>
-          </div>
-          <div class="settings-row">
-            <div>
-              <div class="settings-label" data-i18n="wechat_official">微信公众号</div>
-              <div class="settings-desc">蒙特利尔小朱</div>
+            <div id="platform-cards-container">
+              <!-- Populated by JS -->
             </div>
-            <span class="badge badge-success"><span class="badge-dot"></span> <span data-i18n="status_connected">已关联</span></span>
           </div>
-          <div class="settings-row">
-            <div>
-              <div class="settings-label" data-i18n="wechat_channels">微信视频号</div>
-              <div class="settings-desc" data-i18n="wechat_channels_desc">蒙特利尔小朱</div>
-            </div>
-            <span class="badge badge-warn"><span class="badge-dot"></span> <span data-i18n="status_pending_auth">待授权</span></span>
-          </div>
-        </div>
-        <div class="settings-section format-section" data-od-id="settings-formats">
-          <h3 data-i18n="settings_post_formats">帖子格式参考</h3>
-          <div class="format-grid">
-            <!-- Facebook -->
-            <div class="format-card">
-              <div class="format-card-header">
-                <div class="format-card-icon" style="background:#1877F2">f</div>
+          <div class="settings-section" data-od-id="settings-platform-explain">
+            <h3 data-i18n="settings_wechat_diff">微信公众号 vs 视频号</h3>
+            <div class="wechat-compare">
+              <div class="wechat-compare-card">
+                <div class="wechat-compare-icon" style="background:#07C160">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348z"/></svg>
+                </div>
                 <div>
-                  <div class="format-card-name">Facebook</div>
-                  <div class="format-card-desc" data-i18n="fmt_fb_desc">Feed, Reels, Stories</div>
+                  <div class="wechat-compare-name" data-i18n="wechat_official">微信公众号</div>
+                  <div class="wechat-compare-type" data-i18n="wx_official_type">图文推送 · 品牌宣传</div>
                 </div>
               </div>
-              <div class="format-card-body">
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_single_image">单图</span>
-                    <span class="format-type-ratio">1:1 · 4:5 · 16:9</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-11"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#fde8e5,#e8d5f0)"></div><div class="format-mockup-label">1:1</div></div>
-                    <div class="format-mockup format-mockup-45"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#e8d5f0,#d5e8f0)"></div><div class="format-mockup-label">4:5</div></div>
-                    <div class="format-mockup format-mockup-169"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#d5e8f0,#e8f0d5)"></div><div class="format-mockup-label">16:9</div></div>
-                  </div>
+              <div class="wechat-compare-body">
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_content_type">内容形式</span>
+                  <span data-i18n="wx_official_content">长图文文章、单图、视频</span>
                 </div>
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_carousel">轮播</span>
-                    <span class="format-type-ratio">1:1 · 4:5 × 2-10</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup-stack">
-                      <div class="format-mockup-stack-card"></div>
-                      <div class="format-mockup-stack-card"></div>
-                      <div class="format-mockup-stack-card"></div>
-                    </div>
-                    <div style="font-size:var(--text-xs);color:var(--muted);padding-bottom:4px" data-i18n="fmt_carousel_hint">最多10张，统一比例</div>
-                  </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_distribution">分发方式</span>
+                  <span data-i18n="wx_official_dist">订阅分发（粉丝主动查看）</span>
                 </div>
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_video">视频</span>
-                    <span class="format-type-ratio">16:9 · 9:16 · 1:1</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-169 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#2d1b4e,#1b3a4e)"></div></div>
-                    <div class="format-mockup format-mockup-916 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#4e1b2d,#1b2d4e)"></div><div class="format-mockup-label">Reels</div></div>
-                  </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_use_case">适合场景</span>
+                  <span data-i18n="wx_official_use">品牌故事、政策解读、市场分析、深度内容</span>
+                </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_lifetime">内容寿命</span>
+                  <span data-i18n="wx_official_life">永久保留，可搜索</span>
                 </div>
               </div>
             </div>
-            <!-- WeChat Official -->
-            <div class="format-card">
-              <div class="format-card-header">
-                <div class="format-card-icon" style="background:#07C160">W</div>
+            <div class="wechat-compare" style="margin-top:var(--space-3)">
+              <div class="wechat-compare-card">
+                <div class="wechat-compare-icon" style="background:#FF6B2C">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>
+                </div>
                 <div>
-                  <div class="format-card-name" data-i18n="wechat_official">微信公众号</div>
-                  <div class="format-card-desc" data-i18n="fmt_wx_desc">图文消息, 单图, 视频</div>
+                  <div class="wechat-compare-name" data-i18n="wechat_channels">微信视频号</div>
+                  <div class="wechat-compare-type" data-i18n="wx_channels_type">短视频 · 直播</div>
                 </div>
               </div>
-              <div class="format-card-body">
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_article">图文消息</span>
-                    <span class="format-type-ratio">2.35:1 封面</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-wide"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#d5f0e8,#e8f0d5)"></div><div class="format-mockup-label">900×383</div></div>
-                  </div>
+              <div class="wechat-compare-body">
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_content_type">内容形式</span>
+                  <span data-i18n="wx_channels_content">短视频、直播、链接图文</span>
                 </div>
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_single_image">单图</span>
-                    <span class="format-type-ratio">1:1 · 原图</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-11"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#fde8e5,#f0e8d5)"></div><div class="format-mockup-label">1:1</div></div>
-                  </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_distribution">分发方式</span>
+                  <span data-i18n="wx_channels_dist">算法推荐 + 社交分享</span>
                 </div>
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_video">视频</span>
-                    <span class="format-type-ratio">16:9 · 3:4</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-169 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#2d4e1b,#1b4e3a)"></div></div>
-                  </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_use_case">适合场景</span>
+                  <span data-i18n="wx_channels_use">看房vlog、房源展示、直播带看、生活场景</span>
                 </div>
-              </div>
-            </div>
-            <!-- WeChat Channels -->
-            <div class="format-card">
-              <div class="format-card-header">
-                <div class="format-card-icon" style="background:#FF6B2C">W</div>
-                <div>
-                  <div class="format-card-name" data-i18n="wechat_channels">微信视频号</div>
-                  <div class="format-card-desc" data-i18n="fmt_wxch_desc">短视频, 直播</div>
-                </div>
-              </div>
-              <div class="format-card-body">
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_short_video">短视频</span>
-                    <span class="format-type-ratio">9:16 ≤ 60min</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-916 format-mockup-video"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#4e2d1b,#1b3a4e)"></div><div class="format-mockup-label">9:16</div></div>
-                  </div>
-                </div>
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_live">直播</span>
-                    <span class="format-type-ratio">9:16</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-916" style="border:2px solid #FF6B2C"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#FF6B2C,#ff8f5e)"><span class="format-mockup-icon" style="color:#fff">●</span></div><div class="format-mockup-label" style="background:#FF6B2C">LIVE</div></div>
-                  </div>
-                </div>
-                <div class="format-type">
-                  <div class="format-type-header">
-                    <span class="format-type-name" data-i18n="fmt_link_post">链接图文</span>
-                    <span class="format-type-ratio">2.35:1 封面</span>
-                  </div>
-                  <div class="format-mockups">
-                    <div class="format-mockup format-mockup-wide"><div class="format-mockup-inner" style="background:linear-gradient(135deg,#f0d5e8,#d5e8f0)"></div><div class="format-mockup-label">封面</div></div>
-                  </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_lifetime">内容寿命</span>
+                  <span data-i18n="wx_channels_life">推荐分发，时效性较强</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="settings-section" data-od-id="settings-notifications">
-          <h3 data-i18n="settings_notifications">通知偏好</h3>
-          <div class="settings-row">
-            <div>
-              <div class="settings-label" data-i18n="notif_approval">审批通知</div>
-              <div class="settings-desc" data-i18n="notif_approval_desc">新帖子提交审批时通知</div>
+
+        <!-- Post Types Tab -->
+        <div class="settings-tab-panel" id="settings-panel-posttypes">
+          <div class="settings-section" data-od-id="settings-cross-platform">
+            <h3 data-i18n="settings_cross_platform">跨平台相似帖子类型</h3>
+            <p class="settings-hint" data-i18n="settings_cross_platform_hint">以下帖子类型在多个平台中都可用，可以一次制作、多平台分发。</p>
+            <div class="cross-platform-grid" id="cross-platform-grid">
+              <!-- Populated by JS -->
             </div>
-            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
           </div>
-          <div class="settings-row">
-            <div>
-              <div class="settings-label" data-i18n="notif_publish">发布状态通知</div>
-              <div class="settings-desc" data-i18n="notif_publish_desc">帖子发布成功或失败时通知</div>
+          <div class="settings-section format-section" data-od-id="settings-all-formats">
+            <h3 data-i18n="settings_all_platform_formats">各平台帖子格式</h3>
+            <div class="format-grid" id="all-platforms-format-grid">
+              <!-- Populated by JS -->
             </div>
-            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div>
-              <div class="settings-label" data-i18n="notif_weekly">每周数据报告</div>
-              <div class="settings-desc" data-i18n="notif_weekly_desc">每周一发送上周数据汇总</div>
-            </div>
-            <div class="toggle" onclick="this.classList.toggle('on')"></div>
           </div>
         </div>
-        <div class="settings-section" data-od-id="settings-team">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
-            <h3 data-i18n="settings_team">团队成员</h3>
-            <button class="btn btn-secondary btn-sm" data-i18n="btn_invite_member">邀请成员</button>
-          </div>
-          <div class="member-row">
-            <div class="member-avatar">朱</div>
-            <div class="member-info">
-              <div class="member-name">朱晏</div>
-              <div class="member-email">zhuyan@homedirect.ca</div>
+
+        <!-- Notifications Tab -->
+        <div class="settings-tab-panel" id="settings-panel-notifications">
+          <div class="settings-section" data-od-id="settings-notifications">
+            <h3 data-i18n="settings_notifications">通知偏好</h3>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label" data-i18n="notif_approval">审批通知</div>
+                <div class="settings-desc" data-i18n="notif_approval_desc">新帖子提交审批时通知</div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
             </div>
-            <span class="badge badge-accent" data-i18n="role_admin">团队主管</span>
-          </div>
-          <div class="member-row">
-            <div class="member-avatar">李</div>
-            <div class="member-info">
-              <div class="member-name">李明</div>
-              <div class="member-email">liming@homedirect.ca</div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label" data-i18n="notif_publish">发布状态通知</div>
+                <div class="settings-desc" data-i18n="notif_publish_desc">帖子发布成功或失败时通知</div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
             </div>
-            <span class="badge badge-neutral" data-i18n="role_agent">经纪人</span>
-          </div>
-          <div class="member-row">
-            <div class="member-avatar">王</div>
-            <div class="member-info">
-              <div class="member-name">王芳</div>
-              <div class="member-email">wangfang@homedirect.ca</div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label" data-i18n="notif_weekly">每周数据报告</div>
+                <div class="settings-desc" data-i18n="notif_weekly_desc">每周一发送上周数据汇总</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
             </div>
-            <span class="badge badge-neutral" data-i18n="role_agent">经纪人</span>
+          </div>
+        </div>
+
+        <!-- Team Tab -->
+        <div class="settings-tab-panel" id="settings-panel-team">
+          <div class="settings-section" data-od-id="settings-team">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
+              <h3 data-i18n="settings_team">团队成员</h3>
+              <button class="btn btn-secondary btn-sm" data-i18n="btn_invite_member">邀请成员</button>
+            </div>
+            <div class="member-row">
+              <div class="member-avatar">朱</div>
+              <div class="member-info">
+                <div class="member-name">朱晏</div>
+                <div class="member-email">zhuyan@homedirect.ca</div>
+              </div>
+              <span class="badge badge-accent" data-i18n="role_admin">团队主管</span>
+            </div>
+            <div class="member-row">
+              <div class="member-avatar">李</div>
+              <div class="member-info">
+                <div class="member-name">李明</div>
+                <div class="member-email">liming@homedirect.ca</div>
+              </div>
+              <span class="badge badge-neutral" data-i18n="role_agent">经纪人</span>
+            </div>
+            <div class="member-row">
+              <div class="member-avatar">王</div>
+              <div class="member-info">
+                <div class="member-name">王芳</div>
+                <div class="member-email">wangfang@homedirect.ca</div>
+              </div>
+              <span class="badge badge-neutral" data-i18n="role_agent">经纪人</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1289,8 +1313,22 @@ const I18N = {
     form_post_hint: "选择模板后会自动填充结构，您可在此基础上编辑",
     form_media: "上传图片/视频", form_media_hint: "拖拽文件到此处或点击上传",
     form_media_formats: "支持 JPG, PNG, MP4 格式", form_reject_ph: "请输入拒绝原因...",
-    settings_platform_accounts: "平台账号关联",
+    settings_platform_accounts: "平台账号管理",
     settings_notifications: "通知偏好", settings_team: "团队成员",
+    settings_tab_platforms: "平台管理", settings_tab_posttypes: "帖子类型",
+    settings_tab_notifications: "通知设置", settings_tab_team: "团队成员",
+    settings_wechat_diff: "微信公众号 vs 视频号",
+    settings_cross_platform: "跨平台相似帖子类型",
+    settings_cross_platform_hint: "以下帖子类型在多个平台中都可用，可以一次制作、多平台分发。",
+    settings_all_platform_formats: "各平台帖子格式",
+    btn_connect_platform: "+ 连接新平台", btn_connect: "连接", connectcoming: "连接功能开发中...",
+    wx_official_type: "图文推送 · 品牌宣传",
+    wx_channels_type: "短视频 · 直播",
+    wx_content_type: "内容形式", wx_distribution: "分发方式", wx_use_case: "适合场景", wx_lifetime: "内容寿命",
+    wx_official_content: "长图文文章、单图、视频", wx_official_dist: "订阅分发（粉丝主动查看）",
+    wx_official_use: "品牌故事、政策解读、市场分析、深度内容", wx_official_life: "永久保留，可搜索",
+    wx_channels_content: "短视频、直播、链接图文", wx_channels_dist: "算法推荐 + 社交分享",
+    wx_channels_use: "看房vlog、房源展示、直播带看、生活场景", wx_channels_life: "推荐分发，时效性较强",
     notif_approval: "审批通知", notif_approval_desc: "新帖子提交审批时通知",
     notif_publish: "发布状态通知", notif_publish_desc: "帖子发布成功或失败时通知",
     notif_weekly: "每周数据报告", notif_weekly_desc: "每周一发送上周数据汇总",
@@ -1307,6 +1345,7 @@ const I18N = {
     tpl_platform_wechat: "微信", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "双语",
     feed_images: "张图片", feed_filter_all: "全部", feed_video: "视频",
+    feed_read_more: "阅读原文", feed_view_original: "查看原文 →",
     tab_today: "今天", feed_posts: "条内容",
     settings_post_formats: "帖子格式参考",
     fmt_fb_desc: "Feed, Reels, Stories",
@@ -1381,6 +1420,20 @@ const I18N = {
     form_media_formats: "Supports JPG, PNG, MP4", form_reject_ph: "Enter rejection reason...",
     settings_platform_accounts: "Platform Accounts",
     settings_notifications: "Notifications", settings_team: "Team Members",
+    settings_tab_platforms: "Platforms", settings_tab_posttypes: "Post Types",
+    settings_tab_notifications: "Notifications", settings_tab_team: "Team",
+    settings_wechat_diff: "WeChat Official vs Channels",
+    settings_cross_platform: "Cross-Platform Post Types",
+    settings_cross_platform_hint: "These post types work across multiple platforms — create once, publish everywhere.",
+    settings_all_platform_formats: "All Platform Formats",
+    btn_connect_platform: "+ Connect Platform", btn_connect: "Connect", connectcoming: "Connection coming soon...",
+    wx_official_type: "Articles · Brand Content",
+    wx_channels_type: "Short Videos · Live",
+    wx_content_type: "Content Format", wx_distribution: "Distribution", wx_use_case: "Best For", wx_lifetime: "Content Lifespan",
+    wx_official_content: "Long articles, single images, videos", wx_official_dist: "Subscription-based (followers check in)",
+    wx_official_use: "Brand stories, market analysis, in-depth content", wx_official_life: "Permanent, searchable",
+    wx_channels_content: "Short videos, live streams, link posts", wx_channels_dist: "Algorithm + social sharing",
+    wx_channels_use: "Property tours, vlogs, live showings", wx_channels_life: "Recommendation-driven, time-sensitive",
     notif_approval: "Approval Notifications", notif_approval_desc: "Notify when new posts need approval",
     notif_publish: "Publish Status", notif_publish_desc: "Notify on publish success or failure",
     notif_weekly: "Weekly Report", notif_weekly_desc: "Send weekly summary every Monday",
@@ -1397,6 +1450,7 @@ const I18N = {
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingual",
     feed_images: "images", feed_filter_all: "All", feed_video: "Video",
+    feed_read_more: "Read original", feed_view_original: "View original →",
     tab_today: "Today", feed_posts: "posts",
     settings_post_formats: "Post Format Reference",
     fmt_fb_desc: "Feed, Reels, Stories",
@@ -1471,6 +1525,20 @@ const I18N = {
     form_media_formats: "JPG, PNG, MP4", form_reject_ph: "Motif du refus...",
     settings_platform_accounts: "Comptes de plateformes",
     settings_notifications: "Notifications", settings_team: "Membres de l'équipe",
+    settings_tab_platforms: "Plateformes", settings_tab_posttypes: "Types de publications",
+    settings_tab_notifications: "Notifications", settings_tab_team: "Équipe",
+    settings_wechat_diff: "WeChat Officiel vs Vidéos",
+    settings_cross_platform: "Types de publications multi-plateformes",
+    settings_cross_platform_hint: "Ces types de publications fonctionnent sur plusieurs plateformes — créez une fois, publiez partout.",
+    settings_all_platform_formats: "Tous les formats par plateforme",
+    btn_connect_platform: "+ Connecter une plateforme", btn_connect: "Connecter", connectcoming: "Connexion bientôt disponible...",
+    wx_official_type: "Articles · Contenu de marque",
+    wx_channels_type: "Vidéos courtes · Direct",
+    wx_content_type: "Format", wx_distribution: "Distribution", wx_use_case: "Idéal pour", wx_lifetime: "Durée de vie",
+    wx_official_content: "Articles longs, images, vidéos", wx_official_dist: "Abonnement (les abonnés consultent)",
+    wx_official_use: "Histoires de marque, analyses, contenu approfondi", wx_official_life: "Permanent, consultable",
+    wx_channels_content: "Vidéos courtes, direct, publications liens", wx_channels_dist: "Algorithme + partage social",
+    wx_channels_use: "Visites virtuelles, vlogs, direct immobilier", wx_channels_life: "Recommandé, sensible au temps",
     notif_approval: "Notifications d'approbation", notif_approval_desc: "Notifier pour les nouvelles publications",
     notif_publish: "Statut de publication", notif_publish_desc: "Notifier en cas de succès ou d'échec",
     notif_weekly: "Rapport hebdomadaire", notif_weekly_desc: "Envoyer le résumé chaque lundi",
@@ -1487,6 +1555,7 @@ const I18N = {
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingue",
     feed_images: "images", feed_filter_all: "Tous", feed_video: "Vidéo",
+    feed_read_more: "Lire l'original", feed_view_original: "Voir l'original →",
     tab_today: "Aujourd'hui", feed_posts: "publications",
     settings_post_formats: "Référence des formats",
     fmt_fb_desc: "Fil, Reels, Stories",
@@ -1561,6 +1630,20 @@ const I18N = {
     form_media_formats: "JPG, PNG, MP4", form_reject_ph: "Motivo del rechazo...",
     settings_platform_accounts: "Cuentas de plataformas",
     settings_notifications: "Notificaciones", settings_team: "Miembros del equipo",
+    settings_tab_platforms: "Plataformas", settings_tab_posttypes: "Tipos de publicación",
+    settings_tab_notifications: "Notificaciones", settings_tab_team: "Equipo",
+    settings_wechat_diff: "WeChat Oficial vs Canales",
+    settings_cross_platform: "Tipos de publicación multi-plataforma",
+    settings_cross_platform_hint: "Estos tipos funcionan en varias plataformas — crea una vez, publica en todas partes.",
+    settings_all_platform_formats: "Todos los formatos por plataforma",
+    btn_connect_platform: "+ Conectar plataforma", btn_connect: "Conectar", connectcoming: "Conexión próximamente...",
+    wx_official_type: "Artículos · Contenido de marca",
+    wx_channels_type: "Videos cortos · En vivo",
+    wx_content_type: "Formato", wx_distribution: "Distribución", wx_use_case: "Ideal para", wx_lifetime: "Duración",
+    wx_official_content: "Artículos largos, imágenes, videos", wx_official_dist: "Suscripción (los seguidores consultan)",
+    wx_official_use: "Historias de marca, análisis, contenido profundo", wx_official_life: "Permanente, consultable",
+    wx_channels_content: "Videos cortos, en vivo, publicaciones con enlace", wx_channels_dist: "Algoritmo + compartir social",
+    wx_channels_use: "Visitas virtuales, vlogs, directo inmobiliario", wx_channels_life: "Recomendado, sensibilidad temporal",
     notif_approval: "Notificaciones de aprobación", notif_approval_desc: "Notificar para nuevas publicaciones",
     notif_publish: "Estado de publicación", notif_publish_desc: "Notificar en caso de éxito o fallo",
     notif_weekly: "Informe semanal", notif_weekly_desc: "Enviar resumen cada lunes",
@@ -1577,6 +1660,7 @@ const I18N = {
     tpl_platform_wechat: "WeChat", tpl_platform_fb: "Facebook",
     tpl_lang_zh: "简体中文", tpl_lang_en: "English", tpl_lang_bi: "Bilingüe",
     feed_images: "imágenes", feed_filter_all: "Todos", feed_video: "Video",
+    feed_read_more: "Leer original", feed_view_original: "Ver original →",
     tab_today: "Hoy", feed_posts: "publicaciones",
     settings_post_formats: "Referencia de formatos",
     fmt_fb_desc: "Feed, Reels, Historias",
@@ -1612,6 +1696,140 @@ const LISTINGS = [
     video:null, desc:"Griffintown时尚工业风Loft，高层城市景观，开放格局。步行可达Lachine运河和Old Port。", descEn:"Stylish Griffintown industrial loft with high-floor city views and open layout. Walking distance to Lachine Canal and Old Port.", descFr:"Loft industriel élégant à Griffintown avec vue panoramique sur la ville et plan ouvert. À distance de marche du canal Lachine et du Vieux-Port.", amenities:["gym","security"] },
 ];
 
+const PLATFORMS = [
+  {
+    id:"facebook", name:"Facebook", color:"#1877F2", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+    desc:"全球最大的社交媒体平台",
+    descEn:"World's largest social network",
+    descFr:"Le plus grand réseau social au monde",
+    connected:true, account:"HOME DIRECT · 加园地产",
+    postTypes:[
+      {id:"single", name:"单图", nameEn:"Single Image", nameFr:"Image unique", ratio:"1:1 · 4:5 · 16:9", group:"image"},
+      {id:"carousel", name:"轮播", nameEn:"Carousel", nameFr:"Carrousel", ratio:"1:1 · 4:5 × 2-10", group:"carousel"},
+      {id:"video", name:"视频", nameEn:"Video", nameFr:"Vidéo", ratio:"16:9 · 9:16 · 1:1", group:"video"},
+      {id:"reels", name:"Reels短视频", nameEn:"Reels", nameFr:"Reels", ratio:"9:16 ≤ 90s", group:"short_video"},
+      {id:"stories", name:"Stories", nameEn:"Stories", nameFr:"Stories", ratio:"9:16 ≤ 24h", group:"story"},
+      {id:"text", name:"纯文字", nameEn:"Text Post", nameFr:"Publication texte", ratio:"—", group:"text"}
+    ]
+  },
+  {
+    id:"instagram", name:"Instagram", color:"linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0z"/></svg>`,
+    desc:"图片和短视频社交平台",
+    descEn:"Photo and short-video social platform",
+    descFr:"Plateforme sociale photo et vidéo courte",
+    connected:false, account:"",
+    postTypes:[
+      {id:"single", name:"单图", nameEn:"Single Image", nameFr:"Image unique", ratio:"1:1 · 4:5", group:"image"},
+      {id:"carousel", name:"轮播", nameEn:"Carousel", nameFr:"Carrousel", ratio:"1:1 · 4:5 × 2-10", group:"carousel"},
+      {id:"video", name:"视频", nameEn:"Video", nameFr:"Vidéo", ratio:"16:9 · 4:5", group:"video"},
+      {id:"reels", name:"Reels", nameEn:"Reels", nameFr:"Reels", ratio:"9:16 ≤ 90s", group:"short_video"},
+      {id:"stories", name:"Stories", nameEn:"Stories", nameFr:"Stories", ratio:"9:16 ≤ 24h", group:"story"}
+    ]
+  },
+  {
+    id:"wechat_official", name:"微信公众号", color:"#07C160", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348z"/></svg>`,
+    desc:"微信公众号 — 图文推送、品牌宣传",
+    descEn:"WeChat Official Account — articles, brand content",
+    descFr:"Compte officiel WeChat — articles, contenu de marque",
+    connected:true, account:"蒙特利尔小朱",
+    postTypes:[
+      {id:"article", name:"图文消息", nameEn:"Article", nameFr:"Article", ratio:"封面 2.35:1", group:"article"},
+      {id:"single", name:"单图", nameEn:"Single Image", nameFr:"Image unique", ratio:"1:1 · 原图", group:"image"},
+      {id:"video", name:"视频", nameEn:"Video", nameFr:"Vidéo", ratio:"16:9 · 3:4", group:"video"}
+    ],
+    note:"公众号适合长文推送、品牌故事、政策解读等深度内容。粉丝通过订阅查看，内容永久保留。"
+  },
+  {
+    id:"wechat_channels", name:"微信视频号", color:"#FF6B2C", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>`,
+    desc:"微信视频号 — 短视频、直播",
+    descEn:"WeChat Channels — short videos, live streaming",
+    descFr:"Vidéos WeChat — vidéos courtes, direct",
+    connected:true, account:"蒙特利尔小朱",
+    postTypes:[
+      {id:"short_video", name:"短视频", nameEn:"Short Video", nameFr:"Vidéo courte", ratio:"9:16 ≤ 60min", group:"short_video"},
+      {id:"live", name:"直播", nameEn:"Live Stream", nameFr:"Direct", ratio:"9:16", group:"live"},
+      {id:"link_post", name:"链接图文", nameEn:"Link Post", nameFr:"Publication lien", ratio:"封面 2.35:1", group:"article"}
+    ],
+    note:"视频号适合短视频和直播，内容以推荐分发为主，适合获取新流量。与公众号可互相导流。"
+  },
+  {
+    id:"xiaohongshu", name:"小红书", color:"#FE2C55", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><text x="5" y="17" font-size="14" font-weight="bold">小</text></svg>`,
+    desc:"小红书 — 种草笔记、生活方式分享",
+    descEn:"Xiaohongshu — lifestyle notes, product reviews",
+    descFr:"Xiaohongshu — notes lifestyle, avis produits",
+    connected:false, account:"",
+    postTypes:[
+      {id:"note", name:"图文笔记", nameEn:"Image Note", nameFr:"Note image", ratio:"3:4 · 1:1", group:"image"},
+      {id:"video_note", name:"视频笔记", nameEn:"Video Note", nameFr:"Note vidéo", ratio:"3:4 · 9:16", group:"short_video"},
+      {id:"carousel", name:"轮播笔记", nameEn:"Carousel Note", nameFr:"Note carrousel", ratio:"3:4 × 2-18", group:"carousel"}
+    ],
+    note:"小红书以「种草」为核心，图文笔记是主力格式。内容偏生活化、真实感，适合房产生活分享。"
+  },
+  {
+    id:"douyin", name:"抖音", color:"#010101", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><text x="3" y="17" font-size="13" font-weight="bold">抖</text></svg>`,
+    desc:"抖音 — 短视频、直播带货",
+    descEn:"Douyin — short videos, live commerce",
+    descFr:"Douyin — vidéos courtes, commerce en direct",
+    connected:false, account:"",
+    postTypes:[
+      {id:"short_video", name:"短视频", nameEn:"Short Video", nameFr:"Vidéo courte", ratio:"9:16 ≤ 15min", group:"short_video"},
+      {id:"live", name:"直播", nameEn:"Live Stream", nameFr:"Direct", ratio:"9:16", group:"live"},
+      {id:"graphic_video", name:"图文视频", nameEn:"Slideshow Video", nameFr:"Vidéo diaporama", ratio:"9:16", group:"short_video"}
+    ],
+    note:"抖音以短视频为核心，算法推荐分发。适合房产展示、看房vlog、生活场景内容。"
+  },
+  {
+    id:"tiktok", name:"TikTok", color:"#010101", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><text x="2" y="17" font-size="12" font-weight="bold">T</text></svg>`,
+    desc:"TikTok — global short-video platform",
+    descEn:"TikTok — global short-video platform",
+    descFr:"TikTok — plateforme mondiale de vidéos courtes",
+    connected:false, account:"",
+    postTypes:[
+      {id:"short_video", name:"短视频", nameEn:"Short Video", nameFr:"Vidéo courte", ratio:"9:16 ≤ 10min", group:"short_video"},
+      {id:"photo_mode", name:"照片模式", nameEn:"Photo Mode", nameFr:"Mode photo", ratio:"1:1 · 9:16 × up to 35", group:"carousel"},
+      {id:"live", name:"直播", nameEn:"Live Stream", nameFr:"Direct", ratio:"9:16", group:"live"}
+    ]
+  },
+  {
+    id:"youtube", name:"YouTube", color:"#FF0000", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><polygon points="9.545,15.568 15.818,12 9.545,8.432" fill="#fff"/></svg>`,
+    desc:"YouTube — 视频内容平台",
+    descEn:"YouTube — video content platform",
+    descFr:"YouTube — plateforme de contenu vidéo",
+    connected:false, account:"",
+    postTypes:[
+      {id:"video", name:"视频", nameEn:"Video", nameFr:"Vidéo", ratio:"16:9", group:"video"},
+      {id:"shorts", name:"Shorts", nameEn:"Shorts", nameFr:"Shorts", ratio:"9:16 ≤ 60s", group:"short_video"},
+      {id:"community", name:"社区帖子", nameEn:"Community Post", nameFr:"Publication communautaire", ratio:"图文/投票", group:"text"}
+    ]
+  },
+  {
+    id:"twitter", name:"X (Twitter)", color:"#000000", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+    desc:"X (Twitter) — 短文、图文、话题讨论",
+    descEn:"X (Twitter) — short posts, images, threads",
+    descFr:"X (Twitter) — posts courts, images, fils",
+    connected:false, account:"",
+    postTypes:[
+      {id:"text", name:"纯文字", nameEn:"Text Post", nameFr:"Publication texte", ratio:"≤ 280字符", group:"text"},
+      {id:"single", name:"单图", nameEn:"Single Image", nameFr:"Image unique", ratio:"16:9 · 1:1", group:"image"},
+      {id:"multi_image", name:"多图", nameEn:"Multi Image", nameFr:"Image multiple", ratio:"最多4张", group:"image"},
+      {id:"video", name:"视频", nameEn:"Video", nameFr:"Vidéo", ratio:"16:9 · 1:1", group:"video"},
+      {id:"thread", name:"长推文串", nameEn:"Thread", nameFr:"Fil", ratio:"多条串联", group:"text"}
+    ]
+  }
+];
+
+// Cross-platform post type similarity groups
+const POST_TYPE_GROUPS = {
+  image: {name:"单图 / Single Image", desc:"适用于各平台的静态图片发布", descEn:"Static image posts across platforms", descFr:"Publications d'images statiques", platforms:["facebook","instagram","wechat_official","xiaohongshu","twitter"]},
+  carousel: {name:"轮播 / Carousel", desc:"多图滑动展示，适合房源多角度展示", descEn:"Multi-image swipe, great for property showcase", descFr:"Diaporama multi-images", platforms:["facebook","instagram","xiaohongshu","tiktok"]},
+  video: {name:"视频 / Video", desc:"标准横屏或竖屏视频", descEn:"Standard horizontal or vertical video", descFr:"Vidéo horizontale ou verticale", platforms:["facebook","instagram","wechat_official","youtube","twitter"]},
+  short_video: {name:"短视频 / Short Video", desc:"竖屏短视频，适合移动端沉浸式浏览", descEn:"Vertical short video for mobile-first feeds", descFr:"Vidéo courte verticale", platforms:["facebook","instagram","wechat_channels","xiaohongshu","douyin","tiktok","youtube"]},
+  story: {name:"Stories / 限时动态", desc:"24小时后消失的临时内容", descEn:"Ephemeral content, disappears after 24h", descFr:"Contenu éphémère, disparaît après 24h", platforms:["facebook","instagram"]},
+  live: {name:"直播 / Live Stream", desc:"实时直播，适合看房、问答", descEn:"Real-time streaming, great for tours & Q&A", descFr:"Diffusion en direct", platforms:["wechat_channels","douyin","tiktok"]},
+  article: {name:"图文文章 / Article", desc:"长文推送，适合深度内容", descEn:"Long-form articles for in-depth content", descFr:"Articles longs pour contenu approfondi", platforms:["wechat_official","wechat_channels"]},
+  text: {name:"纯文字 / Text Post", desc:"文字为主的短帖", descEn:"Text-focused short posts", descFr:"Publications courtes en texte", platforms:["facebook","twitter","youtube"]}
+};
+
 const POSTS = [
   { id:1, listingId:1, title:"市中心豪华公寓 · 好房推荐", platform:"Facebook", lang:"中文", status:"published", date:"2026-08-22", media:"carousel", images:["images/listings/condo1.jpg","images/listings/condo2.jpg","images/listings/condo3.jpg"], description:"蒙特利尔市中心黄金地段，步行可达麦吉尔大学和地铁站。现代开放式格局，配备全套不锈钢电器。", hashtags:"#蒙特利尔 #房产 #公寓 #市中心", price:"$850,000", beds:3, baths:2 },
   { id:2, listingId:1, title:"市中心豪华公寓 · 好房推荐", platform:"微信公众号", lang:"中文", status:"published", date:"2026-08-22", media:"single", images:["images/listings/condo1.jpg"], description:"蒙特利尔市中心黄金地段，步行可达麦吉尔大学和地铁站。现代开放式格局，配备全套不锈钢电器。限时优惠！", hashtags:"", price:"$850,000", beds:3, baths:2 },
@@ -1624,6 +1842,8 @@ const POSTS = [
   { id:9, listingId:6, title:"Griffintown Loft · Studio Living", platform:"Facebook", lang:"双语", status:"rejected", date:"2026-08-19", media:"carousel", images:["images/listings/loft1.jpg","images/listings/loft2.jpg"], description:"Industrial-chic loft in Griffintown. Exposed brick, 14ft ceilings, and open-concept living. Steps from the Lachine Canal.", hashtags:"#Griffintown #Loft #IndustrialChic", price:"$425,000", beds:1, baths:1 },
   { id:10, listingId:6, title:"Griffintown 工业风公寓 · 精品推荐", platform:"微信公众号", lang:"中文", status:"rejected", date:"2026-08-19", media:"single", images:["images/listings/loft1.jpg"], description:"Griffintown时尚工业风Loft，高层城市景观，开放格局。步行可达Lachine运河和Old Port。", hashtags:"", price:"$425,000", beds:1, baths:1 },
   { id:11, listingId:null, title:"加园地产 · 品牌宣传", platform:"微信公众号", lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/condo3.jpg"], description:"加园地产 — 蒙特利尔华人信赖的房产服务团队。专注买房、卖房、租赁一站式服务。", hashtags:"", price:"—", beds:0, baths:0 },
+  { id:12, listingId:1, title:"市中心豪华公寓 · Downtown Living", platform:"Instagram", lang:"English", status:"published", date:"2026-08-20", media:"single", images:["images/listings/condo1.jpg"], description:"Modern downtown living at its finest. Steps from McGill, metro, and all amenities. Open concept, stainless steel appliances.", hashtags:"#MontrealRealEstate #DowntownLiving #CondoLife #Montreal", price:"$850,000", beds:3, baths:2 },
+  { id:13, listingId:5, title:"Outremont 花园洋房 · Garden Oasis", platform:"Instagram", lang:"中文", status:"draft", date:"2026-08-19", media:"carousel", images:["images/listings/garden1.jpg","images/listings/garden2.jpg","images/listings/garden3.jpg"], description:"Rare Outremont gem with private garden oasis. Classic architecture meets modern comfort.", hashtags:"#Outremont #GardenHome #Montreal #LuxuryLiving", price:"$980,000", beds:4, baths:3 },
 ];
 
 const TEMPLATES = [
@@ -1681,6 +1901,9 @@ function applyI18n(lang) {
   renderPosts();
   renderTemplates();
   renderApprovals();
+  renderPlatformCards();
+  renderCrossPlatformGrid();
+  renderAllPlatformFormats();
 }
 
 // ── Navigation ────────────────────────────────────────────
@@ -1742,6 +1965,29 @@ document.querySelectorAll(".filter-group").forEach(group => {
       chip.classList.add("active");
     });
   });
+});
+
+// ── Filter dropdowns ──────────────────────────────────────
+document.querySelectorAll(".filter-dropdown").forEach(dd => {
+  const btn = dd.querySelector(".filter-chip");
+  const menu = dd.querySelector(".filter-dropdown-menu");
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    document.querySelectorAll(".filter-dropdown.open").forEach(other => { if (other !== dd) other.classList.remove("open"); });
+    dd.classList.toggle("open");
+  });
+  menu.querySelectorAll(".filter-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      menu.querySelectorAll(".filter-option").forEach(o => o.classList.remove("active"));
+      opt.classList.add("active");
+      const svg = btn.querySelector("svg").outerHTML;
+      btn.innerHTML = opt.textContent + svg;
+      dd.classList.remove("open");
+    });
+  });
+});
+document.addEventListener("click", () => {
+  document.querySelectorAll(".filter-dropdown.open").forEach(dd => dd.classList.remove("open"));
 });
 
 // ── Modal ─────────────────────────────────────────────────
@@ -2125,6 +2371,98 @@ function filterFeed(platform, el) {
   renderPosts();
 }
 
+// ── Settings Tabs ──────────────────────────────────────────
+function switchSettingsTab(tab, el) {
+  document.querySelectorAll(".settings-tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".settings-tab-panel").forEach(p => p.classList.remove("active"));
+  if (el) el.classList.add("active");
+  const panel = document.getElementById("settings-panel-" + tab);
+  if (panel) panel.classList.add("active");
+}
+
+// ── Render Platform Cards ──────────────────────────────────
+function renderPlatformCards() {
+  const container = document.getElementById("platform-cards-container");
+  if (!container) return;
+  const dict = I18N[currentLang];
+  container.innerHTML = PLATFORMS.map(p => {
+    const statusBadge = p.connected
+      ? `<span class="badge badge-success"><span class="badge-dot"></span> ${dict.status_connected || "已关联"}</span>`
+      : `<button class="btn btn-secondary btn-sm" onclick="alert('${dict.connectcoming || "连接功能开发中..."}')">${dict.btn_connect || "连接"}</button>`;
+    const accountInfo = p.connected && p.account ? `<div class="platform-card-account">${p.account}</div>` : "";
+    const postTypeTags = p.postTypes.map(pt => {
+      const name = currentLang === "en" ? pt.nameEn : currentLang === "fr" ? pt.nameFr : pt.name;
+      return `<span class="platform-post-tag active">${name}</span>`;
+    }).join("");
+    const note = p.note ? `<div style="padding:8px 16px 14px;font-size:var(--text-xs);color:var(--muted);line-height:1.5;background:var(--surface-warm);border-top:1px solid var(--border-soft)">💡 ${currentLang === "en" ? (p.descEn || p.note) : currentLang === "fr" ? (p.descFr || p.note) : p.note}</div>` : "";
+    return `<div class="platform-card">
+      <div class="platform-card-header">
+        <div class="platform-card-icon" style="background:${p.color}">${p.icon}</div>
+        <div class="platform-card-info">
+          <div class="platform-card-name">${p.name}</div>
+          <div class="platform-card-desc">${currentLang === "en" ? p.descEn : currentLang === "fr" ? p.descFr : p.desc}</div>
+        </div>
+        <div class="platform-card-status">${statusBadge}${accountInfo}</div>
+      </div>
+      <div class="platform-card-body">
+        <div class="platform-post-types">${postTypeTags}</div>
+      </div>
+      ${note}
+    </div>`;
+  }).join("");
+}
+
+// ── Render Cross-Platform Grid ─────────────────────────────
+function renderCrossPlatformGrid() {
+  const grid = document.getElementById("cross-platform-grid");
+  if (!grid) return;
+  const dict = I18N[currentLang];
+  const groupIcons = {image:"🖼",carousel:"📰",video:"🎬",short_video:"📱",story:"⏱",live:"🔴",article:"📄",text:"💬"};
+  grid.innerHTML = Object.entries(POST_TYPE_GROUPS).map(([key, group]) => {
+    const desc = currentLang === "en" ? group.descEn : currentLang === "fr" ? group.descFr : group.desc;
+    const badges = group.platforms.map(pid => {
+      const p = PLATFORMS.find(x => x.id === pid);
+      if (!p) return "";
+      return `<span class="cross-platform-badge" style="background:${p.color}">${p.name}</span>`;
+    }).join("");
+    return `<div class="cross-platform-card">
+      <div class="cross-platform-card-header">
+        <div class="cross-platform-card-icon">${groupIcons[key] || "📝"}</div>
+        <div class="cross-platform-card-name">${group.name}</div>
+      </div>
+      <div class="cross-platform-card-desc">${desc}</div>
+      <div class="cross-platform-platforms">${badges}</div>
+    </div>`;
+  }).join("");
+}
+
+// ── Render All Platform Formats ────────────────────────────
+function renderAllPlatformFormats() {
+  const grid = document.getElementById("all-platforms-format-grid");
+  if (!grid) return;
+  grid.innerHTML = PLATFORMS.map(p => {
+    const types = p.postTypes.map(pt => {
+      const name = currentLang === "en" ? pt.nameEn : currentLang === "fr" ? pt.nameFr : pt.name;
+      return `<div class="format-type">
+        <div class="format-type-header">
+          <span class="format-type-name">${name}</span>
+          <span class="format-type-ratio">${pt.ratio}</span>
+        </div>
+      </div>`;
+    }).join("");
+    return `<div class="format-card">
+      <div class="format-card-header">
+        <div class="format-card-icon" style="background:${p.color}">${p.icon}</div>
+        <div>
+          <div class="format-card-name">${p.name}</div>
+          <div class="format-card-desc">${p.postTypes.length} ${currentLang === "en" ? "post types" : currentLang === "fr" ? "types de publications" : "种帖子类型"}</div>
+        </div>
+      </div>
+      <div class="format-card-body">${types}</div>
+    </div>`;
+  }).join("");
+}
+
 function updateStats() {
   const filtered = feedFilter === "all" ? POSTS : POSTS.filter(p => p.platform === feedFilter);
   const total = filtered.length;
@@ -2157,6 +2495,8 @@ function renderPosts() {
   if (cf) cf.textContent = POSTS.filter(p => p.platform === "Facebook").length;
   if (cw) cw.textContent = POSTS.filter(p => p.platform === "微信公众号").length;
   if (cc) cc.textContent = POSTS.filter(p => p.platform === "微信视频号").length;
+  const ci = document.getElementById("feed-count-ig");
+  if (ci) ci.textContent = POSTS.filter(p => p.platform === "Instagram").length;
 
   // Group by date
   const grouped = {};
@@ -2181,13 +2521,21 @@ function renderPosts() {
     return `${wd} · ${mo} ${day}`;
   };
 
+  const platformIcons = {
+    Facebook: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+    微信公众号: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178A1.17 1.17 0 014.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178 1.17 1.17 0 01-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 01.598.082l1.584.926a.272.272 0 00.14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 01-.023-.156.49.49 0 01.201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-7.062-6.122zm-2.036 2.87c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982z"/></svg>`,
+    微信视频号: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>`,
+    Instagram: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 11-2.882 0 1.441 1.441 0 012.882 0z"/></svg>`
+  };
+
   const platformTag = name => {
     const cls = {
       "Facebook":"platform-tag-fb","微信公众号":"platform-tag-wx",
       "微信视频号":"platform-tag-wxch","小红书":"platform-tag-xhs",
       "Instagram":"platform-tag-ig","YouTube":"platform-tag-yt","TikTok":"platform-tag-tt"
     }[name] || "platform-tag-fb";
-    return `<span class="platform-tag ${cls}"><span class="platform-tag-dot"></span>${name}</span>`;
+    const icon = platformIcons[name] || "";
+    return `<span class="platform-tag ${cls}">${icon}<span style="margin-left:2px">${name}</span></span>`;
   };
 
   const mediaLabel = p => {
@@ -2230,14 +2578,42 @@ function renderPosts() {
   const renderCard = p => {
     const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
     const isCarousel = p.media === "carousel" && p.images && p.images.length > 1;
-    const isWeChat = p.platform === "微信公众号" || p.platform === "微信视频号";
+    const isIG = p.platform === "Instagram";
 
+    // ── Instagram card ──
+    if (isIG) {
+      const likes = Math.floor(Math.random() * 500) + 50;
+      const tags = p.hashtags ? p.hashtags.split(/\s+/).map(t => `<span class="feed-ig-tags">${t}</span>`).join(" ") : "";
+      return `<div class="feed-card feed-ig" data-od-id="feed-post-${p.id}">
+        <div class="feed-ig-top">
+          <div class="feed-ig-avatar"><div class="feed-ig-avatar-inner"><img src="${img}" alt=""></div></div>
+          <div class="feed-ig-name">home_direct_mtl</div>
+        </div>
+        ${isCarousel ? carouselStrip(p) : `
+        <img class="feed-ig-image" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">`}
+        <div class="feed-ig-actions">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="2" style="margin-left:auto"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        </div>
+        <div class="feed-ig-likes">${likes.toLocaleString()} likes</div>
+        <div class="feed-ig-body">
+          <div class="feed-ig-text"><b>home_direct_mtl</b> ${p.description}</div>
+          <div style="margin-top:6px">${tags}</div>
+        </div>
+        <div class="feed-ig-time">${p.date}</div>
+      </div>`;
+    }
+
+    // ── WeChat card ──
+    const isWeChat = p.platform === "微信公众号" || p.platform === "微信视频号";
     if (isWeChat) {
       const wxColor = p.platform === "微信视频号" ? "#FF6B2C" : "#07C160";
       const wxLabel = p.platform === "微信视频号" ? "视频号" : "公众号";
       return `<div class="feed-card feed-wechat" data-od-id="feed-post-${p.id}">
         <div class="feed-header">
-          <div class="feed-wx-icon" style="background:${wxColor}">W</div>
+          <div class="feed-wx-icon" style="background:${wxColor}">${platformIcons[p.platform] || "W"}</div>
           <div class="feed-wx-info">
             <div class="feed-wx-account">加园地产 HOME DIRECT · ${wxLabel}</div>
             <div class="feed-wx-time">${p.date}</div>
@@ -2254,17 +2630,26 @@ function renderPosts() {
             ${mediaLabel(p)}
           </div>
         </div>
+        <div class="feed-wx-footer">
+          <span>${dict.feed_read_more || "阅读原文"}</span>
+          <span class="feed-wx-read-more">${dict.feed_view_original || "查看原文 →"}</span>
+        </div>
       </div>`;
     }
 
-    // Facebook / generic card
+    // ── Facebook card ──
     const aspectClass = p.media === "single" ? "" : "ratio-45";
+    const likes = Math.floor(Math.random() * 300) + 20;
+    const comments = Math.floor(Math.random() * 50) + 5;
+    const shares = Math.floor(Math.random() * 30) + 2;
     return `<div class="feed-card feed-fb" data-od-id="feed-post-${p.id}">
       <div class="feed-header">
-        <div class="feed-avatar">HD</div>
+        <div class="feed-avatar">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
         <div class="feed-byline">
           <div class="feed-author">加园地产 HOME DIRECT</div>
-          <div class="feed-meta">${p.date}</div>
+          <div class="feed-meta">${p.date} · 🌐</div>
         </div>
         <div class="feed-platform-tags">${platformTag(p.platform)}</div>
       </div>
@@ -2277,13 +2662,24 @@ function renderPosts() {
       <div class="feed-body">
         <div class="feed-title">${p.title}</div>
         <div class="feed-text">${p.description}</div>
-        ${p.price !== "—" ? `<div style="margin-top:6px;font-size:var(--text-sm);font-weight:700;color:var(--accent)">${p.price}${p.beds ? ` · ${p.beds}🛏 ${p.baths}🚿` : ""}</div>` : ""}
+        ${p.price !== "—" ? `<div style="margin-top:6px;font-size:13px;font-weight:700;color:var(--accent)">${p.price}${p.beds ? ` · ${p.beds}🛏 ${p.baths}🚿` : ""}</div>` : ""}
         ${hashtags(p)}
       </div>
+      <div class="feed-reactions">
+        <div class="feed-reactions-left">
+          <div class="feed-reactions-icons">
+            <span class="feed-reactions-icon">👍</span>
+            <span class="feed-reactions-icon">❤️</span>
+            <span class="feed-reactions-icon">😄</span>
+          </div>
+          <span class="feed-reactions-count">${likes}</span>
+        </div>
+        <span class="feed-reactions-comments">${comments} comments · ${shares} shares</span>
+      </div>
       <div class="feed-actions">
-        <div class="feed-action">👍 Like</div>
-        <div class="feed-action">💬 Comment</div>
-        <div class="feed-action">↗ Share</div>
+        <div class="feed-action"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg> Like</div>
+        <div class="feed-action"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Comment</div>
+        <div class="feed-action"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16,6 12,2 8,6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</div>
       </div>
     </div>`;
   };
