@@ -423,6 +423,34 @@ tr:hover td{background:var(--surface-warm)}
 .feed-ig .feed-ig-tags{font-size:14px;color:#00376b;line-height:1.4}
 .feed-ig .feed-ig-time{font-size:10px;color:#8e8e8e;padding:4px 14px 12px;text-transform:uppercase;letter-spacing:0.02em}
 
+/* Xiaohongshu card */
+.feed-xhs{border:1px solid var(--border);background:#fff;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.feed-xhs .feed-header{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.feed-xhs .feed-xhs-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.feed-xhs .feed-xhs-icon svg{width:18px;height:18px}
+.feed-xhs .feed-xhs-info{flex:1;min-width:0}
+.feed-xhs .feed-xhs-account{font-size:13px;font-weight:600;color:#333;line-height:1.3}
+.feed-xhs .feed-xhs-time{font-size:11px;color:#999;margin-top:1px}
+.feed-xhs .feed-xhs-actions{display:flex;gap:20px;padding:10px 14px;border-top:1px solid #f0f0f0}
+.feed-xhs .feed-xhs-action{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:#666;cursor:pointer}
+.feed-xhs .feed-xhs-action svg{width:18px;height:18px}
+.feed-xhs .ratio-45 img{aspect-ratio:4/5}
+
+/* Douyin card */
+.feed-dy{border:1px solid var(--border);background:#fff;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.feed-dy .feed-header{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.feed-dy .feed-dy-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.feed-dy .feed-dy-icon svg{width:18px;height:18px}
+.feed-dy .feed-dy-info{flex:1;min-width:0}
+.feed-dy .feed-dy-account{font-size:13px;font-weight:600;color:#333;line-height:1.3}
+.feed-dy .feed-dy-time{font-size:11px;color:#999;margin-top:1px}
+.feed-dy .feed-img-wrap{position:relative}
+.feed-dy .ratio-916 img{aspect-ratio:9/16}
+.feed-dy .feed-dy-overlay{position:absolute;top:0;right:0;bottom:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px;pointer-events:none}
+.feed-dy .feed-dy-sidebar{display:flex;flex-direction:column;align-items:center;gap:12px}
+.feed-dy .feed-dy-action{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:500;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
+.feed-dy .feed-dy-action svg{width:28px;height:28px}
+
 /* Post status & platform badges on feed cards */
 .feed-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
 
@@ -436,6 +464,7 @@ tr:hover td{background:var(--surface-warm)}
 .platform-tag-ig{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888)}
 .platform-tag-yt{background:#FF0000}
 .platform-tag-tt{background:#010101}
+.platform-tag-dy{background:#010101}
 .platform-tag-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.7);flex-shrink:0}
 
 /* Image wrapper for overlays */
@@ -536,6 +565,19 @@ tr:hover td{background:var(--surface-warm)}
 .platform-post-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--radius-pill);font-size:11px;font-weight:600;border:1px solid var(--border);color:var(--fg);background:var(--bg)}
 .platform-post-tag.active{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
 .platform-post-tag:not(.active){opacity:0.5}
+/* Platform card states */
+.platform-card-connected{border-left:3px solid var(--success)}
+.platform-card-disconnected{border-left:3px solid var(--border);opacity:0.7}
+.platform-card-disconnected:hover{opacity:1}
+/* Platform sections */
+.platform-section{margin-bottom:var(--space-5)}
+.platform-section-header{display:flex;align-items:center;gap:8px;margin-bottom:var(--space-3)}
+.platform-section-title{font-size:var(--text-sm);font-weight:700;color:var(--fg)}
+.platform-section-count{background:var(--surface-warm);color:var(--muted);font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--radius-pill)}
+.platform-cards-grid{display:flex;flex-direction:column;gap:var(--space-3)}
+/* Disconnected badge */
+.badge-disconnected{background:#f5f5f5;color:#888}
+.badge-dot-disconnected{background:#888}
 /* Cross-platform similarity grid */
 .cross-platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-3)}
 .cross-platform-card{border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;background:var(--bg)}
@@ -778,6 +820,8 @@ tr:hover td{background:var(--surface-warm)}
           <button class="feed-filter" data-platform="微信公众号" onclick="filterFeed('微信公众号',this)"><span data-i18n="wechat_official">微信公众号</span> <span class="feed-filter-count" id="feed-count-wechat">4</span></button>
           <button class="feed-filter" data-platform="微信视频号" onclick="filterFeed('微信视频号',this)"><span data-i18n="wechat_channels">微信视频号</span> <span class="feed-filter-count" id="feed-count-channels">1</span></button>
           <button class="feed-filter" data-platform="Instagram" onclick="filterFeed('Instagram',this)">Instagram <span class="feed-filter-count" id="feed-count-ig">2</span></button>
+          <button class="feed-filter" data-platform="小红书" onclick="filterFeed('小红书',this)"><span data-i18n="platform_xiaohongshu">小红书</span> <span class="feed-filter-count" id="feed-count-xhs">2</span></button>
+          <button class="feed-filter" data-platform="抖音" onclick="filterFeed('抖音',this)"><span data-i18n="platform_douyin">抖音</span> <span class="feed-filter-count" id="feed-count-dy">2</span></button>
         </div>
         <div class="stats-row" data-od-id="stats-overview">
           <div class="stat-card">
@@ -1279,13 +1323,14 @@ const I18N = {
     filter_lang_all: "所有语言", filter_scene_all: "所有场景",
     status_for_sale: "在售", status_sold: "已售",
     status_for_rent: "在租", status_rented: "已租", status_off: "下架",
-    status_connected: "已关联", status_pending_auth: "待授权",
+    status_connected: "已关联", status_pending_auth: "待授权", status_not_connected: "未连接",
+    platforms_connected: "已连接平台", platforms_available: "可连接平台",
     type_apartment: "公寓", type_villa: "别墅", type_commercial: "商业",
     tab_all: "全部", tab_published: "已发布", tab_pending: "待审批",
     tab_draft: "草稿", tab_rejected: "已拒绝",
     th_post_title: "帖子标题", th_listing: "关联房源", th_platform: "平台",
     th_language: "语言", th_status: "状态", th_date: "创建日期", th_actions: "操作",
-    platform_wechat: "微信", platform_facebook: "Facebook",
+    platform_wechat: "微信", platform_facebook: "Facebook", platform_xiaohongshu: "小红书", platform_douyin: "抖音",
     lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "双语",
     scene_sale: "房源出售", scene_rent: "房源出租", scene_brand: "品牌推广",
     wechat_official: "微信公众号", wechat_channels: "微信视频号",
@@ -1384,13 +1429,14 @@ const I18N = {
     filter_lang_all: "All Languages", filter_scene_all: "All Scenes",
     status_for_sale: "For Sale", status_sold: "Sold",
     status_for_rent: "For Rent", status_rented: "Rented", status_off: "Off Market",
-    status_connected: "Connected", status_pending_auth: "Pending Auth",
+    status_connected: "Connected", status_pending_auth: "Pending Auth", status_not_connected: "Not Connected",
+    platforms_connected: "Connected Platforms", platforms_available: "Available Platforms",
     type_apartment: "Apartment", type_villa: "Villa", type_commercial: "Commercial",
     tab_all: "All", tab_published: "Published", tab_pending: "Pending",
     tab_draft: "Draft", tab_rejected: "Rejected",
     th_post_title: "Post Title", th_listing: "Listing", th_platform: "Platform",
     th_language: "Language", th_status: "Status", th_date: "Date", th_actions: "Actions",
-    platform_wechat: "WeChat", platform_facebook: "Facebook",
+    platform_wechat: "WeChat", platform_facebook: "Facebook", platform_xiaohongshu: "Xiaohongshu", platform_douyin: "Douyin",
     lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingual",
     scene_sale: "For Sale", scene_rent: "For Rent", scene_brand: "Branding",
     wechat_official: "WeChat Official", wechat_channels: "WeChat Channels",
@@ -1489,13 +1535,14 @@ const I18N = {
     filter_lang_all: "Toutes les langues", filter_scene_all: "Toutes les scènes",
     status_for_sale: "À vendre", status_sold: "Vendu",
     status_for_rent: "À louer", status_rented: "Loué", status_off: "Hors marché",
-    status_connected: "Connecté", status_pending_auth: "En attente",
+    status_connected: "Connecté", status_pending_auth: "En attente", status_not_connected: "Non connecté",
+    platforms_connected: "Plateformes connectées", platforms_available: "Plateformes disponibles",
     type_apartment: "Appartement", type_villa: "Villa", type_commercial: "Commercial",
     tab_all: "Tout", tab_published: "Publié", tab_pending: "En attente",
     tab_draft: "Brouillon", tab_rejected: "Rejeté",
     th_post_title: "Titre", th_listing: "Annonce", th_platform: "Plateforme",
     th_language: "Langue", th_status: "Statut", th_date: "Date", th_actions: "Actions",
-    platform_wechat: "WeChat", platform_facebook: "Facebook",
+    platform_wechat: "WeChat", platform_facebook: "Facebook", platform_xiaohongshu: "Xiaohongshu", platform_douyin: "Douyin",
     lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingue",
     scene_sale: "Vente", scene_rent: "Location", scene_brand: "Marque",
     wechat_official: "WeChat Officiel", wechat_channels: "WeChat Channels",
@@ -1594,13 +1641,14 @@ const I18N = {
     filter_lang_all: "Todos los idiomas", filter_scene_all: "Todas las escenas",
     status_for_sale: "En venta", status_sold: "Vendido",
     status_for_rent: "En alquiler", status_rented: "Alquilado", status_off: "Fuera del mercado",
-    status_connected: "Conectado", status_pending_auth: "Pendiente",
+    status_connected: "Conectado", status_pending_auth: "Pendiente", status_not_connected: "No conectado",
+    platforms_connected: "Plataformas conectadas", platforms_available: "Plataformas disponibles",
     type_apartment: "Apartamento", type_villa: "Villa", type_commercial: "Comercial",
     tab_all: "Todos", tab_published: "Publicado", tab_pending: "Pendiente",
     tab_draft: "Borrador", tab_rejected: "Rechazado",
     th_post_title: "Título", th_listing: "Propiedad", th_platform: "Plataforma",
     th_language: "Idioma", th_status: "Estado", th_date: "Fecha", th_actions: "Acciones",
-    platform_wechat: "WeChat", platform_facebook: "Facebook",
+    platform_wechat: "WeChat", platform_facebook: "Facebook", platform_xiaohongshu: "Xiaohongshu", platform_douyin: "Douyin",
     lang_zh: "简体中文", lang_en: "English", lang_fr: "Français", lang_bilingual: "Bilingüe",
     scene_sale: "Venta", scene_rent: "Alquiler", scene_brand: "Marca",
     wechat_official: "WeChat Oficial", wechat_channels: "WeChat Channels",
@@ -1844,6 +1892,10 @@ const POSTS = [
   { id:11, listingId:null, title:"加园地产 · 品牌宣传", platform:"微信公众号", lang:"中文", status:"pending", date:"2026-08-22", media:"single", images:["images/listings/condo3.jpg"], description:"加园地产 — 蒙特利尔华人信赖的房产服务团队。专注买房、卖房、租赁一站式服务。", hashtags:"", price:"—", beds:0, baths:0 },
   { id:12, listingId:1, title:"市中心豪华公寓 · Downtown Living", platform:"Instagram", lang:"English", status:"published", date:"2026-08-20", media:"single", images:["images/listings/condo1.jpg"], description:"Modern downtown living at its finest. Steps from McGill, metro, and all amenities. Open concept, stainless steel appliances.", hashtags:"#MontrealRealEstate #DowntownLiving #CondoLife #Montreal", price:"$850,000", beds:3, baths:2 },
   { id:13, listingId:5, title:"Outremont 花园洋房 · Garden Oasis", platform:"Instagram", lang:"中文", status:"draft", date:"2026-08-19", media:"carousel", images:["images/listings/garden1.jpg","images/listings/garden2.jpg","images/listings/garden3.jpg"], description:"Rare Outremont gem with private garden oasis. Classic architecture meets modern comfort.", hashtags:"#Outremont #GardenHome #Montreal #LuxuryLiving", price:"$980,000", beds:4, baths:3 },
+  { id:14, listingId:3, title:"皇家山景观房 · 高层视野", platform:"小红书", lang:"中文", status:"published", date:"2026-08-21", media:"single", images:["images/listings/view1.jpg"], description:"皇家山脚下优质学区房，俯瞰城市天际线。全新装修，拎包入住。", hashtags:"#蒙特利尔买房 #皇家山 #学区房 #加拿大房产", price:"$720,000", beds:3, baths:2 },
+  { id:15, listingId:2, title:"西山别墅 · 品质生活", platform:"小红书", lang:"中文", status:"published", date:"2026-08-22", media:"carousel", images:["images/listings/villa1.jpg","images/listings/villa2.jpg","images/listings/villa3.jpg"], description:"西山豪宅区，私家花园， mountain views。蒙特利尔顶级社区，适合家庭定居。", hashtags:"#蒙特利尔豪宅 #西山 #加拿大生活 #房产", price:"$1,250,000", beds:5, baths:4 },
+  { id:16, listingId:1, title:"市中心公寓 · 看房vlog", platform:"抖音", lang:"中文", status:"published", date:"2026-08-21", media:"video", images:["images/listings/condo1.jpg"], description:"蒙特利尔市中心豪华公寓实拍！步行5分钟到McGill大学，地铁直达。", hashtags:"#蒙特利尔 #看房 #公寓 #加拿大生活", price:"$850,000", beds:3, baths:2 },
+  { id:17, listingId:5, title:"Outremont花园洋房 · 房源展示", platform:"抖音", lang:"中文", status:"draft", date:"2026-08-22", media:"video", images:["images/listings/garden1.jpg"], description:"Outremont稀有花园洋房，私家花园，古典建筑。蒙特利尔最适合居住的社区之一。", hashtags:"#Outremont #花园洋房 #蒙特利尔房产 #加拿大", price:"$980,000", beds:4, baths:3 },
 ];
 
 const TEMPLATES = [
@@ -2385,18 +2437,22 @@ function renderPlatformCards() {
   const container = document.getElementById("platform-cards-container");
   if (!container) return;
   const dict = I18N[currentLang];
-  container.innerHTML = PLATFORMS.map(p => {
+  
+  const connected = PLATFORMS.filter(p => p.connected);
+  const disconnected = PLATFORMS.filter(p => !p.connected);
+  
+  const renderPlatformCard = (p, isConnected) => {
     const platformName = currentLang === "en" ? (p.nameEn || p.name) : currentLang === "fr" ? (p.nameFr || p.name) : p.name;
-    const statusBadge = p.connected
+    const statusBadge = isConnected
       ? `<span class="badge badge-success"><span class="badge-dot"></span> ${dict.status_connected || "已关联"}</span>`
-      : `<button class="btn btn-secondary btn-sm" onclick="alert('${dict.connectcoming || "连接功能开发中..."}')">${dict.btn_connect || "连接"}</button>`;
-    const accountInfo = p.connected && p.account ? `<div class="platform-card-account">${p.account}</div>` : "";
+      : `<span class="badge badge-disconnected"><span class="badge-dot badge-dot-disconnected"></span> ${dict.status_not_connected || "未连接"}</span>`;
+    const accountInfo = isConnected && p.account ? `<div class="platform-card-account">${p.account}</div>` : "";
     const postTypeTags = p.postTypes.map(pt => {
       const name = currentLang === "en" ? pt.nameEn : currentLang === "fr" ? pt.nameFr : pt.name;
-      return `<span class="platform-post-tag active">${name}</span>`;
+      return `<span class="platform-post-tag ${isConnected ? 'active' : ''}">${name}</span>`;
     }).join("");
     const note = p.note ? `<div style="padding:8px 16px 14px;font-size:var(--text-xs);color:var(--muted);line-height:1.5;background:var(--surface-warm);border-top:1px solid var(--border-soft)">💡 ${currentLang === "en" ? (p.descEn || p.note) : currentLang === "fr" ? (p.descFr || p.note) : p.note}</div>` : "";
-    return `<div class="platform-card">
+    return `<div class="platform-card ${isConnected ? 'platform-card-connected' : 'platform-card-disconnected'}">
       <div class="platform-card-header">
         <div class="platform-card-icon" style="background:${p.color}">${p.icon}</div>
         <div class="platform-card-info">
@@ -2410,7 +2466,31 @@ function renderPlatformCards() {
       </div>
       ${note}
     </div>`;
-  }).join("");
+  };
+  
+  let html = '';
+  
+  if (connected.length > 0) {
+    html += `<div class="platform-section">
+      <div class="platform-section-header">
+        <span class="platform-section-title">${dict.platforms_connected || "已连接平台"}</span>
+        <span class="platform-section-count">${connected.length}</span>
+      </div>
+      <div class="platform-cards-grid">${connected.map(p => renderPlatformCard(p, true)).join("")}</div>
+    </div>`;
+  }
+  
+  if (disconnected.length > 0) {
+    html += `<div class="platform-section">
+      <div class="platform-section-header">
+        <span class="platform-section-title">${dict.platforms_available || "可连接平台"}</span>
+        <span class="platform-section-count">${disconnected.length}</span>
+      </div>
+      <div class="platform-cards-grid">${disconnected.map(p => renderPlatformCard(p, false)).join("")}</div>
+    </div>`;
+  }
+  
+  container.innerHTML = html;
 }
 
 // ── Render Cross-Platform Grid ─────────────────────────────
@@ -2500,6 +2580,10 @@ function renderPosts() {
   if (cc) cc.textContent = POSTS.filter(p => p.platform === "微信视频号").length;
   const ci = document.getElementById("feed-count-ig");
   if (ci) ci.textContent = POSTS.filter(p => p.platform === "Instagram").length;
+  const cxhs = document.getElementById("feed-count-xhs");
+  if (cxhs) cxhs.textContent = POSTS.filter(p => p.platform === "小红书").length;
+  const cdy = document.getElementById("feed-count-dy");
+  if (cdy) cdy.textContent = POSTS.filter(p => p.platform === "抖音").length;
 
   // Group by date
   const grouped = {};
@@ -2528,14 +2612,16 @@ function renderPosts() {
     Facebook: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
     微信公众号: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178A1.17 1.17 0 014.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178 1.17 1.17 0 01-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 01.598.082l1.584.926a.272.272 0 00.14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 01-.023-.156.49.49 0 01.201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-7.062-6.122zm-2.036 2.87c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982z"/></svg>`,
     微信视频号: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>`,
-    Instagram: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 11-2.882 0 1.441 1.441 0 012.882 0z"/></svg>`
+    Instagram: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 11-2.882 0 1.441 1.441 0 012.882 0z"/></svg>`,
+    "小红书": `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><text x="5" y="17" font-size="14" font-weight="bold">小</text></svg>`,
+    "抖音": `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.65-.85 5.6-1.2 7.4-.15.78-.45 1.04-.73 1.07-.63.06-1.1-.42-1.71-1-.96-.74-1.48-1.12-2.37-1.62-.96-.59-.33-1.09.2-1.71.15-.18 2.84-2.34 2.88-2.52 0-.02.01-.1-.04-.14-.06-.04-.14-.02-.19.01-.07.06-1.38.93-2.3 1.56-.45.33-.86.49-1.23.48-.39-.01-1.14-.24-2.05-.46-1.04-.27-1.85-.41-1.78-.85.03-.24.35-.47.95-.7 3.05-1.33 5.11-2.21 6.17-2.63 2.99-1.17 3.62-1.38 4.03-1.39.09 0 .3.02.44.14.12.1.15.22.16.31.01.07.02.18.01.28z"/></svg>`
   };
 
   const platformTag = name => {
     const cls = {
       "Facebook":"platform-tag-fb","微信公众号":"platform-tag-wx",
       "微信视频号":"platform-tag-wxch","小红书":"platform-tag-xhs",
-      "Instagram":"platform-tag-ig","YouTube":"platform-tag-yt","TikTok":"platform-tag-tt"
+      "抖音":"platform-tag-dy","Instagram":"platform-tag-ig","YouTube":"platform-tag-yt","TikTok":"platform-tag-tt"
     }[name] || "platform-tag-fb";
     const icon = platformIcons[name] || "";
     const p = PLATFORMS.find(x => x.name === name);
@@ -2638,6 +2724,75 @@ function renderPosts() {
         <div class="feed-wx-footer">
           <span>${dict.feed_read_more || "阅读原文"}</span>
           <span class="feed-wx-read-more">${dict.feed_view_original || "查看原文 →"}</span>
+        </div>
+      </div>`;
+    }
+
+    // ── Xiaohongshu card ──
+    const isXHS = p.platform === "小红书";
+    if (isXHS) {
+      const likes = Math.floor(Math.random() * 800) + 100;
+      const saves = Math.floor(Math.random() * 200) + 50;
+      const comments = Math.floor(Math.random() * 80) + 10;
+      return `<div class="feed-card feed-xhs" data-od-id="feed-post-${p.id}">
+        <div class="feed-header">
+          <div class="feed-xhs-icon" style="background:#FE2C55">${platformIcons["小红书"] || "小"}</div>
+          <div class="feed-xhs-info">
+            <div class="feed-xhs-account">加园地产 HOME DIRECT</div>
+            <div class="feed-xhs-time">${p.date}</div>
+          </div>
+          <div class="feed-platform-tags">${platformTag("小红书")}</div>
+        </div>
+        ${isCarousel ? carouselStrip(p) : `
+        <div class="feed-img-wrap ratio-45">
+          <img src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+          ${videoOverlay(p)}
+          ${mediaLabel(p)}
+        </div>`}
+        <div class="feed-body">
+          <div class="feed-title">${p.title}</div>
+          <div class="feed-text">${p.description}</div>
+          ${p.price !== "—" ? `<div style="margin-top:6px;font-size:13px;font-weight:700;color:var(--accent)">${p.price}${p.beds ? ` · ${p.beds}🛏 ${p.baths}🚿` : ""}</div>` : ""}
+          ${hashtags(p)}
+        </div>
+        <div class="feed-xhs-actions">
+          <div class="feed-xhs-action"><svg viewBox="0 0 24 24" fill="#FE2C55"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> ${likes}</div>
+          <div class="feed-xhs-action"><svg viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> ${saves}</div>
+          <div class="feed-xhs-action"><svg viewBox="0 0 24 24" fill="none" stroke="#FE2C55" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> ${comments}</div>
+        </div>
+      </div>`;
+    }
+
+    // ── Douyin card ──
+    const isDY = p.platform === "抖音";
+    if (isDY) {
+      const likes = Math.floor(Math.random() * 5000) + 500;
+      const comments = Math.floor(Math.random() * 300) + 50;
+      const shares = Math.floor(Math.random() * 100) + 20;
+      return `<div class="feed-card feed-dy" data-od-id="feed-post-${p.id}">
+        <div class="feed-header">
+          <div class="feed-dy-icon" style="background:#010101">${platformIcons["抖音"] || "抖"}</div>
+          <div class="feed-dy-info">
+            <div class="feed-dy-account">加园地产 HOME DIRECT</div>
+            <div class="feed-dy-time">${p.date}</div>
+          </div>
+          <div class="feed-platform-tags">${platformTag("抖音")}</div>
+        </div>
+        <div class="feed-img-wrap ratio-916">
+          <img src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">
+          ${videoOverlay(p)}
+          <div class="feed-dy-overlay">
+            <div class="feed-dy-sidebar">
+              <div class="feed-dy-action"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> ${likes.toLocaleString()}</div>
+              <div class="feed-dy-action"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> ${comments}</div>
+              <div class="feed-dy-action"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16,6 12,2 8,6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> ${shares}</div>
+            </div>
+          </div>
+        </div>
+        <div class="feed-body">
+          <div class="feed-title">${p.title}</div>
+          <div class="feed-text">${p.description}</div>
+          ${hashtags(p)}
         </div>
       </div>`;
     }
