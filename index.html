@@ -1727,7 +1727,7 @@ const PLATFORMS = [
     ]
   },
   {
-    id:"wechat_official", name:"微信公众号", color:"#07C160", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348z"/></svg>`,
+    id:"wechat_official", name:"微信公众号", nameEn:"WeChat Official", nameFr:"WeChat Officiel", color:"#07C160", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348z"/></svg>`,
     desc:"微信公众号 — 图文推送、品牌宣传",
     descEn:"WeChat Official Account — articles, brand content",
     descFr:"Compte officiel WeChat — articles, contenu de marque",
@@ -1740,7 +1740,7 @@ const PLATFORMS = [
     note:"公众号适合长文推送、品牌故事、政策解读等深度内容。粉丝通过订阅查看，内容永久保留。"
   },
   {
-    id:"wechat_channels", name:"微信视频号", color:"#FF6B2C", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>`,
+    id:"wechat_channels", name:"微信视频号", nameEn:"WeChat Channels", nameFr:"WeChat Vidéos", color:"#FF6B2C", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>`,
     desc:"微信视频号 — 短视频、直播",
     descEn:"WeChat Channels — short videos, live streaming",
     descFr:"Vidéos WeChat — vidéos courtes, direct",
@@ -1881,7 +1881,7 @@ const APPROVALS = [
   { id:8, postId:11, title:"加园地产 · 品牌宣传", author:"李明", listing:"—", platform:"微信公众号", lang:"中文", date:"2026-08-22" },
 ];
 
-let currentLang = "zh";
+let currentLang = "en";
 let currentPage = "dashboard";
 
 // ── i18n apply ────────────────────────────────────────────
@@ -2386,6 +2386,7 @@ function renderPlatformCards() {
   if (!container) return;
   const dict = I18N[currentLang];
   container.innerHTML = PLATFORMS.map(p => {
+    const platformName = currentLang === "en" ? (p.nameEn || p.name) : currentLang === "fr" ? (p.nameFr || p.name) : p.name;
     const statusBadge = p.connected
       ? `<span class="badge badge-success"><span class="badge-dot"></span> ${dict.status_connected || "已关联"}</span>`
       : `<button class="btn btn-secondary btn-sm" onclick="alert('${dict.connectcoming || "连接功能开发中..."}')">${dict.btn_connect || "连接"}</button>`;
@@ -2399,7 +2400,7 @@ function renderPlatformCards() {
       <div class="platform-card-header">
         <div class="platform-card-icon" style="background:${p.color}">${p.icon}</div>
         <div class="platform-card-info">
-          <div class="platform-card-name">${p.name}</div>
+          <div class="platform-card-name">${platformName}</div>
           <div class="platform-card-desc">${currentLang === "en" ? p.descEn : currentLang === "fr" ? p.descFr : p.desc}</div>
         </div>
         <div class="platform-card-status">${statusBadge}${accountInfo}</div>
@@ -2423,7 +2424,8 @@ function renderCrossPlatformGrid() {
     const badges = group.platforms.map(pid => {
       const p = PLATFORMS.find(x => x.id === pid);
       if (!p) return "";
-      return `<span class="cross-platform-badge" style="background:${p.color}">${p.name}</span>`;
+      const pname = currentLang === "en" ? (p.nameEn || p.name) : currentLang === "fr" ? (p.nameFr || p.name) : p.name;
+      return `<span class="cross-platform-badge" style="background:${p.color}">${pname}</span>`;
     }).join("");
     return `<div class="cross-platform-card">
       <div class="cross-platform-card-header">
@@ -2441,6 +2443,7 @@ function renderAllPlatformFormats() {
   const grid = document.getElementById("all-platforms-format-grid");
   if (!grid) return;
   grid.innerHTML = PLATFORMS.map(p => {
+    const platformName = currentLang === "en" ? (p.nameEn || p.name) : currentLang === "fr" ? (p.nameFr || p.name) : p.name;
     const types = p.postTypes.map(pt => {
       const name = currentLang === "en" ? pt.nameEn : currentLang === "fr" ? pt.nameFr : pt.name;
       return `<div class="format-type">
@@ -2454,7 +2457,7 @@ function renderAllPlatformFormats() {
       <div class="format-card-header">
         <div class="format-card-icon" style="background:${p.color}">${p.icon}</div>
         <div>
-          <div class="format-card-name">${p.name}</div>
+          <div class="format-card-name">${platformName}</div>
           <div class="format-card-desc">${p.postTypes.length} ${currentLang === "en" ? "post types" : currentLang === "fr" ? "types de publications" : "种帖子类型"}</div>
         </div>
       </div>
@@ -3048,7 +3051,7 @@ function approvePost(id) {
 }
 
 // ── Init ──────────────────────────────────────────────────
-applyI18n("zh");
+applyI18n("en");
 </script>
 </body>
 </html>
