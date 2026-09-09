@@ -736,15 +736,15 @@ tr:hover td{background:var(--surface-warm)}
         </div>
         <div class="lang-switch" data-od-id="lang-switch">
           <button class="lang-trigger" id="lang-trigger" onclick="toggleLangDropdown()">
-            <span id="lang-current">简体</span>
+            <span id="lang-current">EN</span>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="lang-dropdown" id="lang-dropdown">
-            <button class="lang-option active" data-lang="zh" onclick="selectLang('zh')">
+            <button class="lang-option" data-lang="zh" onclick="selectLang('zh')">
               <svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               简体中文
             </button>
-            <button class="lang-option" data-lang="en" onclick="selectLang('en')">
+            <button class="lang-option active" data-lang="en" onclick="selectLang('en')">
               <svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               English
             </button>
@@ -2538,7 +2538,9 @@ function renderPosts() {
       "Instagram":"platform-tag-ig","YouTube":"platform-tag-yt","TikTok":"platform-tag-tt"
     }[name] || "platform-tag-fb";
     const icon = platformIcons[name] || "";
-    return `<span class="platform-tag ${cls}">${icon}<span style="margin-left:2px">${name}</span></span>`;
+    const p = PLATFORMS.find(x => x.name === name);
+    const displayName = p ? (currentLang === "en" ? (p.nameEn || p.name) : currentLang === "fr" ? (p.nameFr || p.name) : p.name) : name;
+    return `<span class="platform-tag ${cls}">${icon}<span style="margin-left:2px">${displayName}</span></span>`;
   };
 
   const mediaLabel = p => {
