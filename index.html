@@ -502,20 +502,26 @@ tr:hover td{background:var(--surface-warm)}
 .view-toggle-btn:hover{background:var(--surface-warm)}
 .view-toggle-btn.active{background:var(--fg)}
 .view-toggle-btn.active svg{color:var(--bg)}
-/* List view table */
-.feed-list-view{width:100%}
-.feed-table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
-.feed-table th{text-align:left;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em}
-.feed-table td{padding:10px 14px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
-.feed-table tr:hover{background:var(--surface-warm)}
-.feed-table .post-title{font-weight:600;color:var(--fg)}
-.feed-table .post-thumb{width:40px;height:40px;border-radius:4px;object-fit:cover;margin-right:10px;flex-shrink:0}
-.feed-table .post-title-cell{display:flex;align-items:center}
-.feed-table .status-badge{padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
-.feed-table .status-published{background:#e6f7e9;color:#1a7f37}
-.feed-table .status-pending{background:#fff3cd;color:#856404}
-.feed-table .status-draft{background:#f0f0f0;color:#666}
-.feed-table .status-rejected{background:#fde8e5;color:#cf222e}
+/* List view - feed card style */
+.feed-list-view{width:100%;display:flex;flex-direction:column;gap:var(--space-3)}
+.feed-list-view .day-section-header{margin-bottom:var(--space-2)}
+.feed-list-post{display:grid;grid-template-columns:auto 1fr auto auto auto;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg);transition:box-shadow var(--motion-fast)}
+.feed-list-post:hover{box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.feed-list-post .post-thumb{width:48px;height:48px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.feed-list-post .post-info{min-width:0;flex:1}
+.feed-list-post .post-title{font-size:var(--text-sm);font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed-list-post .post-desc{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed-list-post .post-platform{display:flex;align-items:center;gap:6px}
+.feed-list-post .post-platform-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0}
+.feed-list-post .post-platform-icon svg{width:14px;height:14px}
+.feed-list-post .post-platform-name{font-size:12px;font-weight:500;color:var(--fg)}
+.feed-list-post .post-lang{font-size:11px;color:var(--muted);background:var(--surface-warm);padding:2px 8px;border-radius:var(--radius-pill);flex-shrink:0}
+.feed-list-post .post-date{font-size:11px;color:var(--muted);flex-shrink:0;text-align:right;min-width:60px}
+.feed-list-post .status-badge{padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;flex-shrink:0}
+.feed-list-post .status-published{background:#e6f7e9;color:#1a7f37}
+.feed-list-post .status-pending{background:#fff3cd;color:#856404}
+.feed-list-post .status-draft{background:#f0f0f0;color:#666}
+.feed-list-post .status-rejected{background:#fde8e5;color:#cf222e}
 
 /* ── Platform Format Reference ────────────────────────── */
 .format-section{margin-bottom:var(--space-6)}
@@ -891,20 +897,9 @@ tr:hover td{background:var(--surface-warm)}
           </div>
         </div>
         <div class="feed-list-view" id="feed-list-view" style="display:none">
-          <table class="feed-table">
-            <thead>
-              <tr>
-                <th data-i18n="th_post_title">帖子标题</th>
-                <th data-i18n="th_platform">平台</th>
-                <th data-i18n="th_language">语言</th>
-                <th data-i18n="th_status">状态</th>
-                <th data-i18n="th_date">日期</th>
-              </tr>
-            </thead>
-            <tbody id="feed-table-body">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
+          <div id="feed-list-container">
+            <!-- Populated by JS: day-section divs with feed-list-post cards -->
+          </div>
         </div>
       </div>
 
@@ -2499,23 +2494,50 @@ function setFeedView(view, el) {
 
 function renderFeedTable(posts) {
   const dict = I18N[currentLang];
-  const tbody = document.getElementById("feed-table-body");
-  if (!tbody) return;
+  const container = document.getElementById("feed-list-container");
+  if (!container) return;
   
   const statusClass = s => ({published:"status-published",pending:"status-pending",draft:"status-draft",rejected:"status-rejected"}[s] || "");
   const statusLabel = s => dict["tab_"+s] || s;
   const langLabel = l => ({中文:"中文",English:"English",双语:"Bilingue",Bilingüe:"Bilingüe",Français:"Français"}[l] || l);
   
-  tbody.innerHTML = posts.map(p => {
-    const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
-    const platformName = currentLang === "en" ? (() => { const pl = PLATFORMS.find(x => x.name === p.platform); return pl ? (pl.nameEn || pl.name) : p.platform; })() : currentLang === "fr" ? (() => { const pl = PLATFORMS.find(x => x.name === p.platform); return pl ? (pl.nameFr || pl.name) : p.platform; })() : p.platform;
-    return `<tr>
-      <td><div class="post-title-cell"><img class="post-thumb" src="${img}" alt="" onerror="this.style.background='var(--surface-warm)'"> <span class="post-title">${p.title}</span></div></td>
-      <td>${platformTag(p.platform)}</td>
-      <td>${langLabel(p.lang)}</td>
-      <td><span class="status-badge ${statusClass(p.status)}">${statusLabel(p.status)}</span></td>
-      <td>${p.date}</td>
-    </tr>`;
+  // Group by date
+  const grouped = {};
+  posts.forEach(p => {
+    if (!grouped[p.date]) grouped[p.date] = [];
+    grouped[p.date].push(p);
+  });
+  const dates = Object.keys(grouped).sort().reverse();
+  
+  container.innerHTML = dates.map(d => {
+    const dayPosts = grouped[d].map(p => {
+      const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
+      const platformIcon = platformIcons[p.platform] || p.platform.charAt(0);
+      const platformBg = (() => {
+        const pl = PLATFORMS.find(x => x.name === p.platform);
+        return pl ? pl.color : "#666";
+      })();
+      return `<div class="feed-list-post">
+        <img class="post-thumb" src="${img}" alt="" onerror="this.style.background='var(--surface-warm)'">
+        <div class="post-info">
+          <div class="post-title">${p.title}</div>
+          <div class="post-desc">${p.description}</div>
+        </div>
+        <div class="post-platform">
+          <div class="post-platform-icon" style="background:${platformBg}">${platformIcon}</div>
+          <span class="post-platform-name">${p.platform}</span>
+        </div>
+        <span class="post-lang">${langLabel(p.lang)}</span>
+        <span class="status-badge ${statusClass(p.status)}">${statusLabel(p.status)}</span>
+        <span class="post-date">${p.date}</span>
+      </div>`;
+    }).join("");
+    return `<div class="day-section">
+      <div class="day-section-header">
+        <div class="day-section-date">${d}</div>
+      </div>
+      ${dayPosts}
+    </div>`;
   }).join("");
 }
 
