@@ -424,35 +424,39 @@ tr:hover td{background:var(--surface-warm)}
 .feed-ig .feed-ig-time{font-size:10px;color:#8e8e8e;padding:4px 14px 12px;text-transform:uppercase;letter-spacing:0.02em}
 
 /* Xiaohongshu card */
-.feed-xhs{border:1px solid var(--border);background:#fff;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.feed-xhs{border:1px solid var(--border);background:#fff;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
 .feed-xhs .feed-header{display:flex;align-items:center;gap:10px;padding:10px 14px}
-.feed-xhs .feed-xhs-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.feed-xhs .feed-xhs-icon svg{width:18px;height:18px}
+.feed-xhs .feed-xhs-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.feed-xhs .feed-xhs-icon svg{width:16px;height:16px}
 .feed-xhs .feed-xhs-info{flex:1;min-width:0}
-.feed-xhs .feed-xhs-account{font-size:13px;font-weight:600;color:#333;line-height:1.3}
-.feed-xhs .feed-xhs-time{font-size:11px;color:#999;margin-top:1px}
+.feed-xhs .feed-xhs-account{font-size:12px;font-weight:600;color:#333;line-height:1.3}
+.feed-xhs .feed-xhs-time{font-size:10px;color:#999;margin-top:1px}
+.feed-xhs .feed-img-wrap{line-height:0}
+.feed-xhs .feed-img-wrap img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+.feed-xhs .feed-body{padding:10px 14px}
+.feed-xhs .feed-title{font-size:13px}
+.feed-xhs .feed-text{font-size:12px;color:#666}
 .feed-xhs .feed-xhs-actions{display:flex;gap:20px;padding:10px 14px;border-top:1px solid #f0f0f0}
-.feed-xhs .feed-xhs-action{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:#666;cursor:pointer}
-.feed-xhs .feed-xhs-action svg{width:18px;height:18px}
-.feed-xhs .ratio-45 img{aspect-ratio:4/5}
+.feed-xhs .feed-xhs-action{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#666;cursor:pointer}
+.feed-xhs .feed-xhs-action svg{width:16px;height:16px}
 
 /* Douyin card */
-.feed-dy{border:1px solid var(--border);background:#161823;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#fff}
+.feed-dy{border:1px solid var(--border);background:#161823;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#fff;overflow:hidden}
 .feed-dy .feed-header{display:flex;align-items:center;gap:10px;padding:10px 14px}
-.feed-dy .feed-dy-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;background:#000}
-.feed-dy .feed-dy-icon svg{width:18px;height:18px}
+.feed-dy .feed-dy-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;background:#000}
+.feed-dy .feed-dy-icon svg{width:16px;height:16px}
 .feed-dy .feed-dy-info{flex:1;min-width:0}
-.feed-dy .feed-dy-account{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
-.feed-dy .feed-dy-time{font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px}
-.feed-dy .feed-img-wrap{position:relative}
-.feed-dy .ratio-916 img{aspect-ratio:9/16}
-.feed-dy .feed-dy-overlay{position:absolute;top:0;right:0;bottom:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px;pointer-events:none}
-.feed-dy .feed-dy-sidebar{display:flex;flex-direction:column;align-items:center;gap:12px}
-.feed-dy .feed-dy-action{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:500;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
-.feed-dy .feed-dy-action svg{width:28px;height:28px}
+.feed-dy .feed-dy-account{font-size:12px;font-weight:600;color:#fff;line-height:1.3}
+.feed-dy .feed-dy-time{font-size:10px;color:rgba(255,255,255,0.6);margin-top:1px}
+.feed-dy .feed-img-wrap{position:relative;line-height:0}
+.feed-dy .feed-img-wrap img{width:100%;aspect-ratio:9/16;object-fit:cover;display:block}
+.feed-dy .feed-dy-overlay{position:absolute;top:0;right:0;bottom:0;width:50px;display:flex;align-items:flex-end;justify-content:center;padding:12px 0;pointer-events:none}
+.feed-dy .feed-dy-sidebar{display:flex;flex-direction:column;align-items:center;gap:16px}
+.feed-dy .feed-dy-action{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:500;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
+.feed-dy .feed-dy-action svg{width:24px;height:24px}
 .feed-dy .feed-body{padding:10px 14px;color:#fff}
-.feed-dy .feed-title{color:#fff}
-.feed-dy .feed-text{color:rgba(255,255,255,0.8)}
+.feed-dy .feed-title{color:#fff;font-size:13px}
+.feed-dy .feed-text{color:rgba(255,255,255,0.8);font-size:12px}
 
 /* Post status & platform badges on feed cards */
 .feed-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
