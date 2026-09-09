@@ -495,6 +495,27 @@ tr:hover td{background:var(--surface-warm)}
 
 /* Platform filter tabs */
 .feed-filters{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);flex-wrap:wrap}
+/* View toggle */
+.feed-view-toggle{display:flex;gap:4px;margin-left:auto;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.view-toggle-btn{padding:6px 8px;border:none;background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--motion-fast)}
+.view-toggle-btn svg{width:16px;height:16px;color:var(--muted)}
+.view-toggle-btn:hover{background:var(--surface-warm)}
+.view-toggle-btn.active{background:var(--fg)}
+.view-toggle-btn.active svg{color:var(--bg)}
+/* List view table */
+.feed-list-view{width:100%}
+.feed-table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+.feed-table th{text-align:left;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em}
+.feed-table td{padding:10px 14px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+.feed-table tr:hover{background:var(--surface-warm)}
+.feed-table .post-title{font-weight:600;color:var(--fg)}
+.feed-table .post-thumb{width:40px;height:40px;border-radius:4px;object-fit:cover;margin-right:10px;flex-shrink:0}
+.feed-table .post-title-cell{display:flex;align-items:center}
+.feed-table .status-badge{padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
+.feed-table .status-published{background:#e6f7e9;color:#1a7f37}
+.feed-table .status-pending{background:#fff3cd;color:#856404}
+.feed-table .status-draft{background:#f0f0f0;color:#666}
+.feed-table .status-rejected{background:#fde8e5;color:#cf222e}
 
 /* ── Platform Format Reference ────────────────────────── */
 .format-section{margin-bottom:var(--space-6)}
@@ -830,6 +851,14 @@ tr:hover td{background:var(--surface-warm)}
           <button class="feed-filter" data-platform="Instagram" onclick="filterFeed('Instagram',this)"><svg viewBox="0 0 24 24" fill="#E4405F"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0z"/></svg> Instagram <span class="feed-filter-count" id="feed-count-ig">2</span></button>
           <button class="feed-filter" data-platform="小红书" onclick="filterFeed('小红书',this)"><svg viewBox="0 0 24 24" fill="#FE2C55"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg> <span data-i18n="platform_xiaohongshu">小红书</span> <span class="feed-filter-count" id="feed-count-xhs">2</span></button>
           <button class="feed-filter" data-platform="抖音" onclick="filterFeed('抖音',this)"><svg viewBox="0 0 24 24" fill="#010101"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.64 4.43v-7.15a8.16 8.16 0 005.8 2.37v-3.45a4.85 4.85 0 01-5.8-2.37H19.59z"/></svg> <span data-i18n="platform_douyin">抖音</span> <span class="feed-filter-count" id="feed-count-dy">2</span></button>
+          <div class="feed-view-toggle">
+            <button class="view-toggle-btn active" data-view="grid" onclick="setFeedView('grid',this)" title="Grid View">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </button>
+            <button class="view-toggle-btn" data-view="list" onclick="setFeedView('list',this)" title="List View">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
         </div>
         <div class="stats-row" data-od-id="stats-overview">
           <div class="stat-card">
@@ -860,6 +889,22 @@ tr:hover td{background:var(--surface-warm)}
           <div class="feed-day-rows" id="feed-day-rows" data-od-id="posts-feed">
             <!-- Populated by JS: day-section divs with horizontal scroll rows -->
           </div>
+        </div>
+        <div class="feed-list-view" id="feed-list-view" style="display:none">
+          <table class="feed-table">
+            <thead>
+              <tr>
+                <th data-i18n="th_post_title">帖子标题</th>
+                <th data-i18n="th_platform">平台</th>
+                <th data-i18n="th_language">语言</th>
+                <th data-i18n="th_status">状态</th>
+                <th data-i18n="th_date">日期</th>
+              </tr>
+            </thead>
+            <tbody id="feed-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -2421,6 +2466,7 @@ function openNewListingModal() {
 
 // ── Render Posts (Social Feed) ──────────────────────────
 let feedFilter = "all";
+let feedView = "grid";
 const WEEKDAYS_SHORT = { zh:["日","一","二","三","四","五","六"], en:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], fr:["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"], es:["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"] };
 const MONTHS_SHORT = { zh:["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"], en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], fr:["janv","févr","mars","avr","mai","juin","juil","août","sept","oct","nov","déc"], es:["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"] };
 
@@ -2429,6 +2475,44 @@ function filterFeed(platform, el) {
   document.querySelectorAll(".feed-filter").forEach(f => f.classList.remove("active"));
   if (el) el.classList.add("active");
   renderPosts();
+}
+
+function setFeedView(view, el) {
+  feedView = view;
+  document.querySelectorAll(".view-toggle-btn").forEach(b => b.classList.remove("active"));
+  if (el) el.classList.add("active");
+  const socialFeed = document.getElementById("social-feed");
+  const listView = document.getElementById("feed-list-view");
+  if (view === "grid") {
+    if (socialFeed) socialFeed.style.display = "";
+    if (listView) listView.style.display = "none";
+  } else {
+    if (socialFeed) socialFeed.style.display = "none";
+    if (listView) listView.style.display = "";
+  }
+  renderPosts();
+}
+
+function renderFeedTable(posts) {
+  const dict = I18N[currentLang];
+  const tbody = document.getElementById("feed-table-body");
+  if (!tbody) return;
+  
+  const statusClass = s => ({published:"status-published",pending:"status-pending",draft:"status-draft",rejected:"status-rejected"}[s] || "");
+  const statusLabel = s => dict["tab_"+s] || s;
+  const langLabel = l => ({中文:"中文",English:"English",双语:"Bilingue",Bilingüe:"Bilingüe",Français:"Français"}[l] || l);
+  
+  tbody.innerHTML = posts.map(p => {
+    const img = p.images && p.images[0] ? p.images[0] : "images/listings/condo1.jpg";
+    const platformName = currentLang === "en" ? (() => { const pl = PLATFORMS.find(x => x.name === p.platform); return pl ? (pl.nameEn || pl.name) : p.platform; })() : currentLang === "fr" ? (() => { const pl = PLATFORMS.find(x => x.name === p.platform); return pl ? (pl.nameFr || pl.name) : p.platform; })() : p.platform;
+    return `<tr>
+      <td><div class="post-title-cell"><img class="post-thumb" src="${img}" alt="" onerror="this.style.background='var(--surface-warm)'"> <span class="post-title">${p.title}</span></div></td>
+      <td>${platformTag(p.platform)}</td>
+      <td>${langLabel(p.lang)}</td>
+      <td><span class="status-badge ${statusClass(p.status)}">${statusLabel(p.status)}</span></td>
+      <td>${p.date}</td>
+    </tr>`;
+  }).join("");
 }
 
 // ── Settings Tabs ──────────────────────────────────────────
@@ -2897,6 +2981,10 @@ function renderPosts() {
   initDayObserver();
   // Update stats for current filter
   updateStats();
+  // Render table view if in list mode
+  if (feedView === "list") {
+    renderFeedTable(filtered);
+  }
 }
 
 function scrollToDay(date) {
