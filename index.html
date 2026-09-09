@@ -437,19 +437,22 @@ tr:hover td{background:var(--surface-warm)}
 .feed-xhs .ratio-45 img{aspect-ratio:4/5}
 
 /* Douyin card */
-.feed-dy{border:1px solid var(--border);background:#fff;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.feed-dy{border:1px solid var(--border);background:#161823;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#fff}
 .feed-dy .feed-header{display:flex;align-items:center;gap:10px;padding:10px 14px}
-.feed-dy .feed-dy-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.feed-dy .feed-dy-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;background:#000}
 .feed-dy .feed-dy-icon svg{width:18px;height:18px}
 .feed-dy .feed-dy-info{flex:1;min-width:0}
-.feed-dy .feed-dy-account{font-size:13px;font-weight:600;color:#333;line-height:1.3}
-.feed-dy .feed-dy-time{font-size:11px;color:#999;margin-top:1px}
+.feed-dy .feed-dy-account{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+.feed-dy .feed-dy-time{font-size:11px;color:rgba(255,255,255,0.6);margin-top:1px}
 .feed-dy .feed-img-wrap{position:relative}
 .feed-dy .ratio-916 img{aspect-ratio:9/16}
 .feed-dy .feed-dy-overlay{position:absolute;top:0;right:0;bottom:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:12px;pointer-events:none}
 .feed-dy .feed-dy-sidebar{display:flex;flex-direction:column;align-items:center;gap:12px}
 .feed-dy .feed-dy-action{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:500;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
 .feed-dy .feed-dy-action svg{width:28px;height:28px}
+.feed-dy .feed-body{padding:10px 14px;color:#fff}
+.feed-dy .feed-title{color:#fff}
+.feed-dy .feed-text{color:rgba(255,255,255,0.8)}
 
 /* Post status & platform badges on feed cards */
 .feed-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:600}
@@ -1801,7 +1804,7 @@ const PLATFORMS = [
     note:"视频号适合短视频和直播，内容以推荐分发为主，适合获取新流量。与公众号可互相导流。"
   },
   {
-    id:"xiaohongshu", name:"小红书", color:"#FE2C55", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><text x="5" y="17" font-size="14" font-weight="bold">小</text></svg>`,
+    id:"xiaohongshu", name:"小红书", color:"#FE2C55", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>`,
     desc:"小红书 — 种草笔记、生活方式分享",
     descEn:"Xiaohongshu — lifestyle notes, product reviews",
     descFr:"Xiaohongshu — notes lifestyle, avis produits",
@@ -1814,7 +1817,7 @@ const PLATFORMS = [
     note:"小红书以「种草」为核心，图文笔记是主力格式。内容偏生活化、真实感，适合房产生活分享。"
   },
   {
-    id:"douyin", name:"抖音", color:"#010101", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><text x="3" y="17" font-size="13" font-weight="bold">抖</text></svg>`,
+    id:"douyin", name:"抖音", color:"#010101", icon:`<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.64 4.43v-7.15a8.16 8.16 0 005.8 2.37v-3.45a4.85 4.85 0 01-5.8-2.37H19.59z"/></svg>`,
     desc:"抖音 — 短视频、直播带货",
     descEn:"Douyin — short videos, live commerce",
     descFr:"Douyin — vidéos courtes, commerce en direct",
@@ -2613,8 +2616,8 @@ function renderPosts() {
     微信公众号: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178A1.17 1.17 0 014.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178 1.17 1.17 0 01-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 01.598.082l1.584.926a.272.272 0 00.14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 01-.023-.156.49.49 0 01.201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-7.062-6.122zm-2.036 2.87c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982z"/></svg>`,
     微信视频号: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>`,
     Instagram: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 11-2.882 0 1.441 1.441 0 012.882 0z"/></svg>`,
-    "小红书": `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><text x="5" y="17" font-size="14" font-weight="bold">小</text></svg>`,
-    "抖音": `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.65-.85 5.6-1.2 7.4-.15.78-.45 1.04-.73 1.07-.63.06-1.1-.42-1.71-1-.96-.74-1.48-1.12-2.37-1.62-.96-.59-.33-1.09.2-1.71.15-.18 2.84-2.34 2.88-2.52 0-.02.01-.1-.04-.14-.06-.04-.14-.02-.19.01-.07.06-1.38.93-2.3 1.56-.45.33-.86.49-1.23.48-.39-.01-1.14-.24-2.05-.46-1.04-.27-1.85-.41-1.78-.85.03-.24.35-.47.95-.7 3.05-1.33 5.11-2.21 6.17-2.63 2.99-1.17 3.62-1.38 4.03-1.39.09 0 .3.02.44.14.12.1.15.22.16.31.01.07.02.18.01.28z"/></svg>`
+    "小红书": `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>`,
+    "抖音": `<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.64 4.43v-7.15a8.16 8.16 0 005.8 2.37v-3.45a4.85 4.85 0 01-5.8-2.37H19.59z"/></svg>`
   };
 
   const platformTag = name => {
@@ -2679,6 +2682,7 @@ function renderPosts() {
         <div class="feed-ig-top">
           <div class="feed-ig-avatar"><div class="feed-ig-avatar-inner"><img src="${img}" alt=""></div></div>
           <div class="feed-ig-name">home_direct_mtl</div>
+          <div class="feed-platform-tags">${platformTag("Instagram")}</div>
         </div>
         ${isCarousel ? carouselStrip(p) : `
         <img class="feed-ig-image" src="${img}" alt="${p.title}" onerror="this.style.background='var(--surface-warm)';this.alt=''">`}
