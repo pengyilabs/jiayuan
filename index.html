@@ -493,6 +493,22 @@ tr:hover td{background:var(--surface-warm)}
 /* Media type badge (bottom-left of image) */
 .feed-media-badge{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.6);color:#fff;padding:3px 8px;border-radius:var(--radius-pill);font-size:10px;font-weight:600;z-index:2;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}
 
+/* Profile banner */
+.profile-banner{position:relative;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--space-5)}
+.profile-banner-bg{height:160px;background:linear-gradient(135deg,var(--accent) 0%,#ff6b81 50%,#ff8a65 100%);position:relative}
+.profile-banner-bg::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.profile-banner-content{display:flex;align-items:flex-end;gap:16px;padding:0 24px 20px;margin-top:-48px;position:relative;z-index:1}
+.profile-avatar{width:96px;height:96px;border-radius:50%;background:var(--bg);border:4px solid var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.profile-avatar svg{width:40px;height:40px;color:var(--accent)}
+.profile-info{flex:1;min-width:0;padding-bottom:4px}
+.profile-name{font-size:20px;font-weight:700;color:var(--fg);line-height:1.2;margin:0}
+.profile-handle{font-size:13px;color:var(--muted);margin:2px 0 0}
+.profile-bio{font-size:13px;color:var(--fg);margin:6px 0 0;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.profile-stats-inline{display:flex;gap:24px;flex-shrink:0;padding-bottom:4px}
+.profile-stat{text-align:center}
+.profile-stat-value{display:block;font-size:18px;font-weight:700;color:var(--fg);line-height:1.2}
+.profile-stat-label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px}
+
 /* Platform filter tabs */
 .feed-filters{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);flex-wrap:wrap}
 /* View toggle */
@@ -849,6 +865,25 @@ tr:hover td{background:var(--surface-warm)}
     <div class="content" id="content">
       <!-- ═══ DASHBOARD ═══ -->
       <div class="page active" id="page-dashboard" data-od-id="page-dashboard">
+        <div class="profile-banner" data-od-id="profile-banner">
+          <div class="profile-banner-bg"></div>
+          <div class="profile-banner-content">
+            <div class="profile-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div class="profile-info">
+              <h1 class="profile-name" data-i18n="brand">加园地产团队</h1>
+              <p class="profile-handle">@jiayuanrealestate</p>
+              <p class="profile-bio" data-i18n="profile_bio">Professional real estate content across Facebook, WeChat, Instagram and more. Managed by 加园地产 HOME DIRECT.</p>
+            </div>
+            <div class="profile-stats-inline">
+              <div class="profile-stat"><span class="profile-stat-value">156</span><span class="profile-stat-label" data-i18n="stat_total_posts">Posts</span></div>
+              <div class="profile-stat"><span class="profile-stat-value">48.2K</span><span class="profile-stat-label" data-i18n="stat_total_reach">Reach</span></div>
+              <div class="profile-stat"><span class="profile-stat-value">3,847</span><span class="profile-stat-label" data-i18n="stat_engagement">Engagement</span></div>
+              <div class="profile-stat"><span class="profile-stat-value" style="color:var(--accent)">3</span><span class="profile-stat-label" data-i18n="stat_pending">Pending</span></div>
+            </div>
+          </div>
+        </div>
         <div class="feed-filters" data-od-id="feed-filters">
           <button class="feed-filter active" data-platform="all" onclick="filterFeed('all',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> <span data-i18n="tab_all">全部</span> <span class="feed-filter-count" id="feed-count-all">7</span></button>
           <button class="feed-filter" data-platform="Facebook" onclick="filterFeed('Facebook',this)"><svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Facebook <span class="feed-filter-count" id="feed-count-facebook">5</span></button>
@@ -864,28 +899,6 @@ tr:hover td{background:var(--surface-warm)}
             <button class="view-toggle-btn" data-view="list" onclick="setFeedView('list',this)" title="List View">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
             </button>
-          </div>
-        </div>
-        <div class="stats-row" data-od-id="stats-overview">
-          <div class="stat-card">
-            <div class="stat-label" data-i18n="stat_total_posts">总帖子数</div>
-            <div class="stat-value" id="stat-total-posts">156</div>
-            <div class="stat-change stat-up">↑ 12% <span data-i18n="stat_vs_last_month">较上月</span></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label" data-i18n="stat_total_reach">总曝光量</div>
-            <div class="stat-value" id="stat-total-reach">48.2K</div>
-            <div class="stat-change stat-up">↑ 8% <span data-i18n="stat_vs_last_month">较上月</span></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label" data-i18n="stat_engagement">总互动量</div>
-            <div class="stat-value" id="stat-engagement">3,847</div>
-            <div class="stat-change stat-up">↑ 23% <span data-i18n="stat_vs_last_month">较上月</span></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label" data-i18n="stat_pending">待审批</div>
-            <div class="stat-value" id="stat-pending" style="color:var(--accent)">3</div>
-            <div class="stat-change" style="color:var(--meta)" data-i18n="stat_need_review">需要审核</div>
           </div>
         </div>
         <div class="social-feed" data-od-id="social-feed" id="social-feed">
@@ -1346,6 +1359,7 @@ function toggleSidebar(){document.querySelector('.sidebar').classList.toggle('co
 const I18N = {
   zh: {
     brand: "加园地产团队", nav_main: "主菜单", nav_management: "管理",
+    profile_bio: "专业房产内容，覆盖 Facebook、微信、Instagram 等平台。由加园地产 HOME DIRECT 运营管理。",
     nav_dashboard: "数据看板", nav_listings: "房源管理", nav_posts: "帖子管理",
     nav_templates: "模板库", nav_approvals: "审批管理", nav_settings: "平台设置",
     role_admin: "团队主管", role_agent: "经纪人",
@@ -1453,6 +1467,7 @@ const I18N = {
   },
   en: {
     brand: "HOME DIRECT Team", nav_main: "Main", nav_management: "Management",
+    profile_bio: "Professional real estate content across Facebook, WeChat, Instagram and more. Managed by HOME DIRECT.",
     nav_dashboard: "Dashboard", nav_listings: "Listings", nav_posts: "Posts",
     nav_templates: "Templates", nav_approvals: "Approvals", nav_settings: "Settings",
     role_admin: "Team Lead", role_agent: "Agent",
@@ -1560,6 +1575,7 @@ const I18N = {
   },
   fr: {
     brand: "Équipe HOME DIRECT", nav_main: "Principal", nav_management: "Gestion",
+    profile_bio: "Contenu immobilier professionnel sur Facebook, WeChat, Instagram et plus. Géré par HOME DIRECT.",
     nav_dashboard: "Tableau de bord", nav_listings: "Annonces", nav_posts: "Publications",
     nav_templates: "Modèles", nav_approvals: "Approbations", nav_settings: "Paramètres",
     role_admin: "Chef d'équipe", role_agent: "Agent",
@@ -1667,6 +1683,7 @@ const I18N = {
   },
   es: {
     brand: "Equipo HOME DIRECT", nav_main: "Principal", nav_management: "Gestión",
+    profile_bio: "Contenido inmobiliario profesional en Facebook, WeChat, Instagram y más. Administrado por HOME DIRECT.",
     nav_dashboard: "Panel", nav_listings: "Propiedades", nav_posts: "Publicaciones",
     nav_templates: "Plantillas", nav_approvals: "Aprobaciones", nav_settings: "Configuración",
     role_admin: "Líder del equipo", role_agent: "Agente",
