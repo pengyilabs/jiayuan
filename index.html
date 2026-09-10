@@ -148,6 +148,24 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:var(--le
 .stat-down{color:var(--danger)}
 
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+.listings-table-view{width:100%}
+.listings-table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+.listings-table th{text-align:left;padding:10px 14px;border-bottom:2px solid var(--border);font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted);white-space:nowrap}
+.listings-table td{padding:10px 14px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+.listings-table tbody tr{cursor:pointer;transition:background var(--motion-fast)}
+.listings-table tbody tr:hover{background:var(--surface-warm)}
+.listings-table .listing-thumb{width:56px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.listings-table .listing-title{font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.listings-table .listing-price{font-weight:700;color:var(--accent);white-space:nowrap}
+.listings-table .listing-type{font-size:12px;color:var(--muted)}
+.listings-table .listing-beds{color:var(--fg-2);white-space:nowrap}
+.listings-table .listing-status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);font-size:11px;font-weight:600;white-space:nowrap}
+.listings-table .listing-actions{display:flex;gap:4px}
+.listings-table .listing-actions button{padding:4px;border-radius:4px;transition:background var(--motion-fast)}
+.listings-table .listing-actions button:hover{background:var(--surface-warm)}
+.listings-view-toggle{display:flex;gap:4px;margin-left:auto;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.listings-view-toggle .view-toggle-btn svg{width:16px;height:16px}
+.listings-filters-row{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-4)}
 
 .filters{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);flex-wrap:wrap}
@@ -743,6 +761,11 @@ tr:hover td{background:var(--surface-warm)}
 /* ── Mobile Responsive ─────────────────────────────────── */
 @media(max-width:768px){
   .grid-3{grid-template-columns:repeat(2,1fr)}
+  .listings-table{font-size:var(--text-xs)}
+  .listings-table th,.listings-table td{padding:8px 10px}
+  .listings-table .listing-thumb{width:40px;height:30px}
+  .listings-table .listing-title{max-width:140px}
+  .listings-table .listing-beds{display:none}
   .detail-gallery{height:260px}
   .detail-info-section{padding:var(--space-4)}
   .detail-info-amenities{grid-template-columns:repeat(2,1fr)}
@@ -946,8 +969,19 @@ tr:hover td{background:var(--surface-warm)}
               <button class="filter-option">&gt; $1M</button>
             </div>
           </div>
+          <div class="listings-view-toggle">
+            <button class="view-toggle-btn" data-view="table" onclick="setListingsView('table',this)" title="List View">
+              <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <button class="view-toggle-btn" data-view="grid" onclick="setListingsView('grid',this)" title="Grid View">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </button>
+          </div>
         </div>
-        <div class="grid-3" id="listings-grid" data-od-id="listings-grid">
+        <div class="listings-table-view" id="listings-table-view">
+          <!-- Table view populated by JS -->
+        </div>
+        <div class="grid-3" id="listings-grid" data-od-id="listings-grid" style="display:none">
           <!-- Listings populated by JS -->
         </div>
       </div>
@@ -2125,8 +2159,60 @@ document.querySelectorAll(".modal-overlay").forEach(overlay => {
 });
 
 // ── Render Listings ───────────────────────────────────────
+let listingsView = "table";
+function setListingsView(view, el) {
+  listingsView = view;
+  document.querySelectorAll(".listings-view-toggle .view-toggle-btn").forEach(b => b.classList.remove("active"));
+  if (el) el.classList.add("active");
+  const tableView = document.getElementById("listings-table-view");
+  const gridView = document.getElementById("listings-grid");
+  if (view === "table") {
+    if (tableView) tableView.style.display = "";
+    if (gridView) gridView.style.display = "none";
+  } else {
+    if (tableView) tableView.style.display = "none";
+    if (gridView) gridView.style.display = "";
+  }
+  renderListings();
+}
 function renderListings() {
   const dict = I18N[currentLang];
+  if (listingsView === "table") renderListingsTable(dict);
+  else renderListingsGrid(dict);
+}
+function renderListingsTable(dict) {
+  const container = document.getElementById("listings-table-view");
+  if (!container) return;
+  const statusMap = { for_sale:"badge-success", sold:"badge-neutral", for_rent:"badge-accent", rented:"badge-warn" };
+  const statusKey = s => "status_" + s;
+  container.innerHTML = `
+    <table class="listings-table">
+      <thead><tr>
+        <th style="width:60px"></th>
+        <th>${currentLang==="zh"?"标题":"Title"}</th>
+        <th>${currentLang==="zh"?"类型":"Type"}</th>
+        <th>${currentLang==="zh"?"状态":"Status"}</th>
+        <th>${currentLang==="zh"?"价格":"Price"}</th>
+        <th>${currentLang==="zh"?"卧/卫":"Beds/Baths"}</th>
+        <th style="width:80px"></th>
+      </tr></thead>
+      <tbody>${LISTINGS.map(l => {
+        const title = currentLang === "en" ? l.titleEn : currentLang === "fr" ? l.titleFr : l.title;
+        const type = currentLang === "en" ? l.typeEn : currentLang === "fr" ? l.typeFr : l.type;
+        const img = l.photos[0] || "images/listings/condo1.jpg";
+        return `<tr onclick="openListingModal(${l.id})">
+          <td><img class="listing-thumb" src="${img}" alt="" onerror="this.style.background='var(--surface-warm)'"></td>
+          <td><div class="listing-title">${title}</div><div style="font-size:11px;color:var(--muted);margin-top:1px">${l.address}</div></td>
+          <td><span class="listing-type">${type}</span></td>
+          <td><span class="listing-status-badge badge ${statusMap[l.status]}"><span class="badge-dot"></span> ${dict[statusKey(l.status)] || l.status}</span></td>
+          <td><span class="listing-price">${l.price}</span></td>
+          <td><span class="listing-beds">${l.beds}卧 ${l.baths}卫</span></td>
+          <td><div class="listing-actions"><button onclick="event.stopPropagation();openListingModal(${l.id})" title="${currentLang==="zh"?"查看":"View"}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button></div></td>
+        </tr>`;
+      }).join("")}</tbody>
+    </table>`;
+}
+function renderListingsGrid(dict) {
   const grid = document.getElementById("listings-grid");
   if (!grid) return;
   grid.innerHTML = LISTINGS.map(l => {
@@ -3349,6 +3435,8 @@ function approvePost(id) {
 
 // ── Init ──────────────────────────────────────────────────
 applyI18n("en");
+// Set default listings view to table
+document.querySelector(".listings-view-toggle .view-toggle-btn[data-view='table']")?.classList.add("active");
 </script>
 </body>
 </html>
