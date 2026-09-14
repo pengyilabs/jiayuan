@@ -709,26 +709,24 @@ tr:hover td{background:var(--surface-warm)}
 /* ── Listing Detail Modal ──────────────────────────────── */
 .modal-listing-detail .modal{max-width:920px;max-height:92vh;border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column}
 .modal-listing-detail .modal-body{padding:0;display:flex;flex-direction:column}
-.detail-gallery{position:relative!important;width:100%!important;height:400px;background:#111;overflow:hidden;flex-shrink:0}
-.detail-gallery img,.modal-listing-detail .detail-gallery img{width:100%;height:100%;object-fit:cover;position:absolute!important;top:0!important;left:0!important;opacity:0;transition:opacity .4s}
-.detail-gallery img.active,.modal-listing-detail .detail-gallery img.active{opacity:1!important}
-.detail-gallery video,.modal-listing-detail .detail-gallery video{width:100%;height:100%;object-fit:cover;position:absolute!important;top:0!important;left:0!important;opacity:0;transition:opacity .4s}
-.detail-gallery video.active,.modal-listing-detail .detail-gallery video.active{opacity:1!important}
-.gallery-dots{position:absolute!important;bottom:14px!important;left:50%!important;transform:translateX(-50%);display:flex;gap:8px;z-index:10!important}
-.gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);border:none;cursor:pointer;transition:all .2s;padding:0}
-.gallery-dot.active{background:#fff;width:24px;border-radius:4px}
-.gallery-arrow{position:absolute!important;top:50%!important;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex!important;align-items:center;justify-content:center;z-index:10!important;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background .15s}
-.gallery-arrow:hover{background:#fff}
-.gallery-arrow svg{width:20px;height:20px;stroke:var(--fg);fill:none;stroke-width:2}
-.gallery-arrow.prev{left:16px!important}
-.gallery-arrow.next{right:16px!important}
-.gallery-close{position:absolute!important;top:14px!important;right:14px!important;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;cursor:pointer;display:flex!important;align-items:center;justify-content:center;z-index:10!important;transition:background .15s}
-.gallery-close:hover{background:rgba(0,0,0,0.7)}
-.gallery-close svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
-.gallery-thumbs{position:absolute!important;bottom:14px!important;right:14px!important;display:flex;gap:6px;z-index:10!important}
-.gallery-thumb{width:48px;height:36px;border-radius:6px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:border-color .15s;opacity:0.7}
-.gallery-thumb.active{border-color:#fff;opacity:1}
-.gallery-thumb img,.gallery-thumb video{width:100%;height:100%;object-fit:cover}
+.modal-listing-detail .detail-gallery{position:relative;width:100%;height:400px;background:#111;overflow:hidden;flex-shrink:0}
+.modal-listing-detail .detail-gallery img,.modal-listing-detail .detail-gallery video{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;display:none}
+.modal-listing-detail .detail-gallery img.active,.modal-listing-detail .detail-gallery video.active{display:block}
+.modal-listing-detail .gallery-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
+.modal-listing-detail .gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);border:none;cursor:pointer;transition:all .2s;padding:0}
+.modal-listing-detail .gallery-dot.active{background:#fff;width:24px;border-radius:4px}
+.modal-listing-detail .gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background .15s}
+.modal-listing-detail .gallery-arrow:hover{background:#fff}
+.modal-listing-detail .gallery-arrow svg{width:20px;height:20px;stroke:var(--fg);fill:none;stroke-width:2}
+.modal-listing-detail .gallery-arrow.prev{left:16px}
+.modal-listing-detail .gallery-arrow.next{right:16px}
+.modal-listing-detail .gallery-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .15s}
+.modal-listing-detail .gallery-close:hover{background:rgba(0,0,0,0.7)}
+.modal-listing-detail .gallery-close svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
+.modal-listing-detail .gallery-thumbs{position:absolute;bottom:14px;right:14px;display:flex;gap:6px;z-index:10}
+.modal-listing-detail .gallery-thumb{width:48px;height:36px;border-radius:6px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:border-color .15s;opacity:0.7}
+.modal-listing-detail .gallery-thumb.active{border-color:#fff;opacity:1}
+.modal-listing-detail .gallery-thumb img,.modal-listing-detail .gallery-thumb video{width:100%;height:100%;object-fit:cover}
 .detail-info-section{padding:var(--space-6) var(--space-8);display:flex;flex-direction:column;gap:var(--space-5)}
 .detail-info-top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4)}
 .detail-info-top h2{font-size:var(--text-xl);font-weight:700;flex:1}
@@ -764,19 +762,19 @@ tr:hover td{background:var(--surface-warm)}
   .listings-table .listing-thumb{width:40px;height:30px}
   .listings-table .listing-title{max-width:140px}
   .listings-table .listing-beds{display:none}
-  .detail-gallery{height:260px!important}
+  .modal-listing-detail .detail-gallery{height:260px}
   .detail-info-section{padding:var(--space-4)}
   .detail-info-amenities{grid-template-columns:repeat(2,1fr)}
   .detail-actions{padding:0 var(--space-4) var(--space-4);flex-direction:column}
   .modal-listing-detail .modal{max-width:100%;border-radius:var(--radius-md)}
   .media-preview-grid{grid-template-columns:repeat(3,1fr)}
   .detail-info-top{flex-direction:column}
-  .gallery-thumbs{display:none}
+  .modal-listing-detail .gallery-thumbs{display:none}
 }
 @media(max-width:550px){
   .grid-3{grid-template-columns:1fr}
   .grid-2{grid-template-columns:1fr}
-  .detail-gallery{height:220px!important}
+  .modal-listing-detail .detail-gallery{height:220px}
   .detail-info-amenities{grid-template-columns:1fr}
   .media-preview-grid{grid-template-columns:repeat(2,1fr)}
   .form-row{grid-template-columns:1fr}
@@ -2407,17 +2405,17 @@ function openListingModal(id, editMode) {
   } else {
     modal.innerHTML = `
       <div class="modal" onclick="event.stopPropagation()">
-        <div class="detail-gallery" id="detail-gallery-${l.id}" style="position:relative;width:100%;height:400px;background:#111;overflow:hidden;flex-shrink:0">
+        <div class="detail-gallery" id="detail-gallery-${l.id}">
           ${allMedia.map((m,i) => m.type==="video"
-            ? `<video muted loop playsinline preload="metadata" data-idx="${i}" ${i===0?"class='active'":""} src="${m.src}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:${i===0?1:0};transition:opacity .4s"></video>`
-            : `<img src="${m.src}" data-idx="${i}" alt="${title}" ${i===0?"class='active'":""} style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:${i===0?1:0};transition:opacity .4s" onerror="this.style.background='#333';this.style.objectFit='contain'">`
+            ? `<video muted loop playsinline preload="metadata" data-idx="${i}" class="${i===0?"active":""}" style="${i===0?"display:block":""}" src="${m.src}"></video>`
+            : `<img src="${m.src}" data-idx="${i}" alt="${title}" class="${i===0?"active":""}" style="${i===0?"display:block":""}" onerror="this.style.background='#333';this.style.objectFit='contain'">`
           ).join("")}
-          <button class="gallery-close" onclick="closeModal('modal-listing-detail')" style="position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-          <button class="gallery-arrow prev" onclick="slideDetailGallery(${l.id},-1)" style="position:absolute;top:50%;transform:translateY(-50%);left:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--fg);fill:none;stroke-width:2"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <button class="gallery-arrow next" onclick="slideDetailGallery(${l.id},1)" style="position:absolute;top:50%;transform:translateY(-50%);right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--fg);fill:none;stroke-width:2"><polyline points="9 18 15 12 9 6"/></svg></button>
-          <div class="gallery-dots" id="detail-dots-${l.id}" style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10">${allMedia.map((_,i)=>`<button class="gallery-dot${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})"></button>`).join("")}</div>
-          <div class="gallery-thumbs" id="detail-thumbs-${l.id}" style="position:absolute;bottom:14px;right:14px;display:flex;gap:6px;z-index:10">
-            ${allMedia.map((m,i) => `<div class="gallery-thumb${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})" style="width:48px;height:36px;border-radius:6px;overflow:hidden;border:2px solid ${i===0?'#fff':'transparent'};cursor:pointer;opacity:${i===0?1:0.7}"><img src="${m.src}" alt="" style="width:100%;height:100%;object-fit:cover"></div>`).join("")}
+          <button class="gallery-close" onclick="closeModal('modal-listing-detail')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          <button class="gallery-arrow prev" onclick="slideDetailGallery(${l.id},-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="gallery-arrow next" onclick="slideDetailGallery(${l.id},1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <div class="gallery-dots" id="detail-dots-${l.id}">${allMedia.map((_,i)=>`<button class="gallery-dot${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})"></button>`).join("")}</div>
+          <div class="gallery-thumbs" id="detail-thumbs-${l.id}">
+            ${allMedia.map((m,i) => `<div class="gallery-thumb${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})"><img src="${m.src}" alt=""></div>`).join("")}
           </div>
         </div>
         <div class="detail-info-section">
@@ -2454,7 +2452,11 @@ function openListingModal(id, editMode) {
   }
   modal.classList.add('open');
   modal.onclick = (e) => { if(e.target===modal) closeModal('modal-listing-detail'); };
-  if (!editMode) startDetailGalleryAuto(l.id, allMedia.length);
+  if (!editMode) {
+    const firstImg = document.querySelector('#detail-gallery-'+l.id+' img.active, #detail-gallery-'+l.id+' video.active');
+    if (firstImg) firstImg.style.display = 'block';
+    startDetailGalleryAuto(l.id, allMedia.length);
+  }
 }
 let detailGalleryTimers = new Map();
 function clearDetailGalleryTimer(id) {
@@ -2471,17 +2473,14 @@ function slideDetailGallery(id, dir) {
   const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
   let idx = [...items].findIndex(i => i.classList.contains('active'));
   items[idx]?.classList.remove('active');
-  if(items[idx]) items[idx].style.opacity = '0';
   dots?.[idx]?.classList.remove('active');
   thumbs?.[idx]?.classList.remove('active');
   if(thumbs?.[idx]) { thumbs[idx].style.borderColor = 'transparent'; thumbs[idx].style.opacity = '0.7'; }
   idx = (idx + dir + items.length) % items.length;
   items[idx]?.classList.add('active');
-  if(items[idx]) items[idx].style.opacity = '1';
   dots?.[idx]?.classList.add('active');
   thumbs?.[idx]?.classList.add('active');
   if(thumbs?.[idx]) { thumbs[idx].style.borderColor = '#fff'; thumbs[idx].style.opacity = '1'; }
-  // Auto-play video if active
   items.forEach(v => { if(v.tagName==='VIDEO') { v.pause(); v.currentTime=0; }});
   if(items[idx]?.tagName==='VIDEO') items[idx].play().catch(()=>{});
 }
@@ -2491,11 +2490,10 @@ function goToDetailSlide(id, idx) {
   const items = gallery.querySelectorAll('img, video');
   const dots = document.getElementById('detail-dots-'+id)?.querySelectorAll('.gallery-dot');
   const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
-  items.forEach(i => { i.classList.remove('active'); i.style.opacity = '0'; });
+  items.forEach(i => i.classList.remove('active'));
   dots?.forEach(d => d.classList.remove('active'));
   thumbs?.forEach(t => { t.classList.remove('active'); t.style.borderColor = 'transparent'; t.style.opacity = '0.7'; });
   items[idx]?.classList.add('active');
-  if(items[idx]) items[idx].style.opacity = '1';
   dots?.[idx]?.classList.add('active');
   thumbs?.[idx]?.classList.add('active');
   if(thumbs?.[idx]) { thumbs[idx].style.borderColor = '#fff'; thumbs[idx].style.opacity = '1'; }
