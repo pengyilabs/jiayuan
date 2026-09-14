@@ -710,8 +710,8 @@ tr:hover td{background:var(--surface-warm)}
 .modal-listing-detail .modal{max-width:920px;max-height:92vh;border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column}
 .modal-listing-detail .modal-body{padding:0;display:flex;flex-direction:column}
 .modal-listing-detail .detail-gallery{position:relative;width:100%;height:400px;background:#111;overflow:hidden;flex-shrink:0}
-.modal-listing-detail .detail-gallery img,.modal-listing-detail .detail-gallery video{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;display:none}
-.modal-listing-detail .detail-gallery img.active,.modal-listing-detail .detail-gallery video.active{display:block}
+.modal-listing-detail .detail-gallery > img,.modal-listing-detail .detail-gallery > video{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;display:none}
+.modal-listing-detail .detail-gallery > img.active,.modal-listing-detail .detail-gallery > video.active{display:block}
 .modal-listing-detail .gallery-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
 .modal-listing-detail .gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);border:none;cursor:pointer;transition:all .2s;padding:0}
 .modal-listing-detail .gallery-dot.active{background:#fff;width:24px;border-radius:4px}
@@ -2453,7 +2453,7 @@ function openListingModal(id, editMode) {
   modal.classList.add('open');
   modal.onclick = (e) => { if(e.target===modal) closeModal('modal-listing-detail'); };
   if (!editMode) {
-    const firstImg = document.querySelector('#detail-gallery-'+l.id+' img.active, #detail-gallery-'+l.id+' video.active');
+    const firstImg = document.querySelector('#detail-gallery-'+l.id+' > img.active, #detail-gallery-'+l.id+' > video.active');
     if (firstImg) firstImg.style.display = 'block';
     startDetailGalleryAuto(l.id, allMedia.length);
   }
@@ -2468,7 +2468,7 @@ function clearDetailGalleryTimer(id) {
 function slideDetailGallery(id, dir) {
   const gallery = document.getElementById('detail-gallery-'+id);
   if (!gallery) return;
-  const items = gallery.querySelectorAll('img, video');
+  const items = gallery.querySelectorAll(':scope > img, :scope > video');
   const dots = document.getElementById('detail-dots-'+id)?.querySelectorAll('.gallery-dot');
   const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
   let idx = [...items].findIndex(i => i.classList.contains('active'));
@@ -2487,7 +2487,7 @@ function slideDetailGallery(id, dir) {
 function goToDetailSlide(id, idx) {
   const gallery = document.getElementById('detail-gallery-'+id);
   if (!gallery) return;
-  const items = gallery.querySelectorAll('img, video');
+  const items = gallery.querySelectorAll(':scope > img, :scope > video');
   const dots = document.getElementById('detail-dots-'+id)?.querySelectorAll('.gallery-dot');
   const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
   items.forEach(i => i.classList.remove('active'));
