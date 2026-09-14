@@ -712,18 +712,10 @@ tr:hover td{background:var(--surface-warm)}
 .modal-listing-detail .detail-gallery{position:relative;width:100%;height:400px;background:#111;overflow:hidden;flex-shrink:0}
 .modal-listing-detail .detail-gallery > img,.modal-listing-detail .detail-gallery > video{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;display:none}
 .modal-listing-detail .detail-gallery > img.active,.modal-listing-detail .detail-gallery > video.active{display:block}
-.modal-listing-detail .gallery-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
-.modal-listing-detail .gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);border:none;cursor:pointer;transition:all .2s;padding:0}
-.modal-listing-detail .gallery-dot.active{background:#fff;width:24px;border-radius:4px}
-.modal-listing-detail .gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background .15s}
-.modal-listing-detail .gallery-arrow:hover{background:#fff}
-.modal-listing-detail .gallery-arrow svg{width:20px;height:20px;stroke:var(--fg);fill:none;stroke-width:2}
-.modal-listing-detail .gallery-arrow.prev{left:16px}
-.modal-listing-detail .gallery-arrow.next{right:16px}
 .modal-listing-detail .gallery-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .15s}
 .modal-listing-detail .gallery-close:hover{background:rgba(0,0,0,0.7)}
 .modal-listing-detail .gallery-close svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
-.modal-listing-detail .gallery-thumbs{position:absolute;bottom:14px;right:14px;display:flex;gap:6px;z-index:10}
+.modal-listing-detail .gallery-thumbs{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10}
 .modal-listing-detail .gallery-thumb{width:48px;height:36px;border-radius:6px;overflow:hidden;border:2px solid transparent;cursor:pointer;transition:border-color .15s;opacity:0.7}
 .modal-listing-detail .gallery-thumb.active{border-color:#fff;opacity:1}
 .modal-listing-detail .gallery-thumb img,.modal-listing-detail .gallery-thumb video{width:100%;height:100%;object-fit:cover}
@@ -769,7 +761,6 @@ tr:hover td{background:var(--surface-warm)}
   .modal-listing-detail .modal{max-width:100%;border-radius:var(--radius-md)}
   .media-preview-grid{grid-template-columns:repeat(3,1fr)}
   .detail-info-top{flex-direction:column}
-  .modal-listing-detail .gallery-thumbs{display:none}
 }
 @media(max-width:550px){
   .grid-3{grid-template-columns:1fr}
@@ -2411,9 +2402,6 @@ function openListingModal(id, editMode) {
             : `<img src="${m.src}" data-idx="${i}" alt="${title}" class="${i===0?"active":""}" style="${i===0?"display:block":""}" onerror="this.style.background='#333';this.style.objectFit='contain'">`
           ).join("")}
           <button class="gallery-close" onclick="closeModal('modal-listing-detail')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-          <button class="gallery-arrow prev" onclick="slideDetailGallery(${l.id},-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <button class="gallery-arrow next" onclick="slideDetailGallery(${l.id},1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-          <div class="gallery-dots" id="detail-dots-${l.id}">${allMedia.map((_,i)=>`<button class="gallery-dot${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})"></button>`).join("")}</div>
           <div class="gallery-thumbs" id="detail-thumbs-${l.id}">
             ${allMedia.map((m,i) => `<div class="gallery-thumb${i===0?' active':''}" onclick="goToDetailSlide(${l.id},${i})"><img src="${m.src}" alt=""></div>`).join("")}
           </div>
@@ -2469,16 +2457,13 @@ function slideDetailGallery(id, dir) {
   const gallery = document.getElementById('detail-gallery-'+id);
   if (!gallery) return;
   const items = gallery.querySelectorAll(':scope > img, :scope > video');
-  const dots = document.getElementById('detail-dots-'+id)?.querySelectorAll('.gallery-dot');
   const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
   let idx = [...items].findIndex(i => i.classList.contains('active'));
   items[idx]?.classList.remove('active');
-  dots?.[idx]?.classList.remove('active');
   thumbs?.[idx]?.classList.remove('active');
   if(thumbs?.[idx]) { thumbs[idx].style.borderColor = 'transparent'; thumbs[idx].style.opacity = '0.7'; }
   idx = (idx + dir + items.length) % items.length;
   items[idx]?.classList.add('active');
-  dots?.[idx]?.classList.add('active');
   thumbs?.[idx]?.classList.add('active');
   if(thumbs?.[idx]) { thumbs[idx].style.borderColor = '#fff'; thumbs[idx].style.opacity = '1'; }
   items.forEach(v => { if(v.tagName==='VIDEO') { v.pause(); v.currentTime=0; }});
@@ -2488,13 +2473,10 @@ function goToDetailSlide(id, idx) {
   const gallery = document.getElementById('detail-gallery-'+id);
   if (!gallery) return;
   const items = gallery.querySelectorAll(':scope > img, :scope > video');
-  const dots = document.getElementById('detail-dots-'+id)?.querySelectorAll('.gallery-dot');
   const thumbs = document.getElementById('detail-thumbs-'+id)?.querySelectorAll('.gallery-thumb');
   items.forEach(i => i.classList.remove('active'));
-  dots?.forEach(d => d.classList.remove('active'));
   thumbs?.forEach(t => { t.classList.remove('active'); t.style.borderColor = 'transparent'; t.style.opacity = '0.7'; });
   items[idx]?.classList.add('active');
-  dots?.[idx]?.classList.add('active');
   thumbs?.[idx]?.classList.add('active');
   if(thumbs?.[idx]) { thumbs[idx].style.borderColor = '#fff'; thumbs[idx].style.opacity = '1'; }
   items.forEach(v => { if(v.tagName==='VIDEO') { v.pause(); v.currentTime=0; }});
