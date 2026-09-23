@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+playwright-report
+test-results
+package-lock.json
+# Fragmentos HTML: Prettier alteraría el espacio en blanco entre elementos inline.
+src/**/*.html

@@ -1,0 +1,60 @@
+# Configuración de Supabase CLI para desarrollo local (`supabase start`).
+# Los entornos remotos (staging/producción) se configuran en el panel de Supabase; ver docs/F1.md.
+project_id = "proppulse"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[db.seed]
+enabled = true
+# Catálogo → datos demo (usuarios, propiedades, posts) → utilidades de test (esquema `tests`).
+sql_paths = ["./seed.sql", "./seed.demo.sql", "./tests/support/helpers.sql"]
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:5173"
+additional_redirect_urls = ["http://127.0.0.1:5173"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+# Solo por invitación: no existe registro público (F2 añade la Edge Function de invitaciones).
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+enable_confirmations = true
+double_confirm_changes = true
+
+[auth.mfa]
+max_enrolled_factors = 1
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[functions.sign-in]
+enabled = true
+verify_jwt = false          # se llama antes de tener sesión; valida y limita intentos por sí misma
+
+[functions.request-password-reset]
+enabled = true
+verify_jwt = false
+
+[functions.invite-user]
+enabled = true
+verify_jwt = true
+
+[functions.sync-user-access]
+enabled = true
+verify_jwt = true

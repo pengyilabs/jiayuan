@@ -1,0 +1,66 @@
+{
+  "name": "proppulse",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PropPulse — gestión de contenido social para 加园地产团队",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "prepare": "simple-git-hooks",
+    "db:seed:generate": "tsx scripts/generate-seed.ts",
+    "db:seed:check": "tsx scripts/generate-seed.ts --check",
+    "db:test": "bash scripts/db-test.sh",
+    "db:test:integration": "bash scripts/test-integration.sh",
+    "db:types": "npx supabase gen types typescript --local --schema public > src/types/database.ts && prettier --write src/types/database.ts",
+    "functions:check": "deno check --config supabase/functions/deno.json supabase/functions/*/index.ts",
+    "admin:create": "tsx scripts/create-admin.ts"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,html,json,md}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.2",
+    "@vitest/coverage-v8": "^5.0.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.12.0",
+    "jose": "^6.2.12",
+    "jsdom": "^30.1.0",
+    "lint-staged": "^17.5.1",
+    "prettier": "^3.9.8",
+    "simple-git-hooks": "^2.14.0",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0"
+  }
+}
