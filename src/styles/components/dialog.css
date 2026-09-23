@@ -1,0 +1,62 @@
+/* Diálogos de tres niveles (F3): informativo, confirmación reversible y acción permanente. */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.dialog-overlay.open {
+  display: flex;
+}
+.dialog {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-6, 24px);
+  box-shadow: var(--elev-raised);
+  display: grid;
+  gap: var(--space-3);
+}
+.dialog-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+.dialog-message {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.dialog-message[hidden] {
+  display: none;
+}
+.dialog-actions {
+  margin-top: var(--space-2);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+/* Botón de acción permanente: deshabilitado con una barra que se llena hasta habilitarse. */
+.btn.is-armed {
+  position: relative;
+  overflow: hidden;
+  cursor: not-allowed;
+}
+.btn.is-armed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.35);
+  transform: scaleX(1);
+  transform-origin: left;
+  animation: arm-drain var(--arm-duration, 900ms) linear forwards;
+}
+@keyframes arm-drain {
+  to {
+    transform: scaleX(0);
+  }
+}

@@ -1,0 +1,31 @@
+      <div class="page" id="page-templates" data-od-id="page-templates">
+        <div class="section-header">
+          <div></div>
+          <button class="btn btn-secondary" data-od-id="btn-upload-template">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span data-i18n="btn_upload_template">上传模板</span>
+          </button>
+        </div>
+        <div class="filters" data-od-id="template-filters">
+          <div class="filter-group">
+            <button class="filter-chip active" data-i18n="filter_all">全部</button>
+            <button class="filter-chip" data-i18n="platform_wechat">微信</button>
+            <button class="filter-chip" data-i18n="platform_facebook">Facebook</button>
+          </div>
+          <select class="filter-select">
+            <option data-i18n="filter_lang_all">所有语言</option>
+            <option data-i18n="lang_zh">中文</option>
+            <option data-i18n="lang_en">English</option>
+            <option data-i18n="lang_bilingual">双语</option>
+          </select>
+          <select class="filter-select">
+            <option data-i18n="filter_scene_all">所有场景</option>
+            <option data-i18n="scene_sale">房源出售</option>
+            <option data-i18n="scene_rent">房源出租</option>
+            <option data-i18n="scene_brand">品牌推广</option>
+          </select>
+        </div>
+        <div class="grid-3" id="templates-grid" data-od-id="templates-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>

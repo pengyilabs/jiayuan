@@ -1,0 +1,45 @@
+      <div class="page" id="page-listings" data-od-id="page-listings">
+
+        <div class="filters" data-od-id="listing-filters">
+          <div class="filter-group">
+            <button class="filter-chip active" data-i18n="filter_all">全部</button>
+            <button class="filter-chip" data-i18n="status_for_sale">在售</button>
+            <button class="filter-chip" data-i18n="status_sold">已售</button>
+            <button class="filter-chip" data-i18n="status_for_rent">在租</button>
+            <button class="filter-chip" data-i18n="status_rented">已租</button>
+          </div>
+          <div class="filter-dropdown">
+            <button class="filter-chip" data-i18n="filter_type_all">所有类型<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="filter-dropdown-menu">
+              <button class="filter-option active" data-i18n="filter_type_all">所有类型</button>
+              <button class="filter-option" data-i18n="type_apartment">公寓</button>
+              <button class="filter-option" data-i18n="type_villa">别墅</button>
+              <button class="filter-option" data-i18n="type_commercial">商业</button>
+            </div>
+          </div>
+          <div class="filter-dropdown">
+            <button class="filter-chip" data-i18n="filter_price_all">所有价格<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="filter-dropdown-menu">
+              <button class="filter-option active" data-i18n="filter_price_all">所有价格</button>
+              <button class="filter-option">&lt; $300K</button>
+              <button class="filter-option">$300K - $600K</button>
+              <button class="filter-option">$600K - $1M</button>
+              <button class="filter-option">&gt; $1M</button>
+            </div>
+          </div>
+          <div class="listings-view-toggle">
+            <button class="view-toggle-btn" data-view="table" data-action="listings:view" title="List View">
+              <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <button class="view-toggle-btn" data-view="grid" data-action="listings:view" title="Grid View">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="listings-table-view" id="listings-table-view">
+          <!-- Table view populated by JS -->
+        </div>
+        <div class="grid-3" id="listings-grid" data-od-id="listings-grid" style="display:none">
+          <!-- Listings populated by JS -->
+        </div>
+      </div>

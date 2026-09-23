@@ -1,0 +1,37 @@
+<div class="modal-overlay" id="modal-invite">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h3 data-i18n="team_invite_title">邀请团队成员</h3>
+      <button class="btn btn-ghost" data-action="modal:close" data-modal="modal-invite">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="invite-error" class="auth-alert" role="alert" hidden></div>
+      <div id="invite-result" class="auth-alert auth-alert-info" role="status" hidden></div>
+      <div class="form-group">
+        <label class="form-label" for="invite-email" data-i18n="team_field_email">邮箱</label>
+        <input id="invite-email" type="email" autocomplete="off" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="invite-username" data-i18n="team_field_username">用户名</label>
+          <input id="invite-username" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="invite-name" data-i18n="team_field_name">姓名</label>
+          <input id="invite-name" type="text" autocomplete="off" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="invite-role" data-i18n="team_field_role">角色</label>
+        <select id="invite-role">
+          <option value="employee" data-i18n="role_agent">经纪人</option>
+          <option value="admin" data-i18n="role_admin">团队主管</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-action="modal:close" data-modal="modal-invite" data-i18n="btn_cancel">取消</button>
+      <button class="btn btn-primary" id="invite-send" data-action="team:invite-send" data-i18n="team_invite_send">发送邀请</button>
+    </div>
+  </div>
+</div>

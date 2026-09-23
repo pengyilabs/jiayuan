@@ -1,0 +1,26 @@
+    <header class="topbar page-topbar" data-od-id="topbar" style="display:none">
+      <div class="topbar-left">
+        <h1 class="topbar-title" id="page-title"></h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-search">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" data-i18n-placeholder="search_placeholder" placeholder="Search...">
+        </div>
+        <div class="notif-switch">
+          <button id="notif-btn" class="notif-btn" data-od-id="notif-btn" data-action="notif:toggle">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <span class="notif-dot" id="notif-dot" hidden></span>
+          </button>
+          <div class="notif-dropdown" id="notif-dropdown">
+            <div class="notif-dropdown-header">
+              <strong data-i18n="notif_title">通知</strong>
+              <button class="notif-mark-all" data-action="notif:mark-all-read" data-i18n="notif_mark_all_read">
+                全部标为已读
+              </button>
+            </div>
+            <div id="notif-list"></div>
+          </div>
+        </div>
+      </div>
+    </header>

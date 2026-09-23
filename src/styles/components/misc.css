@@ -1,0 +1,109 @@
+.empty-state {
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  color: var(--muted);
+}
+.empty-state h3 {
+  font-size: var(--text-lg);
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+.empty-state p {
+  font-size: var(--text-sm);
+  max-width: 360px;
+  margin: 0 auto 20px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+}
+.section-header h2 {
+  font-size: var(--text-xl);
+}
+.booking-panel {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  position: sticky;
+  top: 24px;
+}
+.booking-price {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+}
+.booking-field {
+  margin-bottom: var(--space-3);
+}
+.booking-field label {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.activity-item {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+.activity-item:last-child {
+  border-bottom: none;
+}
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.activity-text {
+  font-size: var(--text-sm);
+  color: var(--fg);
+}
+.activity-time {
+  font-size: var(--text-xs);
+  color: var(--meta);
+  margin-top: 2px;
+}
+.toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--border);
+  position: relative;
+  cursor: pointer;
+  transition: background var(--motion-fast);
+}
+.toggle.on {
+  background: var(--accent);
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  top: 2px;
+  left: 2px;
+  transition: transform var(--motion-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.toggle.on::after {
+  transform: translateX(20px);
+}
+
+/* Contenido solo para administradores (el rol se marca en <body data-role>) */
+body:not([data-role='admin']) [data-role-only='admin'] {
+  display: none !important;
+}

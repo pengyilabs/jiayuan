@@ -1,0 +1,69 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: all var(--motion-fast);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-on);
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+.btn-primary:active {
+  transform: scale(0.97);
+  background: var(--accent-active);
+}
+.btn-secondary {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  border-color: var(--fg);
+}
+.btn-ghost {
+  color: var(--fg);
+  padding: 8px 12px;
+}
+.btn-ghost:hover {
+  background: var(--surface-warm);
+}
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+.btn-danger:hover {
+  background: #a82d12;
+}
+.btn-sm {
+  padding: 6px 14px;
+  font-size: var(--text-xs);
+}
+
+/* Estado de carga: deshabilita el control y muestra un pequeño indicador giratorio. */
+.btn.is-loading {
+  position: relative;
+  pointer-events: none;
+}
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: btn-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,138 @@
+      <div class="page" id="page-settings" data-od-id="page-settings">
+        <div class="settings-tabs" data-od-id="settings-tabs">
+          <button class="settings-tab active" data-action="settings:tab" data-tab="platforms" data-i18n="settings_tab_platforms">平台管理</button>
+          <button class="settings-tab" data-action="settings:tab" data-tab="posttypes" data-i18n="settings_tab_posttypes">帖子类型</button>
+          <button class="settings-tab" data-action="settings:tab" data-tab="notifications" data-i18n="settings_tab_notifications">通知设置</button>
+          <button class="settings-tab" data-action="settings:tab" data-tab="team" data-i18n="settings_tab_team">团队成员</button>
+        </div>
+
+        <!-- Platform Management Tab -->
+        <div class="settings-tab-panel active" id="settings-panel-platforms">
+          <div class="settings-section" data-od-id="settings-platforms-list">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
+              <h3 data-i18n="settings_platform_accounts">平台账号管理</h3>
+              <button class="btn btn-primary btn-sm" data-action="settings:connect-platform" data-i18n="btn_connect_platform">+ 连接新平台</button>
+            </div>
+            <div id="platform-cards-container">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <div class="settings-section" data-od-id="settings-platform-explain">
+            <h3 data-i18n="settings_wechat_diff">微信公众号 vs 视频号</h3>
+            <div class="wechat-compare">
+              <div class="wechat-compare-card">
+                <div class="wechat-compare-icon" style="background:#07C160">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348z"/></svg>
+                </div>
+                <div>
+                  <div class="wechat-compare-name" data-i18n="wechat_official">微信公众号</div>
+                  <div class="wechat-compare-type" data-i18n="wx_official_type">图文推送 · 品牌宣传</div>
+                </div>
+              </div>
+              <div class="wechat-compare-body">
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_content_type">内容形式</span>
+                  <span data-i18n="wx_official_content">长图文文章、单图、视频</span>
+                </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_distribution">分发方式</span>
+                  <span data-i18n="wx_official_dist">订阅分发（粉丝主动查看）</span>
+                </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_use_case">适合场景</span>
+                  <span data-i18n="wx_official_use">品牌故事、政策解读、市场分析、深度内容</span>
+                </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_lifetime">内容寿命</span>
+                  <span data-i18n="wx_official_life">永久保留，可搜索</span>
+                </div>
+              </div>
+            </div>
+            <div class="wechat-compare" style="margin-top:var(--space-3)">
+              <div class="wechat-compare-card">
+                <div class="wechat-compare-icon" style="background:#FF6B2C">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.168 1.858-.96 6.336-1.356 8.4-.168.882-.504 1.176-.828 1.212-.708.072-1.248-.468-1.932-1.128-.96-.744-1.488-1.128-2.412-1.812-1.068-.792-.372-1.224.228-1.932.156-.18 2.88-2.64 2.928-2.844.006-.024.012-.12-.048-.168-.06-.048-.144-.024-.204.012-.084.06-1.416 1.008-2.4 1.752-.468.336-.888.504-1.26.492-.42-.012-1.176-.24-2.1-.468-1.068-.276-1.896-.42-1.824-.876.036-.24.36-.48.972-.72 3.12-1.356 5.22-2.256 6.3-2.688 3.06-1.2 3.708-1.416 4.128-1.428.096 0 .312.024.456.144.12.096.156.228.168.324.012.072.024.192.012.288z"/></svg>
+                </div>
+                <div>
+                  <div class="wechat-compare-name" data-i18n="wechat_channels">微信视频号</div>
+                  <div class="wechat-compare-type" data-i18n="wx_channels_type">短视频 · 直播</div>
+                </div>
+              </div>
+              <div class="wechat-compare-body">
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_content_type">内容形式</span>
+                  <span data-i18n="wx_channels_content">短视频、直播、链接图文</span>
+                </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_distribution">分发方式</span>
+                  <span data-i18n="wx_channels_dist">算法推荐 + 社交分享</span>
+                </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_use_case">适合场景</span>
+                  <span data-i18n="wx_channels_use">看房vlog、房源展示、直播带看、生活场景</span>
+                </div>
+                <div class="wechat-compare-row">
+                  <span class="wechat-compare-label" data-i18n="wx_lifetime">内容寿命</span>
+                  <span data-i18n="wx_channels_life">推荐分发，时效性较强</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post Types Tab -->
+        <div class="settings-tab-panel" id="settings-panel-posttypes">
+          <div class="settings-section" data-od-id="settings-cross-platform">
+            <h3 data-i18n="settings_cross_platform">跨平台相似帖子类型</h3>
+            <p class="settings-hint" data-i18n="settings_cross_platform_hint">以下帖子类型在多个平台中都可用，可以一次制作、多平台分发。</p>
+            <div class="cross-platform-grid" id="cross-platform-grid">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <div class="settings-section format-section" data-od-id="settings-all-formats">
+            <h3 data-i18n="settings_all_platform_formats">各平台帖子格式</h3>
+            <div class="format-grid" id="all-platforms-format-grid">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications Tab -->
+        <div class="settings-tab-panel" id="settings-panel-notifications">
+          <div class="settings-section" data-od-id="settings-notifications">
+            <h3 data-i18n="settings_notifications">通知偏好</h3>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label" data-i18n="notif_approval">审批通知</div>
+                <div class="settings-desc" data-i18n="notif_approval_desc">新帖子提交审批时通知</div>
+              </div>
+              <div class="toggle on" data-action="switch:toggle"></div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label" data-i18n="notif_publish">发布状态通知</div>
+                <div class="settings-desc" data-i18n="notif_publish_desc">帖子发布成功或失败时通知</div>
+              </div>
+              <div class="toggle on" data-action="switch:toggle"></div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label" data-i18n="notif_weekly">每周数据报告</div>
+                <div class="settings-desc" data-i18n="notif_weekly_desc">每周一发送上周数据汇总</div>
+              </div>
+              <div class="toggle" data-action="switch:toggle"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Tab -->
+        <div class="settings-tab-panel" id="settings-panel-team">
+          <div class="settings-section" data-od-id="settings-team">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
+              <h3 data-i18n="settings_team">团队成员</h3>
+              <button class="btn btn-secondary btn-sm" data-action="team:invite-open" data-i18n="btn_invite_member">邀请成员</button>
+            </div>
+            <div id="team-list"></div>
+          </div>
+        </div>
+      </div>

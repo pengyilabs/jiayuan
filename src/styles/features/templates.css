@@ -1,0 +1,672 @@
+/* ── Template Ad Previews ──────────────────────────────── */
+.tpl-preview {
+  width: 100%;
+  aspect-ratio: 3/4;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.tpl-hero {
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.tpl-hero-overlay {
+  background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.85));
+  padding: var(--space-5);
+  color: #fff;
+}
+.tpl-hero-price {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.tpl-hero-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.tpl-hero-meta {
+  font-size: var(--text-xs);
+  opacity: 0.8;
+}
+.tpl-hero-brand {
+  position: absolute;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  background: rgba(255, 56, 92, 0.9);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+.tpl-split {
+  display: flex;
+  aspect-ratio: 3/4;
+}
+.tpl-split-img {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+}
+.tpl-split-info {
+  flex: 1;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg);
+}
+.tpl-split-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tpl-split-price {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--fg);
+}
+.tpl-split-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--fg);
+}
+.tpl-split-meta {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+.tpl-split-features {
+  display: flex;
+  gap: var(--space-2);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: auto;
+}
+.tpl-split-brand {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: var(--space-2);
+}
+
+/* ── Gallery grid template ─────────────────────────────────── */
+.tpl-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  aspect-ratio: 1/1;
+  background: #111;
+  position: relative;
+}
+.tpl-gallery .tpl-img-slot {
+  background: var(--surface-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.tpl-gallery .tpl-img-slot::after {
+  content: '';
+  width: 36px;
+  height: 36px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='2'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  opacity: 0.5;
+}
+.tpl-gallery .tpl-img-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tpl-gallery .tpl-price-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-base);
+  font-weight: 800;
+  z-index: 2;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(255, 56, 92, 0.35);
+}
+.tpl-gallery .tpl-gallery-meta {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 2;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Magazine editorial template ────────────────────────────── */
+.tpl-magazine {
+  display: flex;
+  aspect-ratio: 3/4;
+  background: #fafafa;
+  overflow: hidden;
+}
+.tpl-magazine .tpl-mag-hero {
+  flex: 2;
+  position: relative;
+  overflow: hidden;
+}
+.tpl-magazine .tpl-mag-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+}
+.tpl-magazine .tpl-mag-hero .tpl-img-slot {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tpl-magazine .tpl-mag-hero .tpl-img-slot::after {
+  content: '';
+  width: 48px;
+  height: 48px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='2'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  opacity: 0.5;
+}
+.tpl-magazine .tpl-mag-hero .tpl-img-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tpl-magazine .tpl-mag-hero .tpl-mag-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  color: #fff;
+  z-index: 2;
+}
+.tpl-magazine .tpl-mag-hero .tpl-mag-overlay .tpl-mag-price {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.tpl-magazine .tpl-mag-hero .tpl-mag-overlay .tpl-mag-title {
+  font-size: var(--text-xs);
+  opacity: 0.85;
+  margin-top: 4px;
+}
+.tpl-magazine .tpl-mag-side {
+  flex: 1;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 1px solid var(--border);
+}
+.tpl-magazine .tpl-mag-side .tpl-mag-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.tpl-magazine .tpl-mag-side .tpl-mag-heading {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.3;
+}
+.tpl-magazine .tpl-mag-side .tpl-mag-excerpt {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+  flex: 1;
+}
+.tpl-magazine .tpl-mag-side .tpl-mag-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tpl-magazine .tpl-mag-side .tpl-mag-feat {
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-warm);
+  color: var(--muted);
+  font-weight: 500;
+}
+.tpl-magazine .tpl-mag-side .tpl-mag-brand {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-soft);
+}
+
+/* ── Vertical story template ────────────────────────────────── */
+.tpl-story {
+  position: relative;
+  aspect-ratio: 9/16;
+  background: #111;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+.tpl-story .tpl-img-slot {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tpl-story .tpl-img-slot::after {
+  content: '';
+  width: 56px;
+  height: 56px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='2'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  opacity: 0.5;
+}
+.tpl-story .tpl-img-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tpl-story .tpl-story-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+.tpl-story .tpl-story-brand {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  backdrop-filter: blur(6px);
+}
+.tpl-story .tpl-story-badge {
+  background: var(--accent);
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+}
+.tpl-story .tpl-story-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+  padding: 60px 18px 20px;
+  color: #fff;
+  z-index: 2;
+}
+.tpl-story .tpl-story-bottom .tpl-story-price {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.tpl-story .tpl-story-bottom .tpl-story-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: 4px;
+  opacity: 0.95;
+}
+.tpl-story .tpl-story-bottom .tpl-story-meta {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+.tpl-story .tpl-story-bottom .tpl-story-cta {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.tpl-story .tpl-story-swipe {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  z-index: 2;
+  animation: bounceUp 1.2s ease-in-out infinite;
+}
+@keyframes bounceUp {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+/* ── Minimalist template ────────────────────────────────────── */
+.tpl-minimal {
+  display: flex;
+  aspect-ratio: 1/1;
+  background: #fff;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tpl-minimal .tpl-min-accent {
+  width: 6px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.tpl-minimal .tpl-min-img {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.tpl-minimal .tpl-min-img .tpl-img-slot {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tpl-minimal .tpl-min-img .tpl-img-slot::after {
+  content: '';
+  width: 44px;
+  height: 44px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='2'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  opacity: 0.5;
+}
+.tpl-minimal .tpl-min-img .tpl-img-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tpl-minimal .tpl-min-info {
+  width: 45%;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+.tpl-minimal .tpl-min-info .tpl-min-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+.tpl-minimal .tpl-min-info .tpl-min-price {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--fg);
+}
+.tpl-minimal .tpl-min-info .tpl-min-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.3;
+}
+.tpl-minimal .tpl-min-info .tpl-min-meta {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.tpl-minimal .tpl-min-info .tpl-min-divider {
+  width: 24px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+.tpl-minimal .tpl-min-info .tpl-min-brand {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: auto;
+}
+
+/* ── Diagonal split template ────────────────────────────────── */
+.tpl-diagonal {
+  position: relative;
+  aspect-ratio: 1/1;
+  background: var(--bg);
+  overflow: hidden;
+}
+.tpl-diagonal .tpl-diag-img {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 75%;
+  height: 120%;
+  transform: rotate(8deg);
+  transform-origin: center;
+  overflow: hidden;
+}
+.tpl-diagonal .tpl-diag-img .tpl-img-slot {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tpl-diagonal .tpl-diag-img .tpl-img-slot::after {
+  content: '';
+  width: 48px;
+  height: 48px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='2'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  opacity: 0.5;
+}
+.tpl-diagonal .tpl-diag-img .tpl-img-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tpl-diagonal .tpl-diag-text {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 20px 20px 10px;
+  z-index: 2;
+}
+.tpl-diagonal .tpl-diag-text .tpl-diag-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.tpl-diagonal .tpl-diag-text .tpl-diag-price {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--fg);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.tpl-diagonal .tpl-diag-text .tpl-diag-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+.tpl-diagonal .tpl-diag-text .tpl-diag-meta {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.tpl-diagonal .tpl-diag-text .tpl-diag-cta {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  align-self: flex-start;
+}
+.tpl-diagonal .tpl-diag-text .tpl-diag-brand {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: auto;
+}
+
+/* ── Feature badges template ────────────────────────────────── */
+.tpl-features {
+  position: relative;
+  aspect-ratio: 1/1;
+  background: #111;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+.tpl-features .tpl-img-slot {
+  width: 100%;
+  height: 100%;
+  background: var(--surface-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tpl-features .tpl-img-slot::after {
+  content: '';
+  width: 56px;
+  height: 56px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='2'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  opacity: 0.5;
+}
+.tpl-features .tpl-img-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tpl-features .tpl-feat-badges {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+}
+.tpl-features .tpl-feat-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.tpl-features .tpl-feat-badge .tpl-feat-icon {
+  font-size: 14px;
+}
+.tpl-features .tpl-feat-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 50px 16px 14px;
+  color: #fff;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.tpl-features .tpl-feat-bottom .tpl-feat-info .tpl-feat-price {
+  font-size: var(--text-lg);
+  font-weight: 800;
+}
+.tpl-features .tpl-feat-bottom .tpl-feat-info .tpl-feat-name {
+  font-size: var(--text-xs);
+  opacity: 0.85;
+  margin-top: 2px;
+}
+.tpl-features .tpl-feat-bottom .tpl-feat-brand {
+  background: var(--accent);
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.template-card {
+  position: relative;
+}
+.template-card .tpl-preview {
+  max-height: 420px;
+  overflow: hidden;
+}
+.template-card .template-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--motion-base);
+  border-radius: var(--radius-md);
+  pointer-events: none;
+  z-index: 5;
+}
+.template-card:hover .template-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+.template-tags {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
