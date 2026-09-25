@@ -6,13 +6,16 @@ import type { SafeHtml } from '../../core/html';
 import { CONTENT_LIMIT } from '../../data/content-limits';
 import type { MediaFile, MediaIssue } from '../../data/media-validation';
 import { t } from '../../i18n';
+import { renderTemplateDesign, templateOutputSize } from '../templates/template-render';
 import { listingTitle } from '../listings/listing-format';
 import { findPlatform, platformDisplayName, postTypeName } from '../platforms/platform-format';
-import type { PlatformId, PostLang } from '../../types/models';
+import type { PlatformId, PostLang, Template } from '../../types/models';
 
 export interface RowState {
   platformId: PlatformId;
   postTypeId: string | null;
+  /** Plantilla elegida para esta fila; solo entre las compatibles con su plataforma+tipo. */
+  templateId: number | null;
   /** Archivos elegidos en esta sesión; vacío = mantener lo que ya tenía el post (modo edición). */
   files: MediaFile[];
   /** URL de vista previa de `files`, en el mismo orden (se revocan al sustituirlas/cerrar). */
@@ -31,10 +34,19 @@ export interface FormState {
 export const emptyRow = (platformId: PlatformId): RowState => ({
   platformId,
   postTypeId: findPlatform(getState().platforms, platformId)?.postTypes[0]?.id ?? null,
+  templateId: null,
   files: [],
   previewUrls: [],
   existingImages: [],
 });
+
+/** Templates cuyo catálogo de variantes cubre esta combinación exacta de plataforma+tipo. */
+export function compatibleTemplates(platformId: PlatformId, postTypeId: string | null): Template[] {
+  if (!postTypeId) return [];
+  return getState().templates.filter(tpl =>
+    tpl.variants.some(v => v.platformId === platformId && v.postTypeId === postTypeId),
+  );
+}
 
 /** Revoca las URL de vista previa de una fila (evita fugas de memoria). */
 export function revokeRowPreviews(row: RowState): void {
@@ -55,22 +67,6 @@ export function renderListingOptions(selectedId: number | null): void {
         l =>
           html`<option value="${l.id}" ${l.id === selectedId ? 'selected' : ''}>
             ${listingTitle(l, lang)}
-          </option>`,
-      )}`,
-  );
-}
-
-export function renderTemplateOptions(selectedId: number | null): void {
-  const select = getById<HTMLSelectElement>('post-template');
-  if (!select) return;
-  const { templates } = getState();
-  setHtml(
-    select,
-    html`<option value="" data-i18n="form_no_template">${t('form_no_template')}</option>
-      ${templates.map(
-        tpl =>
-          html`<option value="${tpl.id}" ${tpl.id === selectedId ? 'selected' : ''}>
-            ${t(tpl.nameKey, tpl.nameKey)}
           </option>`,
       )}`,
   );
@@ -132,7 +128,45 @@ function rowMediaPreview(row: RowState): SafeHtml {
   return joinHtml(sources.map((src, i) => previewThumb(src, row.platformId, i)));
 }
 
-export function renderPlatformRows(rows: readonly RowState[]): void {
+function templateSelect(row: RowState): SafeHtml {
+  const compatible = compatibleTemplates(row.platformId, row.postTypeId);
+  return html`<select data-change="post:template" data-id="${row.platformId}">
+    <option value="" data-i18n="form_no_template">${t('form_no_template')}</option>
+    ${compatible.map(
+      tpl =>
+        html`<option value="${tpl.id}" ${tpl.id === row.templateId ? 'selected' : ''}>
+          ${t(tpl.nameKey, tpl.nameKey)}
+        </option>`,
+    )}
+  </select>`;
+}
+
+/** Vista previa en vivo: la plantilla elegida con los datos reales del listing, si hay ambos. */
+function rowPreview(row: RowState, listingId: number | null): SafeHtml {
+  const tpl = row.templateId ? getState().templates.find(t => t.id === row.templateId) : undefined;
+  if (!tpl) return html`<p class="form-hint">${t('tpl_no_preview')}</p>`;
+
+  const listing = listingId ? getState().listings.find(l => l.id === listingId) : undefined;
+  if (!listing) return html`<p class="form-hint">${t('tpl_preview_needs_listing')}</p>`;
+
+  return renderTemplateDesign(tpl, listing, getState().lang);
+}
+
+/** El `aspect-ratio` de `.tpl-preview` se fija tras insertarlo (no es parte del HTML generado). */
+function applyPreviewRatios(rows: readonly RowState[]): void {
+  for (const row of rows) {
+    if (!row.templateId) continue;
+    const tpl = getState().templates.find(t => t.id === row.templateId);
+    const el = document.querySelector<HTMLElement>(
+      `#post-preview-wrap-${CSS.escape(row.platformId)} .tpl-preview`,
+    );
+    if (!tpl || !el) continue;
+    const size = templateOutputSize(tpl, row.platformId, row.postTypeId ?? undefined);
+    el.style.aspectRatio = `${String(size.width)} / ${String(size.height)}`;
+  }
+}
+
+export function renderPlatformRows(rows: readonly RowState[], listingId: number | null): void {
   const container = getById('post-platform-rows');
   if (!container) return;
   const { platforms, lang } = getState();
@@ -182,32 +216,55 @@ export function renderPlatformRows(rows: readonly RowState[]): void {
               <div id="post-row-error-${row.platformId}" class="form-hint" style="color:var(--danger)" hidden></div>
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" data-i18n="form_select_template">${t('form_select_template')}</label>
+              ${templateSelect(row)}
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="tpl_preview">${t('tpl_preview')}</label>
+              <div class="post-tpl-preview" id="post-preview-wrap-${row.platformId}">
+                ${rowPreview(row, listingId)}
+              </div>
+              ${
+                row.templateId
+                  ? html`<button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    style="margin-top:var(--space-2)"
+                    data-action="post:export-png"
+                    data-id="${row.platformId}"
+                  >
+                    ${t('action_export_png')}
+                  </button>`
+                  : ''
+              }
+            </div>
+          </div>
         </div>`;
       }),
     ),
   );
+  applyPreviewRatios(rows);
 }
 
-export function renderCharCount(
-  text: string,
-  lang: PostLang,
-  platformIds: readonly PlatformId[],
-): void {
+export function renderCharCount(text: string, lang: PostLang, rows: readonly RowState[]): void {
   const box = getById('post-char-count');
   if (!box) return;
-  if (platformIds.length === 0) {
+  if (rows.length === 0) {
     box.textContent = '';
     return;
   }
   const length = [...text].length;
-  const parts = platformIds.map(id => {
-    const limit = CONTENT_LIMIT[id];
-    return `${id}: ${String(length)}/${String(limit)}`;
-  });
+  const limitFor = (row: RowState): number => {
+    const type = findPlatform(getState().platforms, row.platformId)?.postTypes.find(
+      pt => pt.id === row.postTypeId,
+    );
+    return type?.maxChars ?? CONTENT_LIMIT[row.platformId];
+  };
+  const parts = rows.map(row => `${row.platformId}: ${String(length)}/${String(limitFor(row))}`);
   box.textContent = parts.join(' · ');
-  box.style.color = platformIds.some(id => [...text].length > CONTENT_LIMIT[id])
-    ? 'var(--danger)'
-    : 'var(--muted)';
+  box.style.color = rows.some(row => length > limitFor(row)) ? 'var(--danger)' : 'var(--muted)';
   void lang; // reservado para límites que en el futuro dependan del idioma del contenido
 }
 

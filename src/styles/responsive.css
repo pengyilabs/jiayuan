@@ -1,38 +1,230 @@
+/**
+ * F7 — Responsive: tres tamaños con los mismos umbrales que `app/responsive.ts`.
+ *   Móvil   : < 640px  — cajón de navegación, una columna, calendario en agenda, todo a
+ *             pantalla completa.
+ *   Tablet  : 640–1023px — sidebar en rail fijo de 60px, cuadrícula de 2 columnas, calendario
+ *             semanal.
+ *   PC      : ≥ 1024px (por defecto en el resto de las hojas de estilo) — sidebar expansible,
+ *             cuadrícula de 3–4 columnas, calendario mensual.
+ * `html, body { overflow-x: hidden }` es la red de seguridad contra desbordes horizontales que
+ * pide la fase; cada regla de abajo evita además que haga falta usarla.
+ */
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* ── Overlay del cajón de navegación (invisible salvo en móvil con el cajón abierto) ────────── */
+.sidebar-overlay {
+  display: none;
+}
+
+/* Botón de menú (hamburguesa): solo existe visualmente en móvil. */
+.mobile-menu-btn {
+  display: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.mobile-menu-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.mobile-menu-btn:hover {
+  background: var(--surface-warm);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Tablet: 640–1023px — sidebar siempre en rail, sin botón para expandirla
+   ════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .sidebar {
+    width: 60px !important;
+  }
+  .sidebar-toggle {
+    display: none;
+  }
+  .sidebar-header,
+  .sidebar-brand,
+  .sidebar-title,
+  .sidebar-subtitle,
+  .nav-section-label,
+  .nav-item span:not(.icon):not(.nav-badge),
+  .user-info {
+    display: none;
+  }
+  .sidebar-nav .nav-item {
+    justify-content: center;
+    padding: 10px 0;
+  }
+  .sidebar-footer {
+    padding: 8px 0;
+  }
+  .sidebar-user {
+    justify-content: center;
+    padding: 8px 0;
+  }
+  .user-logout {
+    display: none;
+  }
+
+  .grid-3,
+  .format-grid,
+  .cross-platform-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .day-scroll {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Calendario semanal por defecto (lo fuerza también `app/responsive.ts`); se ocultan las
+     otras dos pestañas, que no aplican a este tamaño. */
+  .cal-mode-btn[data-mode='month'],
+  .cal-mode-btn[data-mode='agenda'] {
+    display: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Móvil: < 640px
+   ════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 639px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  /* El sidebar se convierte en un cajón fuera de pantalla; "collapsed" (su estado por
+     defecto) pasa a significar "cerrado" en vez de "en modo rail". */
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(82vw, 300px) !important;
+    z-index: 200;
+    transform: translateX(0);
+    transition: transform var(--motion-base, 0.25s) ease;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+  }
+  .sidebar-toggle {
+    display: none; /* se usa el botón de hamburguesa del encabezado, no el de dentro del sidebar */
+  }
+  .sidebar:not(.collapsed) ~ .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 150;
+  }
+
+  .app {
+    display: block;
+    height: 100vh;
+    height: 100dvh;
+  }
+  .main {
+    height: 100%;
+  }
+  .content {
+    padding: 12px;
+  }
+
+  /* Encabezados: la búsqueda y las estadísticas secundarias no caben; se apilan y se recortan. */
+  .topbar-search,
+  .dash-stats .dash-stat:nth-child(n + 3) {
+    display: none;
+  }
+  .dash-header-top {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .dash-header-filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+  .feed-view-toggle {
+    margin-left: 0;
+  }
+
+  /* Una columna en todas las cuadrículas del feed y de listings. */
+  .grid-3,
+  .grid-2,
+  .format-grid,
+  .cross-platform-grid,
+  .day-scroll {
+    grid-template-columns: 1fr !important;
+  }
+  /* La tabla de propiedades no cabe: se fuerza la vista de tarjetas (ver `app/responsive.ts`)
+     y además se oculta por CSS como red de seguridad si algo la mostrara igualmente. */
+  .listings-table-view {
+    display: none !important;
+  }
+  .view-toggle-btn[data-view='table'] {
+    display: none;
+  }
+
+  /* Calendario en agenda por defecto; se ocultan las otras dos pestañas. */
+  .cal-mode-btn[data-mode='month'],
+  .cal-mode-btn[data-mode='week'] {
+    display: none;
+  }
+  .calendar-panel {
+    padding: var(--space-3);
+  }
+
+  /* Modales y formularios a pantalla completa. */
+  .modal-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+  .modal {
+    max-width: 100% !important;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* Áreas táctiles ≥44px en los controles pequeños del prototipo original. */
+  .notif-btn,
+  .lang-trigger,
+  .view-toggle-btn,
+  .cal-nav-btn,
+  .user-logout,
+  .btn-sm {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .feed-filter,
+  .feed-status-filter,
+  .cal-mode-btn {
+    min-height: 44px;
+  }
+}
+
+/* ── Reglas heredadas de F0–F6 que siguen aplicando a los anchos intermedios ─────────────────── */
 @media (max-width: 768px) {
   .format-grid {
     grid-template-columns: 1fr;
   }
-}
-@media (max-width: 900px) {
-  .social-feed {
-    flex-direction: column;
-  }
-  .date-rail {
-    width: 100%;
-    flex-direction: row;
-    overflow-x: auto;
-    max-height: none;
-    gap: 4px;
-    padding: var(--space-2);
-  }
-  .date-rail-pill {
-    min-width: 56px;
-  }
-}
-@media (max-width: 600px) {
-  .day-scroll {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 768px) {
   .cross-platform-grid {
     grid-template-columns: 1fr;
-  }
-}
-/* ── Mobile Responsive ─────────────────────────────────── */
-@media (max-width: 768px) {
-  .grid-3 {
-    grid-template-columns: repeat(2, 1fr);
   }
   .listings-table {
     font-size: var(--text-xs);
@@ -76,12 +268,6 @@
   }
 }
 @media (max-width: 550px) {
-  .grid-3 {
-    grid-template-columns: 1fr;
-  }
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
   .modal-listing-detail .detail-gallery {
     height: 220px;
   }
@@ -90,8 +276,5 @@
   }
   .media-preview-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .form-row {
-    grid-template-columns: 1fr;
   }
 }

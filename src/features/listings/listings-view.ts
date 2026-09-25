@@ -27,13 +27,13 @@ function renderTable(): void {
     html` <table class="listings-table">
       <thead>
         <tr>
-          <th style="width:60px"></th>
+          <th style="width:60px"><span class="sr-only">${t('col_photo')}</span></th>
           <th>${t('col_title')}</th>
           <th>${t('col_type')}</th>
           <th>${t('col_status')}</th>
           <th>${t('col_price')}</th>
           <th>${t('col_beds_baths')}</th>
-          <th style="width:80px"></th>
+          <th style="width:80px"><span class="sr-only">${t('col_actions')}</span></th>
         </tr>
       </thead>
       <tbody>

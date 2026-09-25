@@ -5,6 +5,11 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
+  /* F5: el ratio real lo fija JS por elemento (variante del template); las container queries
+     dejan que el tamaño de fuente y el espaciado escalen con las dimensiones reales en vez de
+     quedar fijos, para que los mismos 8 layouts funcionen en cualquier ratio. */
+  container-type: size;
+  container-name: tpl;
 }
 .tpl-hero {
   background-size: cover;
@@ -669,4 +674,60 @@
   gap: 4px;
   margin-top: 8px;
   flex-wrap: wrap;
+}
+
+/* ── F5: tipografía fluida por container query ────────────────────────────
+   Los mismos 8 layouts se usan ahora en 6 ratios distintos (1:1 a 2.35:1); en vez de un
+   tamaño fijo por layout, el precio y el título escalan con el ancho real del contenedor
+   (cqi = container query inline-size), y quedan acotados por clamp() para no verse
+   minúsculos en un cuadrado pequeño ni gigantes en un banner panorámico. */
+.tpl-hero-price,
+.tpl-split-price,
+.tpl-mag-price,
+.tpl-story-price,
+.tpl-min-price,
+.tpl-diag-price,
+.tpl-feat-price,
+.tpl-price-badge {
+  font-size: clamp(14px, 6cqi, 34px);
+}
+.tpl-hero-title,
+.tpl-split-title,
+.tpl-mag-title,
+.tpl-story-name,
+.tpl-min-name,
+.tpl-diag-name,
+.tpl-feat-name,
+.tpl-gallery-meta {
+  font-size: clamp(11px, 3.4cqi, 20px);
+}
+.tpl-hero-meta,
+.tpl-split-meta,
+.tpl-story-meta,
+.tpl-min-meta,
+.tpl-diag-meta {
+  font-size: clamp(9px, 2.2cqi, 13px);
+}
+
+/* Ratios muy panorámicos (p. ej. 2.35:1, portadas de artículo): menos alto disponible,
+   así que se reduce el relleno vertical de las superposiciones para que quepan sin recortarse. */
+@container tpl (min-aspect-ratio: 2/1) {
+  .tpl-hero-overlay,
+  .tpl-mag-overlay {
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+  }
+  .tpl-hero-price,
+  .tpl-mag-price {
+    margin-bottom: 2px;
+  }
+}
+
+/* Ratios muy verticales (9:16, historias): sobra alto pero falta ancho; se reduce el
+   relleno lateral para no desperdiciar el poco ancho disponible en el texto. */
+@container tpl (max-aspect-ratio: 3/5) {
+  .tpl-hero-overlay {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
 }

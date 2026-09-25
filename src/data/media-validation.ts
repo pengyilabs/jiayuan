@@ -28,7 +28,8 @@ export type MediaIssueCode =
   | 'count_single'
   | 'count_carousel'
   | 'count_video'
-  | 'ratio_mismatch';
+  | 'ratio_mismatch'
+  | 'duration_exceeded';
 
 export interface MediaIssue {
   code: MediaIssueCode;
@@ -76,13 +77,19 @@ export function validateFileCount(group: PostTypeGroup, files: readonly MediaFil
   }
 }
 
-/** Ratios declarados en la etiqueta del tipo (p. ej. "1:1 · 4:5 · 16:9"); vacío si no hay ninguno. */
-export function parseAllowedRatios(ratioLabel: string): number[] {
-  const matches = ratioLabel.match(/(\d+):(\d+)/g) ?? [];
-  return matches.map(m => {
-    const [w, h] = m.split(':').map(Number);
-    return (w ?? 1) / (h || 1);
-  });
+/**
+ * Ratios estructurados de `post_types.aspect_ratios` (F5), p. ej. `['1:1','4:5','16:9']`;
+ * los tokens que no tengan la forma `W:H` se ignoran (vacío = sin restricción de ratio).
+ */
+export function parseAllowedRatios(tokens: readonly string[]): number[] {
+  const ratios: number[] = [];
+  for (const token of tokens) {
+    const match = /^(\d+):(\d+)$/.exec(token.trim());
+    if (!match) continue;
+    const [, w, h] = match;
+    ratios.push(Number(w) / Number(h || '1'));
+  }
+  return ratios;
 }
 
 const RATIO_TOLERANCE = 0.06;
@@ -119,9 +126,9 @@ export function imageAspectRatio(file: File, timeoutMs = 5000): Promise<number> 
 /** Valida el ratio de las imágenes contra los declarados por el tipo de publicación. */
 export async function validateImageRatios(
   files: readonly MediaFile[],
-  ratioLabel: string,
+  aspectRatios: readonly string[],
 ): Promise<MediaIssue[]> {
-  const allowed = parseAllowedRatios(ratioLabel);
+  const allowed = parseAllowedRatios(aspectRatios);
   if (allowed.length === 0) return [];
   const issues: MediaIssue[] = [];
   for (const { file, kind } of files) {
@@ -130,6 +137,50 @@ export async function validateImageRatios(
       const ratio = await imageAspectRatio(file);
       if (!matchesAnyRatio(ratio, allowed))
         issues.push({ code: 'ratio_mismatch', fileName: file.name });
+    } catch {
+      // Archivo ilegible: `basicFileIssues` ya habrá señalado el formato si es el problema.
+    }
+  }
+  return issues;
+}
+
+/** Duración (segundos) de un vídeo, leída de forma asíncrona a partir de sus metadatos. */
+export function videoDuration(file: File, timeoutMs = 5000): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video');
+    const url = URL.createObjectURL(file);
+    const timer = setTimeout(() => {
+      URL.revokeObjectURL(url);
+      reject(new Error(`Tiempo de espera agotado leyendo el vídeo: ${file.name}`));
+    }, timeoutMs);
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => {
+      clearTimeout(timer);
+      URL.revokeObjectURL(url);
+      resolve(video.duration);
+    };
+    video.onerror = () => {
+      clearTimeout(timer);
+      URL.revokeObjectURL(url);
+      reject(new Error(`No se pudo leer el vídeo: ${file.name}`));
+    };
+    video.src = url;
+  });
+}
+
+/** Valida la duración de los vídeos contra el máximo declarado por el tipo (si lo hay). */
+export async function validateVideoDuration(
+  files: readonly MediaFile[],
+  maxDurationSeconds: number | null,
+): Promise<MediaIssue[]> {
+  if (maxDurationSeconds === null) return [];
+  const issues: MediaIssue[] = [];
+  for (const { file, kind } of files) {
+    if (kind !== 'video') continue;
+    try {
+      const duration = await videoDuration(file);
+      if (duration > maxDurationSeconds)
+        issues.push({ code: 'duration_exceeded', fileName: file.name });
     } catch {
       // Archivo ilegible: `basicFileIssues` ya habrá señalado el formato si es el problema.
     }

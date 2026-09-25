@@ -113,6 +113,10 @@ export function toPostType(row: Tables<'post_types'>): PostType {
     name: toLocalized(row.name),
     ratio: row.ratio_label,
     group: row.format_group as PostTypeGroup,
+    aspectRatios: row.aspect_ratios ?? [],
+    maxChars: row.max_chars,
+    maxMedia: row.max_media,
+    maxDurationSeconds: row.max_duration_seconds,
   };
 }
 
@@ -151,7 +155,13 @@ export function toPostTypeGroups(
   return result;
 }
 
-export function toTemplate(row: Tables<'templates'>): Template {
+export function toTemplate(
+  row: Tables<'templates'>,
+  variants: readonly Pick<
+    Tables<'template_variants'>,
+    'platform_id' | 'post_type_id' | 'width' | 'height'
+  >[] = [],
+): Template {
   return {
     id: row.id,
     nameKey: row.name_key,
@@ -161,6 +171,13 @@ export function toTemplate(row: Tables<'templates'>): Template {
     color: row.color,
     description: toLocalized(row.description),
     platformTags: row.platform_tags,
+    // `variants` ya debe llegar filtrada a las filas de este template (ver llamadas).
+    variants: variants.map(v => ({
+      platformId: v.platform_id as PlatformId,
+      postTypeId: v.post_type_id,
+      width: v.width,
+      height: v.height,
+    })),
   };
 }
 

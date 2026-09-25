@@ -1,8 +1,12 @@
-/** Panel de notificaciones del topbar: lista, marcar (todas) como leídas. */
+/**
+ * Panel de notificaciones del encabezado: lista, marcar (todas) como leídas. El control existe
+ * por duplicado (topbar genérico + encabezado de Home, oculto uno u otro según la página, F7)
+ * así que todo aquí opera sobre "todas las instancias en el DOM" en vez de un único id.
+ */
 import { registerActions } from '../../app/actions';
 import { repos } from '../../app/services';
 import { getState, setState, store } from '../../app/state';
-import { getById, qs, targetElement } from '../../core/dom';
+import { qsa, targetElement } from '../../core/dom';
 import { html, joinHtml, setHtml } from '../../core/html';
 import type { SafeHtml } from '../../core/html';
 import { t } from '../../i18n';
@@ -17,9 +21,23 @@ const TYPE_LABEL_KEY: Readonly<Record<NotificationType, string>> = {
   post_published: 'notif_type_published',
 };
 
-function toggleDropdown(force?: boolean): void {
-  getById('notif-dropdown')?.classList.toggle('open', force);
-  getById('notif-btn')?.classList.toggle('open', force);
+function closeAllDropdowns(exceptSwitch?: Element | null): void {
+  qsa('.notif-switch').forEach(switcher => {
+    if (switcher === exceptSwitch) return;
+    switcher.querySelector('.notif-dropdown')?.classList.remove('open');
+    switcher.querySelector('.notif-btn')?.classList.remove('open');
+  });
+}
+
+function toggleDropdown(button: HTMLElement): void {
+  const switcher = button.closest('.notif-switch');
+  const dropdown = switcher?.querySelector('.notif-dropdown');
+  const isOpen = dropdown?.classList.contains('open') ?? false;
+  closeAllDropdowns();
+  if (!isOpen) {
+    dropdown?.classList.add('open');
+    button.classList.add('open');
+  }
 }
 
 function notificationMessage(n: Notification): string {
@@ -41,24 +59,25 @@ function renderRow(n: Notification): SafeHtml {
 }
 
 function renderPanel(): void {
-  const list = getById('notif-list');
-  const dot = getById('notif-dot');
-  if (!list) return;
   const { notifications } = getState();
-
-  setHtml(
-    list,
+  const hasUnread = notifications.some(n => n.readAt === null);
+  const body =
     notifications.length === 0
       ? html`<p class="form-hint" style="padding:var(--space-4)">${t('notif_empty')}</p>`
-      : joinHtml(notifications.map(renderRow)),
-  );
-  if (dot) dot.hidden = !notifications.some(n => n.readAt === null);
+      : joinHtml(notifications.map(renderRow));
+
+  qsa('.notif-list').forEach(list => {
+    setHtml(list, body);
+  });
+  qsa('.notif-dot').forEach(dot => {
+    dot.hidden = !hasUnread;
+  });
 }
 
 export function initNotifications(): void {
   registerActions({
-    'notif:toggle': () => {
-      toggleDropdown();
+    'notif:toggle': el => {
+      toggleDropdown(el);
     },
     'notif:mark-read': el => {
       const id = Number(el.dataset.id);
@@ -84,8 +103,11 @@ export function initNotifications(): void {
   });
 
   document.addEventListener('click', event => {
-    const switcher = qs('.notif-switch');
-    if (switcher && !switcher.contains(targetElement(event))) toggleDropdown(false);
+    const target = targetElement(event);
+    const insideOpenSwitch = qsa('.notif-switch').find(
+      s => s.querySelector('.notif-dropdown.open') && s.contains(target),
+    );
+    if (!insideOpenSwitch) closeAllDropdowns();
   });
 
   store.watch(s => s.notifications, renderPanel);

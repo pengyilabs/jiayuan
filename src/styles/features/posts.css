@@ -110,3 +110,12 @@
 .post-row-compact .post-row-reason {
   grid-column: 1 / -1;
 }
+
+/* Vista previa en vivo de la plantilla dentro de la fila del formulario (F5) */
+.post-tpl-preview {
+  max-width: 220px;
+}
+.post-tpl-preview .tpl-preview {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}

@@ -1,4 +1,4 @@
-<div class="modal-overlay" id="modal-template-preview">
+<div class="modal-overlay" id="modal-template-preview" role="dialog" aria-modal="true" aria-labelledby="tpl-preview-title">
   <div class="modal" style="max-width:520px">
     <div class="modal-header">
       <h3 id="tpl-preview-title" data-i18n="tpl_preview">模板预览</h3>
@@ -6,7 +6,7 @@
     </div>
     <div class="modal-body">
       <div class="form-group" style="margin-bottom:var(--space-4)">
-        <label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:6px" data-i18n="tpl_select_listing">选择房源</label>
+        <label for="tpl-listing-select" style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:6px" data-i18n="tpl_select_listing">选择房源</label>
         <select id="tpl-listing-select" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-size:var(--text-sm);color:var(--fg);cursor:pointer" data-change="template:refresh-preview"></select>
       </div>
       <div id="tpl-preview-design" style="border-radius:var(--radius-md);overflow:hidden;margin-bottom:var(--space-4)"></div>

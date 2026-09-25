@@ -13,6 +13,7 @@ import {
 } from '../seed/platforms';
 import { postMediaSeed, postsSeed } from '../seed/posts';
 import { templatesSeed } from '../seed/templates';
+import { templateVariantsSeed } from '../seed/template-variants';
 import { ADMIN_ID } from '../seed/users';
 import { createMemoryDirectory } from '../memory-directory';
 import type { MemoryDirectory } from '../memory-directory';
@@ -665,7 +666,12 @@ export function createMemoryRepositories(options: MemoryOptions = {}): Repositor
       templates() {
         me();
         return Promise.resolve(
-          templatesSeed.map(t => toTemplate({ description: {}, platform_tags: [], ...t })),
+          templatesSeed.map(t =>
+            toTemplate(
+              { description: {}, platform_tags: [], ...t },
+              templateVariantsSeed.filter(v => v.template_id === t.id),
+            ),
+          ),
         );
       },
       settings() {

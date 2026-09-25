@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   basicFileIssues,
   classifyFile,
@@ -6,6 +6,7 @@ import {
   parseAllowedRatios,
   validateFileCount,
   validateMediaFiles,
+  validateVideoDuration,
 } from '../../src/data/media-validation';
 import type { MediaFile } from '../../src/data/media-validation';
 
@@ -99,25 +100,25 @@ describe('validateFileCount', () => {
 });
 
 describe('parseAllowedRatios / matchesAnyRatio', () => {
-  it('extrae varios ratios de una etiqueta mixta', () => {
-    expect(parseAllowedRatios('1:1 · 4:5 · 16:9')).toEqual([1, 0.8, 16 / 9]);
+  it('convierte un array de tokens estructurados', () => {
+    expect(parseAllowedRatios(['1:1', '4:5', '16:9'])).toEqual([1, 0.8, 16 / 9]);
   });
 
-  it('una etiqueta sin ratio (o "—") no impone restricción', () => {
-    expect(parseAllowedRatios('—')).toEqual([]);
+  it('sin ratios declarados no impone restricción', () => {
+    expect(parseAllowedRatios([])).toEqual([]);
     expect(matchesAnyRatio(2.5, [])).toBe(true);
   });
 
   it('acepta con una tolerancia razonable y rechaza fuera de ella', () => {
-    const allowed = parseAllowedRatios('1:1 · 16:9');
+    const allowed = parseAllowedRatios(['1:1', '16:9']);
     expect(matchesAnyRatio(1.0, allowed)).toBe(true);
     expect(matchesAnyRatio(1.03, allowed)).toBe(true); // dentro de tolerancia
     expect(matchesAnyRatio(16 / 9, allowed)).toBe(true);
     expect(matchesAnyRatio(2.0, allowed)).toBe(false); // ni cuadrado ni panorámico
   });
 
-  it('ignora fragmentos de duración que no son ratios (p. ej. "≤ 90s")', () => {
-    expect(parseAllowedRatios('9:16 ≤ 90s')).toEqual([9 / 16]);
+  it('ignora tokens que no tienen la forma W:H', () => {
+    expect(parseAllowedRatios(['9:16', '≤ 90s', ''])).toEqual([9 / 16]);
   });
 });
 
@@ -131,5 +132,50 @@ describe('validateMediaFiles', () => {
     expect(wrongFormat.map(i => i.code)).toEqual(['unsupported_format']);
     const wrongCount = validateMediaFiles('image', [img(), img('b.jpg')]);
     expect(wrongCount.map(i => i.code)).toEqual(['count_single']);
+  });
+});
+
+describe('validateVideoDuration', () => {
+  URL.createObjectURL = () => 'blob:test-video';
+  URL.revokeObjectURL = () => undefined;
+
+  const stubVideo = (duration: number): void => {
+    class FakeVideo {
+      onloadedmetadata: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      preload = '';
+      duration = duration;
+      set src(_value: string) {
+        queueMicrotask(() => this.onloadedmetadata?.());
+      }
+    }
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string) =>
+      tag === 'video'
+        ? (new FakeVideo() as unknown as HTMLVideoElement)
+        : document.createElement(tag),
+    );
+  };
+
+  it('sin límite declarado, no restringe', async () => {
+    expect(await validateVideoDuration([vid()], null)).toEqual([]);
+  });
+
+  it('acepta un vídeo dentro del límite', async () => {
+    stubVideo(45);
+    expect(await validateVideoDuration([vid()], 90)).toEqual([]);
+    vi.restoreAllMocks();
+  });
+
+  it('rechaza un vídeo que supera el límite', async () => {
+    stubVideo(120);
+    const issues = await validateVideoDuration([vid('reel.mp4')], 90);
+    expect(issues).toEqual([{ code: 'duration_exceeded', fileName: 'reel.mp4' }]);
+    vi.restoreAllMocks();
+  });
+
+  it('ignora los archivos que no son vídeo', async () => {
+    stubVideo(999);
+    expect(await validateVideoDuration([img()], 10)).toEqual([]);
+    vi.restoreAllMocks();
   });
 });

@@ -1,4 +1,5 @@
 import { registerActions } from '../../app/actions';
+import { onBreakpointChange } from '../../app/responsive';
 import { setState, store } from '../../app/state';
 import type { ListingsView } from '../../app/state';
 import { initCardCarousel } from './card-carousel';
@@ -21,4 +22,10 @@ export function initListings(): void {
   store.watch(s => s.listings, renderListings);
   store.watch(s => s.listingsView, renderListings);
   renderListings();
+
+  // En móvil la tabla no cabe: se fuerza la vista de tarjetas (F7). Al volver a tablet/PC se
+  // respeta de nuevo lo que la persona haya elegido (por defecto, la tabla).
+  onBreakpointChange(breakpoint => {
+    if (breakpoint === 'mobile') setState({ listingsView: 'grid' });
+  });
 }

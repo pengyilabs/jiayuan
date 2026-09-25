@@ -21,7 +21,26 @@ export default defineConfig({
         launchOptions: executablePath ? { executablePath, args: ['--no-sandbox'] } : {},
       },
     },
-    // F7 añadirá los proyectos "tablet" y "mobile" junto con los layouts responsive.
+    {
+      // Tablet (640–1023px, F7): mismo motor que "desktop", solo cambia el viewport. Solo
+      // corre `responsive.spec.ts`: el resto de specs se escribió pensando en escritorio.
+      name: 'tablet',
+      testMatch: /(responsive|a11y)\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 800, height: 1024 },
+        launchOptions: executablePath ? { executablePath, args: ['--no-sandbox'] } : {},
+      },
+    },
+    {
+      // Móvil (<640px, F7): viewport táctil real (iPhone 13, 390×844).
+      name: 'mobile',
+      testMatch: /(responsive|a11y)\.spec\.ts/,
+      use: {
+        ...devices['iPhone 13'],
+        launchOptions: executablePath ? { executablePath, args: ['--no-sandbox'] } : {},
+      },
+    },
   ],
   webServer: {
     command: 'npm run build && npm run preview -- --port 4173 --host 127.0.0.1',

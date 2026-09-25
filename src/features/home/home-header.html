@@ -1,6 +1,9 @@
-    <div class="dash-header" data-od-id="dash-header">
+    <header class="dash-header" data-od-id="dash-header">
       <div class="dash-header-top">
         <div class="dash-team">
+          <button class="mobile-menu-btn" data-action="sidebar:toggle" aria-label="Menu" data-i18n-aria-label="aria_menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
           <div class="dash-team-avatar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </div>
@@ -8,10 +11,10 @@
           <span class="dash-team-handle">@jiayuanrealestate</span>
         </div>
         <div class="dash-stats">
-          <div class="dash-stat"><span class="dash-stat-value">156</span><span class="dash-stat-label" data-i18n="stat_total_posts">Posts</span></div>
-          <div class="dash-stat"><span class="dash-stat-value">48.2K</span><span class="dash-stat-label" data-i18n="stat_total_reach">Reach</span></div>
-          <div class="dash-stat"><span class="dash-stat-value">3,847</span><span class="dash-stat-label" data-i18n="stat_engagement">Engagement</span></div>
-          <div class="dash-stat"><span class="dash-stat-value" style="color:var(--accent)">3</span><span class="dash-stat-label" data-i18n="stat_pending">Pending</span></div>
+          <div class="dash-stat"><span class="dash-stat-value" id="stat-total">0</span><span class="dash-stat-label" data-i18n="stat_total_posts">Posts</span></div>
+          <div class="dash-stat"><span class="dash-stat-value" id="stat-pending">0</span><span class="dash-stat-label" data-i18n="stat_pending">Pending</span></div>
+          <div class="dash-stat"><span class="dash-stat-value" id="stat-approved">0</span><span class="dash-stat-label" data-i18n="stat_approved">Approved</span></div>
+          <div class="dash-stat"><span class="dash-stat-value" id="stat-published">0</span><span class="dash-stat-label" data-i18n="stat_published">Published</span></div>
         </div>
         <div class="dash-actions">
           <div class="topbar-search">
@@ -46,10 +49,21 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span data-i18n="btn_new_post">New Post</span>
           </button>
-          <button class="notif-btn" data-od-id="notif-btn">
-            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-            <span class="notif-dot"></span>
-          </button>
+          <div class="notif-switch">
+            <button class="notif-btn" data-action="notif:toggle" aria-label="Notifications" data-i18n-aria-label="aria_notifications">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span class="notif-dot" hidden></span>
+            </button>
+            <div class="notif-dropdown">
+              <div class="notif-dropdown-header">
+                <strong data-i18n="notif_title">通知</strong>
+                <button class="notif-mark-all" data-action="notif:mark-all-read" data-i18n="notif_mark_all_read">
+                  全部标为已读
+                </button>
+              </div>
+              <div class="notif-list"></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="dash-header-filters" data-od-id="feed-filters">
@@ -69,4 +83,10 @@
           </button>
         </div>
       </div>
-    </div>
+      <div class="dash-header-filters" id="feed-status-filters" data-od-id="feed-status-filters" hidden>
+        <span class="filter-status-label" data-i18n="filter_status_label">Status</span>
+        <button class="feed-status-filter active" data-status="all" data-action="feed:status-filter" data-i18n="tab_all">All</button>
+        <button class="feed-status-filter" data-status="pending" data-action="feed:status-filter" data-i18n="tab_pending">Pending</button>
+        <button class="feed-status-filter" data-status="approved" data-action="feed:status-filter" data-i18n="tab_approved">Approved</button>
+      </div>
+    </header>
