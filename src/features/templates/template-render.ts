@@ -57,14 +57,25 @@ function amenityLabel(a: Amenity, lang: Lang): string {
   return labels[a];
 }
 
-/** Dibuja el layout del template con los datos de `listing`, en el idioma `lang`. */
-export function renderTemplateDesign(tpl: Template, listing: Listing, lang: Lang): SafeHtml {
+/**
+ * Dibuja el layout del template con los datos de `listing`, en el idioma `lang`.
+ * `overrideImages` son los archivos que la persona ya subió para ESTE post (F8.1): si los hay,
+ * sustituyen a las fotos del listing, porque la plantilla debe reflejar el contenido real que
+ * se va a publicar, no siempre la foto de ejemplo del listing.
+ */
+export function renderTemplateDesign(
+  tpl: Template,
+  listing: Listing,
+  lang: Lang,
+  overrideImages?: readonly string[],
+): SafeHtml {
   const isZh = lang === 'zh';
   const name = localize(listing.title, lang);
   const bedsLabel = isZh ? '卧' : lang === 'fr' ? 'ch' : 'bed';
   const bathsLabel = isZh ? '卫' : lang === 'fr' ? 'sdb' : 'bath';
   const sqftLabel = 'sqft';
-  const img = listing.photos[0];
+  const photos = overrideImages && overrideImages.length > 0 ? overrideImages : listing.photos;
+  const img = photos[0];
   const amenities = listing.amenities.slice(0, 3);
   const meta = html`${listing.beds}${bedsLabel} ${listing.baths}${bathsLabel} · ${formatArea(listing.areaSqft)} ${sqftLabel}`;
 
@@ -97,9 +108,9 @@ export function renderTemplateDesign(tpl: Template, listing: Listing, lang: Lang
     case 'gallery':
       return html`<div class="tpl-preview tpl-gallery">
         <div class="tpl-img-slot"><img src="${img}" alt="" /></div>
-        <div class="tpl-img-slot"><img src="${listing.photos[1] || img}" alt="" /></div>
-        <div class="tpl-img-slot"><img src="${listing.photos[2] || img}" alt="" /></div>
-        <div class="tpl-img-slot"><img src="${listing.photos[3] || img}" alt="" /></div>
+        <div class="tpl-img-slot"><img src="${photos[1] || img}" alt="" /></div>
+        <div class="tpl-img-slot"><img src="${photos[2] || img}" alt="" /></div>
+        <div class="tpl-img-slot"><img src="${photos[3] || img}" alt="" /></div>
         <div class="tpl-price-badge">${formatPrice(listing.price)}</div>
         <div class="tpl-gallery-meta">${meta} · ${name}</div>
       </div>`;

@@ -10,8 +10,9 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 .social-feed {
-  display: flex;
-  gap: var(--space-5);
+  /* Antes tenía el date-rail como hermano flex (antes de F6); con un único hijo, `flex` ya no
+     hace falta y de hecho es la causa de que las tarjetas no llenaran el ancho: un flex item
+     sin `flex-grow` no se estira, se queda en el ancho natural de su contenido. */
   min-height: 400px;
 }
 
@@ -46,7 +47,9 @@
 }
 .day-scroll {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  /* auto-fit (no auto-fill): las columnas vacías colapsan a 0 en vez de quedar reservadas,
+     así que las tarjetas existentes ocupan todo el ancho disponible en vez de dejar un hueco. */
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: var(--space-4);
   padding: 4px 0 var(--space-2);
   align-items: start;
@@ -721,7 +724,7 @@
   line-height: 1;
 }
 .platform-tag-fb {
-  background: #1877f2;
+  background: #1569d5; /* azul de Facebook, un poco más oscuro para que el texto blanco cumpla WCAG AA */
 }
 .platform-tag-wx {
   background: #07c160;
@@ -1145,13 +1148,14 @@
 }
 .calendar-header {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--space-3);
   margin-bottom: var(--space-3);
 }
 .calendar-nav {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: var(--space-2);
 }
@@ -1182,9 +1186,10 @@
   background: var(--surface-warm);
   border-radius: var(--radius-sm);
   padding: 2px;
-  margin-left: auto;
+  width: 100%;
 }
 .cal-mode-btn {
+  flex: 1;
   padding: 4px 12px;
   border-radius: calc(var(--radius-sm) - 2px);
   font-size: var(--text-sm);
@@ -1224,7 +1229,6 @@
 }
 .cal-day.muted {
   color: var(--muted);
-  opacity: 0.5;
 }
 .cal-day.today {
   border-color: var(--accent);
@@ -1251,46 +1255,85 @@
   display: none;
 }
 
-.cal-week-row {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: var(--space-2);
-}
-.cal-week-col {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-2);
-  min-height: 120px;
+.cal-week-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  max-height: 420px;
+  overflow-y: auto;
 }
-.cal-week-col .cal-day {
-  aspect-ratio: unset;
-  align-self: flex-start;
+.cal-week-row-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  width: 100%;
+  border: 1px solid transparent;
 }
-.cal-week-weekday {
-  font-size: var(--text-xs);
+.cal-week-row-item:hover {
+  background: var(--surface-warm);
+}
+.cal-week-row-item.today {
+  border-color: var(--accent);
+}
+.cal-week-row-item.selected {
+  background: var(--accent);
+  color: #fff;
+}
+.cal-week-row-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+  flex-shrink: 0;
+}
+.cal-week-row-weekday {
+  font-size: 10px;
   color: var(--muted);
-  text-align: center;
+  text-transform: uppercase;
 }
-.cal-week-posts {
+.cal-week-row-item.selected .cal-week-row-weekday {
+  color: rgba(255, 255, 255, 0.8);
+}
+.cal-week-row-num {
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+.cal-week-row-posts {
   display: flex;
   flex-direction: column;
   gap: 2px;
   font-size: 11px;
+  min-width: 0;
+  flex: 1;
+}
+.cal-week-row-empty {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+.cal-week-row-item.selected .cal-week-row-empty {
+  color: rgba(255, 255, 255, 0.8);
 }
 .cal-week-post {
   background: var(--surface-warm);
   border-radius: 4px;
-  padding: 2px 4px;
+  padding: 2px 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.cal-week-row-item.selected .cal-week-post {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
 .cal-week-more {
   color: var(--muted);
   font-size: 10px;
+}
+.cal-week-row-item.selected .cal-week-more {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .cal-agenda {
@@ -1333,4 +1376,36 @@
   color: var(--muted);
   align-self: center;
   margin-right: 4px;
+}
+
+/* ── Home: calendario a la izquierda, feed a la derecha (rediseño F8.1) ──────────────────────
+   Una columna (agenda/semana) o dos (mes), tal como pide el rediseño: el ancho del panel del
+   calendario cambia según su modo, y el feed ocupa el resto. Solo en PC (≥1024px, F7): en
+   tablet/móvil se apilan, porque un panel fijo de 320–640px no deja sitio razonable al feed. */
+.home-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.home-feed-column {
+  min-width: 0; /* si no, el feed empuja al layout más ancho que el viewport */
+}
+
+@media (min-width: 1024px) {
+  .home-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+    gap: var(--space-6);
+  }
+  /* Mes necesita más aire para que la cuadrícula de 7 columnas no quede apretada: el panel
+     ocupa el ancho de "dos columnas" (plan F8.1) en vez de una. */
+  .home-layout.calendar-wide {
+    grid-template-columns: 640px 1fr;
+  }
+  .calendar-panel {
+    margin-bottom: 0;
+    position: sticky;
+    top: var(--space-4);
+  }
 }

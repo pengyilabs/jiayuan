@@ -37,6 +37,7 @@
   padding: 24px;
   overflow-y: auto;
   flex: 1;
+  min-height: 0; /* si no, un hijo flex en columna nunca se encoge para hacer scroll */
 }
 .modal-footer {
   padding: 16px 24px;

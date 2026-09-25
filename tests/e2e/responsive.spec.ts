@@ -92,7 +92,7 @@ test('el calendario ofrece el modo correcto según el tamaño', async ({ page })
     await expect(page.locator('[data-action="calendar:mode"][data-mode="week"]')).toHaveClass(
       /active/,
     );
-    await expect(page.locator('.cal-week-col')).toHaveCount(7);
+    await expect(page.locator('.cal-week-row-item')).toHaveCount(7);
   } else {
     await expect(page.locator('[data-action="calendar:mode"][data-mode="month"]')).toHaveClass(
       /active/,

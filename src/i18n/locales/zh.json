@@ -387,5 +387,6 @@
   "aria_close": "关闭",
   "col_photo": "图片",
   "col_actions": "操作",
-  "aria_listing_details": "房源详情"
+  "aria_listing_details": "房源详情",
+  "templates_empty": "没有符合筛选条件的模板。"
 }

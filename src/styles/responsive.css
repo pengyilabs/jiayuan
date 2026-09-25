@@ -135,14 +135,57 @@ body {
     padding: 12px;
   }
 
-  /* Encabezados: la búsqueda y las estadísticas secundarias no caben; se apilan y se recortan. */
-  .topbar-search,
-  .dash-stats .dash-stat:nth-child(n + 3) {
+  /* Encabezados: en vez de dejar que flex-wrap las apile sin control (que es exactamente lo
+     que causaba que todo se solapara), se define una estructura en columna explícita, con solo
+     lo esencial en la primera fila. */
+  .topbar-search {
     display: none;
   }
   .dash-header-top {
-    flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: auto; /* la regla base fija 60px pensando en una sola fila; aquí son varias */
     gap: var(--space-2);
+    padding: var(--space-2) 0;
+  }
+  .dash-team {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .dash-team-handle {
+    display: none; /* secundario: el nombre del equipo ya identifica la cuenta */
+  }
+  .dash-stats {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  .dash-stats .dash-stat:nth-child(n + 3) {
+    display: flex; /* en columna sí hay sitio para las 4 en una fila con scroll horizontal */
+  }
+  .dash-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    margin-left: 0;
+  }
+  .dash-actions .lang-switch {
+    order: 1;
+    flex-shrink: 0;
+  }
+  .dash-actions .btn[data-action='post:new'] {
+    order: 2;
+    flex: 1;
+    justify-content: center;
+  }
+  .dash-actions .notif-switch {
+    order: 3;
+    flex-shrink: 0;
   }
   .dash-header-filters {
     overflow-x: auto;
@@ -151,6 +194,7 @@ body {
   }
   .feed-view-toggle {
     margin-left: 0;
+    flex-shrink: 0;
   }
 
   /* Una columna en todas las cuadrículas del feed y de listings. */

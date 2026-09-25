@@ -2,29 +2,29 @@
 
         <div class="filters" data-od-id="listing-filters">
           <div class="filter-group">
-            <button class="filter-chip active" data-i18n="filter_all">全部</button>
-            <button class="filter-chip" data-i18n="status_for_sale">在售</button>
-            <button class="filter-chip" data-i18n="status_sold">已售</button>
-            <button class="filter-chip" data-i18n="status_for_rent">在租</button>
-            <button class="filter-chip" data-i18n="status_rented">已租</button>
+            <button class="filter-chip active" data-action="listing:filter-status" data-status="all" data-i18n="filter_all">全部</button>
+            <button class="filter-chip" data-action="listing:filter-status" data-status="for_sale" data-i18n="status_for_sale">在售</button>
+            <button class="filter-chip" data-action="listing:filter-status" data-status="sold" data-i18n="status_sold">已售</button>
+            <button class="filter-chip" data-action="listing:filter-status" data-status="for_rent" data-i18n="status_for_rent">在租</button>
+            <button class="filter-chip" data-action="listing:filter-status" data-status="rented" data-i18n="status_rented">已租</button>
           </div>
           <div class="filter-dropdown">
             <button class="filter-chip" data-i18n="filter_type_all">所有类型<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
             <div class="filter-dropdown-menu">
-              <button class="filter-option active" data-i18n="filter_type_all">所有类型</button>
-              <button class="filter-option" data-i18n="type_apartment">公寓</button>
-              <button class="filter-option" data-i18n="type_villa">别墅</button>
-              <button class="filter-option" data-i18n="type_commercial">商业</button>
+              <button class="filter-option active" data-action="listing:filter-type" data-type="all" data-i18n="filter_type_all">所有类型</button>
+              <button class="filter-option" data-action="listing:filter-type" data-type="apartment" data-i18n="type_apartment">公寓</button>
+              <button class="filter-option" data-action="listing:filter-type" data-type="villa" data-i18n="type_villa">别墅</button>
+              <button class="filter-option" data-action="listing:filter-type" data-type="commercial" data-i18n="type_commercial">商业</button>
             </div>
           </div>
           <div class="filter-dropdown">
             <button class="filter-chip" data-i18n="filter_price_all">所有价格<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
             <div class="filter-dropdown-menu">
-              <button class="filter-option active" data-i18n="filter_price_all">所有价格</button>
-              <button class="filter-option">&lt; $300K</button>
-              <button class="filter-option">$300K - $600K</button>
-              <button class="filter-option">$600K - $1M</button>
-              <button class="filter-option">&gt; $1M</button>
+              <button class="filter-option active" data-action="listing:filter-price" data-price="all" data-i18n="filter_price_all">所有价格</button>
+              <button class="filter-option" data-action="listing:filter-price" data-price="0-300000">&lt; $300K</button>
+              <button class="filter-option" data-action="listing:filter-price" data-price="300000-600000">$300K - $600K</button>
+              <button class="filter-option" data-action="listing:filter-price" data-price="600000-1000000">$600K - $1M</button>
+              <button class="filter-option" data-action="listing:filter-price" data-price="1000000-">&gt; $1M</button>
             </div>
           </div>
           <div class="listings-view-toggle">

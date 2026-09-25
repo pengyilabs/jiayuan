@@ -1,7 +1,7 @@
 import { getState } from '../../app/state';
 import { getById } from '../../core/dom';
 import { html, joinHtml, raw, setHtml } from '../../core/html';
-import { dict, t } from '../../i18n';
+import { dict, localize, t } from '../../i18n';
 import {
   FALLBACK_PHOTO,
   STATUS_BADGE,
@@ -11,6 +11,45 @@ import {
   listingType,
 } from './listing-format';
 import { formatArea, formatPrice } from '../../data/format';
+import type { Listing } from '../../types/models';
+
+interface ListingFilters {
+  status: string;
+  type: string;
+  price: string;
+  search: string;
+}
+
+let filters: ListingFilters = { status: 'all', type: 'all', price: 'all', search: '' };
+
+function matchesFilters(listing: Listing): boolean {
+  if (filters.status !== 'all' && listing.status !== filters.status) return false;
+  if (filters.type !== 'all' && listing.propertyType !== filters.type) return false;
+  if (filters.price !== 'all') {
+    const [minRaw, maxRaw] = filters.price.split('-');
+    const min = Number(minRaw);
+    const max = maxRaw ? Number(maxRaw) : Infinity;
+    if (listing.price < min || listing.price >= max) return false;
+  }
+  if (filters.search.trim() !== '') {
+    const needle = filters.search.trim().toLowerCase();
+    const { lang } = getState();
+    const haystack =
+      `${localize(listing.title, lang)} ${listing.address} ${listing.centris}`.toLowerCase();
+    if (!haystack.includes(needle)) return false;
+  }
+  return true;
+}
+
+function filteredListings(): Listing[] {
+  return getState().listings.filter(matchesFilters);
+}
+
+/** Actualiza uno o varios filtros a la vez y vuelve a pintar la vista activa. */
+export function syncListingFilters(patch: Partial<ListingFilters>): void {
+  filters = { ...filters, ...patch };
+  renderListings();
+}
 
 const VIEW_ICON = raw(
   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
@@ -19,8 +58,9 @@ const VIEW_ICON = raw(
 function renderTable(): void {
   const container = getById('listings-table-view');
   if (!container) return;
-  const { listings, lang } = getState();
+  const { lang } = getState();
   const labels = dict();
+  const listings = filteredListings();
 
   setHtml(
     container,
@@ -70,8 +110,9 @@ function renderTable(): void {
 function renderGrid(): void {
   const grid = getById('listings-grid');
   if (!grid) return;
-  const { listings, lang } = getState();
+  const { lang } = getState();
   const labels = dict();
+  const listings = filteredListings();
 
   setHtml(
     grid,

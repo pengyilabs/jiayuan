@@ -387,5 +387,6 @@
   "aria_close": "Close",
   "col_photo": "Photo",
   "col_actions": "Actions",
-  "aria_listing_details": "Listing details"
+  "aria_listing_details": "Listing details",
+  "templates_empty": "No templates match these filters."
 }

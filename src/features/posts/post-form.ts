@@ -149,7 +149,10 @@ function rowPreview(row: RowState, listingId: number | null): SafeHtml {
   const listing = listingId ? getState().listings.find(l => l.id === listingId) : undefined;
   if (!listing) return html`<p class="form-hint">${t('tpl_preview_needs_listing')}</p>`;
 
-  return renderTemplateDesign(tpl, listing, getState().lang);
+  // F8.1: si ya se subió una imagen para este post, la plantilla debe mostrar ESA imagen (lo
+  // que de verdad se va a publicar), no siempre la foto de ejemplo del listing.
+  const uploaded = row.files.length > 0 ? row.previewUrls : row.existingImages;
+  return renderTemplateDesign(tpl, listing, getState().lang, uploaded);
 }
 
 /** El `aspect-ratio` de `.tpl-preview` se fija tras insertarlo (no es parte del HTML generado). */

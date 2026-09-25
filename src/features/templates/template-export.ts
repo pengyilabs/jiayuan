@@ -21,13 +21,16 @@ export async function exportTemplateAsPng(
 ): Promise<void> {
   const { toPng } = await import('html-to-image');
   const size = templateOutputSize(tpl, platformId, postTypeId ?? undefined);
-  const pixelRatio = size.width / element.offsetWidth;
 
+  // `width`/`height` ya son el tamaño final del lienzo: html-to-image escala el elemento
+  // (que en pantalla puede ser mucho más pequeño, p. ej. dentro del formulario) a ese tamaño
+  // por su cuenta. `pixelRatio` es un multiplicador ADICIONAL sobre width/height (para
+  // pantallas retina) — sin fijarlo en 1 aquí, el resultado sale varias veces más grande de lo
+  // pedido (comprobado: sin este fix, un 1080×1080 se exportaba a 5301×5301, ~15 MB).
   const dataUrl = await toPng(element, {
     width: size.width,
     height: size.height,
-    pixelRatio: Number.isFinite(pixelRatio) && pixelRatio > 0 ? pixelRatio : 1,
-    style: { width: `${String(size.width)}px`, height: `${String(size.height)}px` },
+    pixelRatio: 1,
   });
 
   const link = document.createElement('a');

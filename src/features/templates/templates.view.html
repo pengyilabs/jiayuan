@@ -6,23 +6,23 @@
             <span data-i18n="btn_upload_template">上传模板</span>
           </button>
         </div>
-        <div class="filters" data-od-id="template-filters">
+        <div class="filters" data-od-id="template-filters" id="template-filters">
           <div class="filter-group">
-            <button class="filter-chip active" data-i18n="filter_all">全部</button>
-            <button class="filter-chip" data-i18n="platform_wechat">微信</button>
-            <button class="filter-chip" data-i18n="platform_facebook">Facebook</button>
+            <button class="filter-chip active" data-action="template:filter-platform" data-platform="all" data-i18n="filter_all">全部</button>
+            <button class="filter-chip" data-action="template:filter-platform" data-platform="微信" data-i18n="platform_wechat">微信</button>
+            <button class="filter-chip" data-action="template:filter-platform" data-platform="Facebook" data-i18n="platform_facebook">Facebook</button>
           </div>
-          <select class="filter-select" aria-label="Language" data-i18n-aria-label="form_content_lang">
-            <option data-i18n="filter_lang_all">所有语言</option>
-            <option data-i18n="lang_zh">中文</option>
-            <option data-i18n="lang_en">English</option>
-            <option data-i18n="lang_bilingual">双语</option>
+          <select class="filter-select" aria-label="Language" data-i18n-aria-label="form_content_lang" data-change="template:filter-lang">
+            <option value="all" data-i18n="filter_lang_all">所有语言</option>
+            <option value="zh" data-i18n="lang_zh">中文</option>
+            <option value="en" data-i18n="lang_en">English</option>
+            <option value="bilingual" data-i18n="lang_bilingual">双语</option>
           </select>
-          <select class="filter-select" aria-label="Scene" data-i18n-aria-label="aria_scene_filter">
-            <option data-i18n="filter_scene_all">所有场景</option>
-            <option data-i18n="scene_sale">房源出售</option>
-            <option data-i18n="scene_rent">房源出租</option>
-            <option data-i18n="scene_brand">品牌推广</option>
+          <select class="filter-select" aria-label="Scene" data-i18n-aria-label="aria_scene_filter" data-change="template:filter-scene">
+            <option value="all" data-i18n="filter_scene_all">所有场景</option>
+            <option value="sale" data-i18n="scene_sale">房源出售</option>
+            <option value="rent" data-i18n="scene_rent">房源出租</option>
+            <option value="brand" data-i18n="scene_brand">品牌推广</option>
           </select>
         </div>
         <div class="grid-3" id="templates-grid" data-od-id="templates-grid">

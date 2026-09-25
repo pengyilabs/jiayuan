@@ -313,7 +313,8 @@
   border-color: var(--accent);
 }
 .platform-post-tag:not(.active) {
-  opacity: 0.5;
+  color: var(--muted);
+  border-color: var(--border-soft, var(--border));
 }
 /* Platform card states */
 .platform-card-connected {
@@ -321,10 +322,10 @@
 }
 .platform-card-disconnected {
   border-left: 3px solid var(--border);
-  opacity: 0.7;
-}
-.platform-card-disconnected:hover {
-  opacity: 1;
+  /* Antes reducía la opacidad de toda la tarjeta (incluido su texto) para diferenciarla de las
+     conectadas; eso hacía que hasta un texto con contraste correcto dejara de cumplir WCAG AA
+     al mezclarse con el blanco. El borde ya distingue el estado; el texto se queda a contraste
+     completo. */
 }
 /* Platform sections */
 .platform-section {
@@ -357,7 +358,7 @@
 /* Disconnected badge */
 .badge-disconnected {
   background: #f5f5f5;
-  color: #888;
+  color: var(--muted);
 }
 .badge-dot-disconnected {
   background: #888;
@@ -365,7 +366,7 @@
 /* Cross-platform similarity grid */
 .cross-platform-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-3);
 }
 .cross-platform-card {

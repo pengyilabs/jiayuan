@@ -387,5 +387,6 @@
   "aria_close": "Fermer",
   "col_photo": "Photo",
   "col_actions": "Actions",
-  "aria_listing_details": "Détails de la propriété"
+  "aria_listing_details": "Détails de la propriété",
+  "templates_empty": "Aucun modèle ne correspond à ces filtres."
 }

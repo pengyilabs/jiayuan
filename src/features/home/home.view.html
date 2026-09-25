@@ -1,43 +1,47 @@
       <div class="page active" id="page-dashboard" data-od-id="page-dashboard">
-        <div class="calendar-panel" id="home-calendar" data-od-id="home-calendar">
-          <div class="calendar-header">
-            <div class="calendar-nav" id="calendar-nav-controls">
-              <button class="cal-nav-btn" data-action="calendar:nav" data-dir="-1" aria-label="Previous">
-                <svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20" /></svg>
-              </button>
-              <span class="calendar-label" id="calendar-label"></span>
-              <button class="cal-nav-btn" data-action="calendar:nav" data-dir="1" aria-label="Next">
-                <svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20" /></svg>
-              </button>
-              <button class="btn btn-ghost btn-sm" data-action="calendar:today" data-i18n="calendar_today">
-                Today
+        <div class="home-layout" id="home-layout">
+          <div class="calendar-panel" id="home-calendar" data-od-id="home-calendar">
+            <div class="calendar-header">
+              <div class="calendar-nav" id="calendar-nav-controls">
+                <button class="cal-nav-btn" data-action="calendar:nav" data-dir="-1" aria-label="Previous">
+                  <svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20" /></svg>
+                </button>
+                <span class="calendar-label" id="calendar-label"></span>
+                <button class="cal-nav-btn" data-action="calendar:nav" data-dir="1" aria-label="Next">
+                  <svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20" /></svg>
+                </button>
+                <button class="btn btn-ghost btn-sm" data-action="calendar:today" data-i18n="calendar_today">
+                  Today
+                </button>
+              </div>
+              <div class="calendar-mode-tabs">
+                <button class="cal-mode-btn active" data-action="calendar:mode" data-mode="month" data-i18n="calendar_month">
+                  Month
+                </button>
+                <button class="cal-mode-btn" data-action="calendar:mode" data-mode="week" data-i18n="calendar_week">
+                  Week
+                </button>
+                <button class="cal-mode-btn" data-action="calendar:mode" data-mode="agenda" data-i18n="calendar_agenda">
+                  Agenda
+                </button>
+              </div>
+              <button class="btn btn-ghost btn-sm" id="calendar-clear" data-action="calendar:clear-date" hidden>
+                <span data-i18n="calendar_clear_date">Clear date</span>
               </button>
             </div>
-            <div class="calendar-mode-tabs">
-              <button class="cal-mode-btn active" data-action="calendar:mode" data-mode="month" data-i18n="calendar_month">
-                Month
-              </button>
-              <button class="cal-mode-btn" data-action="calendar:mode" data-mode="week" data-i18n="calendar_week">
-                Week
-              </button>
-              <button class="cal-mode-btn" data-action="calendar:mode" data-mode="agenda" data-i18n="calendar_agenda">
-                Agenda
-              </button>
+            <div id="calendar-body"></div>
+          </div>
+          <div class="home-feed-column">
+            <div class="social-feed" data-od-id="social-feed" id="social-feed">
+              <div class="feed-day-rows" id="feed-day-rows" data-od-id="posts-feed">
+                <!-- Populated by JS: day-section divs with horizontal scroll rows -->
+              </div>
             </div>
-            <button class="btn btn-ghost btn-sm" id="calendar-clear" data-action="calendar:clear-date" hidden>
-              <span data-i18n="calendar_clear_date">Clear date</span>
-            </button>
-          </div>
-          <div id="calendar-body"></div>
-        </div>
-        <div class="social-feed" data-od-id="social-feed" id="social-feed">
-          <div class="feed-day-rows" id="feed-day-rows" data-od-id="posts-feed">
-            <!-- Populated by JS: day-section divs with horizontal scroll rows -->
-          </div>
-        </div>
-        <div class="feed-list-view" id="feed-list-view" style="display:none">
-          <div id="feed-list-container">
-            <!-- Populated by JS: day-section divs with feed-list-post cards -->
+            <div class="feed-list-view" id="feed-list-view" style="display:none">
+              <div id="feed-list-container">
+                <!-- Populated by JS: day-section divs with feed-list-post cards -->
+              </div>
+            </div>
           </div>
         </div>
       </div>

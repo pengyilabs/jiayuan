@@ -85,29 +85,51 @@ function renderMonth(container: HTMLElement): void {
 }
 
 function renderWeek(container: HTMLElement): void {
-  const { calendarAnchor, lang } = getState();
+  const { calendarAnchor, lang, settings } = getState();
   const days = weekDays(calendarAnchor);
   const grouped = groupPostsByDate(postsForCalendar());
+  const today = todayInTimeZone(settings.timezone);
+  const { feedDateRange } = getState();
 
+  // Lista vertical (una columna), no una cuadrícula de 7 columnas: a 320px de ancho (el panel
+  // en modo semana/agenda, F8.1) siete columnas quedaban recortadas. Una fila por día, con
+  // hasta 2 títulos y ancho completo, es legible sin importar cuán angosto sea el panel.
   setHtml(
     container,
-    html`<div class="cal-week-row">
+    html`<div class="cal-week-list">
       ${joinHtml(
         days.map(date => {
           const dayPosts = grouped[date] ?? [];
-          const dt = parseLocalDate(date);
-          return html`<div class="cal-week-col">
-            ${dayCell(date, dayPosts.length, { compact: true })}
-            <div class="cal-week-weekday">${WEEKDAYS_SHORT[lang][dt.getDay()]}</div>
-            <div class="cal-week-posts">
-              ${joinHtml(dayPosts.slice(0, 3).map(p => html`<div class="cal-week-post">${p.title}</div>`))}
+          const active = feedDateRange.from === date && feedDateRange.to === date;
+          const classes = [
+            'cal-week-row-item',
+            date === today ? 'today' : '',
+            active ? 'selected' : '',
+          ]
+            .filter(Boolean)
+            .join(' ');
+          return html`<button type="button" class="${classes}" data-action="calendar:pick-day" data-date="${date}">
+            <div class="cal-week-row-date">
+              <span class="cal-week-row-weekday">${formatDayLabel(date, lang).split(' · ')[0]}</span>
+              <span class="cal-week-row-num">${parseLocalDate(date).getDate()}</span>
+            </div>
+            <div class="cal-week-row-posts">
               ${
-                dayPosts.length > 3
-                  ? html`<div class="cal-week-more">+${dayPosts.length - 3}</div>`
+                dayPosts.length === 0
+                  ? html`<span class="cal-week-row-empty">${t('calendar_agenda_empty')}</span>`
+                  : joinHtml(
+                      dayPosts
+                        .slice(0, 2)
+                        .map(p => html`<div class="cal-week-post">${p.title}</div>`),
+                    )
+              }
+              ${
+                dayPosts.length > 2
+                  ? html`<div class="cal-week-more">+${dayPosts.length - 2}</div>`
                   : ''
               }
             </div>
-          </div>`;
+          </button>`;
         }),
       )}
     </div>`,
@@ -151,6 +173,10 @@ export function renderCalendar(): void {
   const panel = getById('home-calendar');
   if (!panel) return;
   const { calendarMode, calendarAnchor, feedDateRange, currentUser } = getState();
+
+  // Rediseño F8.1: el panel es más ancho en modo mes (necesita 7 columnas legibles) que en
+  // semana/agenda (una lista angosta le basta), y vive a la izquierda del feed en PC (CSS).
+  getById('home-layout')?.classList.toggle('calendar-wide', calendarMode === 'month');
 
   panel.querySelectorAll<HTMLElement>('[data-action="calendar:mode"]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mode === calendarMode);

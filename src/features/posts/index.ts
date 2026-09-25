@@ -79,8 +79,25 @@ function refreshRows(): void {
 }
 
 /** Prepara y abre el formulario vacío. `listingId` lo pasa "Nueva publicación" de un listing. */
-function openCreate(listingId: number | null): void {
-  form = { mode: 'create', postId: null, rejectionReason: null, rows: [] };
+function openCreate(listingId: number | null, preferredTemplateId: number | null = null): void {
+  const preferredVariant = preferredTemplateId
+    ? getState().templates.find(t => t.id === preferredTemplateId)?.variants[0]
+    : undefined;
+
+  form = {
+    mode: 'create',
+    postId: null,
+    rejectionReason: null,
+    rows: preferredVariant
+      ? [
+          {
+            ...emptyRow(preferredVariant.platformId),
+            postTypeId: preferredVariant.postTypeId,
+            templateId: preferredTemplateId,
+          },
+        ]
+      : [],
+  };
   showFormError(null);
   getById('post-rejected-hint')?.setAttribute('hidden', '');
 
@@ -98,12 +115,17 @@ function openCreate(listingId: number | null): void {
   );
 
   renderListingOptions(listingId);
-  renderPlatformChecks(new Set());
+  renderPlatformChecks(preferredVariant ? new Set([preferredVariant.platformId]) : new Set());
   refreshRows();
 
   closeModal(LISTING_MODAL_ID);
   openModal(POST_MODAL_ID);
   mustGetById<HTMLInputElement>('post-title').focus();
+}
+
+/** Abre el formulario de creación con una plantilla ya elegida (desde "Usar esta plantilla"). */
+export function openCreateWithTemplate(templateId: number): void {
+  openCreate(null, templateId);
 }
 
 /** Abre el formulario con los datos de un post existente (borrador o rechazado). */

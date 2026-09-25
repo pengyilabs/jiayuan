@@ -2,6 +2,7 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { auth, repos } from '../../src/app/services';
 import { getState, setState } from '../../src/app/state';
+import { todayInTimeZone } from '../../src/core/dates';
 import { DEMO_PASSWORD } from '../../src/data/seed/users';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string): T => {
@@ -34,8 +35,11 @@ describe('calendario de Home', () => {
       expect(getState().calendarAnchor).not.toBe(before);
     });
     $('[data-action="calendar:today"]').click();
+    // Se recalcula "hoy" en el momento de comprobar (en vez de reusar `before`): si el reloj
+    // del sistema cruza la medianoche entre el arranque del test y esta aserción, `before`
+    // quedaría desactualizado y el test fallaría por una razón ajena al propio calendario.
     await vi.waitFor(() => {
-      expect(getState().calendarAnchor).toBe(before);
+      expect(getState().calendarAnchor).toBe(todayInTimeZone(getState().settings.timezone));
     });
   });
 
@@ -84,9 +88,9 @@ describe('calendario de Home', () => {
   it('cambia entre mes, semana y agenda', async () => {
     $('[data-action="calendar:mode"][data-mode="week"]').click();
     await vi.waitFor(() => {
-      expect($('#calendar-body .cal-week-row')).toBeTruthy();
+      expect($('#calendar-body .cal-week-list')).toBeTruthy();
     });
-    expect($$('.cal-week-col')).toHaveLength(7);
+    expect($$('.cal-week-row-item')).toHaveLength(7);
 
     $('[data-action="calendar:mode"][data-mode="agenda"]').click();
     await vi.waitFor(() => {

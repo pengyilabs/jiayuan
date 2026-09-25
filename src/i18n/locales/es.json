@@ -387,5 +387,6 @@
   "aria_close": "Cerrar",
   "col_photo": "Foto",
   "col_actions": "Acciones",
-  "aria_listing_details": "Detalles de la propiedad"
+  "aria_listing_details": "Detalles de la propiedad",
+  "templates_empty": "No hay plantillas con estos filtros."
 }
