@@ -1,0 +1,73 @@
+<div class="modal-overlay" id="modal-post">
+  <div class="modal" style="max-width:820px">
+    <div class="modal-header">
+      <h3 id="post-modal-title" data-i18n="post_form_new">新建帖子</h3>
+      <button class="btn btn-ghost" data-action="post:close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="post-error" class="auth-alert" role="alert" hidden></div>
+      <div id="post-rejected-hint" class="auth-alert auth-alert-info" role="status" hidden></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="post-listing" data-i18n="form_select_listing">选择房源</label>
+          <select id="post-listing">
+            <option value="" data-i18n="post_no_listing">-- 不关联房源 --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="post-title" data-i18n="post_field_title">标题</label>
+          <input id="post-title" type="text" data-i18n-placeholder="post_field_title_ph" placeholder="输入帖子标题…" />
+        </div>
+      </div>
+
+      <div class="form-group" id="post-platform-picker">
+        <label class="form-label" data-i18n="form_select_platform">发布平台</label>
+        <div id="post-platform-checks" style="display:flex;flex-wrap:wrap;gap:var(--space-3)"></div>
+        <div class="form-hint" data-i18n="form_platform_hint">每个平台将生成独立帖子，可分别编辑内容和尺寸</div>
+      </div>
+
+      <div id="post-platform-rows"></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="post-template" data-i18n="form_select_template">选择模板</label>
+          <select id="post-template">
+            <option value="" data-i18n="form_no_template">不使用模板</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="post-lang" data-i18n="form_content_lang">内容语言</label>
+          <select id="post-lang">
+            <option value="zh" data-i18n="lang_zh">中文</option>
+            <option value="en" data-i18n="lang_en">English</option>
+            <option value="fr" data-i18n="lang_fr">Français</option>
+            <option value="bilingual" data-i18n="lang_bilingual">双语</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="post-content" data-i18n="form_post_content">帖子文案</label>
+        <textarea id="post-content" rows="5" data-i18n-placeholder="form_post_content_ph" placeholder="输入帖子文案内容..."></textarea>
+        <div class="form-hint" id="post-char-count"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="post-hashtags" data-i18n="post_field_hashtags">话题标签</label>
+          <input id="post-hashtags" type="text" data-i18n-placeholder="post_hashtags_ph" placeholder="#房产 #蒙特利尔" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="post-schedule" data-i18n="post_field_schedule">发布时间</label>
+          <input id="post-schedule" type="datetime-local" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-action="post:close" data-i18n="btn_cancel">取消</button>
+      <button class="btn btn-ghost" id="post-save-draft" data-action="post:save-draft" data-i18n="btn_save_draft">保存草稿</button>
+      <button class="btn btn-primary" id="post-submit" data-action="post:submit" data-i18n="btn_submit_approval">提交审批</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+/* Cola de avisos superiores (F3): temporizador visible, pausa al pasar cursor/foco, Deshacer. */
+.toast-region {
+  position: fixed;
+  top: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(420px, calc(100vw - 32px));
+}
+.toast {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 12px 14px 12px 16px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--elev-raised);
+  font-size: var(--text-sm);
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--motion-base),
+    transform var(--motion-base);
+}
+.toast.is-leaving {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.toast-error {
+  background: var(--danger);
+}
+.toast-success {
+  background: var(--fg);
+}
+.toast-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.55);
+  animation-name: toast-shrink;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  transform-origin: left;
+}
+@keyframes toast-shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+.toast-message {
+  flex: 1;
+  min-width: 0;
+}
+.toast-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.toast-undo {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: inherit;
+  padding: 4px 2px;
+}
+.toast-undo:hover,
+.toast-undo:focus-visible {
+  opacity: 0.85;
+}
+.toast-close {
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+  opacity: 0.8;
+  color: inherit;
+}
+.toast-close:hover,
+.toast-close:focus-visible {
+  opacity: 1;
+}
+
+.boot-error {
+  max-width: 420px;
+  margin: 20vh auto 0;
+  padding: var(--space-6, 24px);
+  text-align: center;
+  display: grid;
+  gap: var(--space-3, 12px);
+}

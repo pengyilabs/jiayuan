@@ -1,0 +1,68 @@
+<div class="modal-overlay" id="modal-listing">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 data-i18n="modal_new_listing">新建房源</h3>
+      <button class="btn btn-ghost" data-action="modal:close" data-modal="modal-listing">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" data-i18n="form_listing_name">房源名称</label>
+          <input type="text" data-i18n-placeholder="form_listing_name_ph" placeholder="例: 市中心豪华公寓">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="form_centris_id">Centris 编号</label>
+          <input type="text" placeholder="例: 12345678">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_address">地址</label>
+        <input type="text" data-i18n-placeholder="form_address_ph" placeholder="完整地址">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" data-i18n="form_price">价格 (CAD)</label>
+          <input type="text" placeholder="$850,000">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="form_type">房源类型</label>
+          <select>
+            <option data-i18n="type_apartment">公寓</option>
+            <option data-i18n="type_villa">别墅</option>
+            <option data-i18n="type_commercial">商业</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" data-i18n="form_bedrooms">卧室数</label>
+          <select><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5+</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="form_bathrooms">浴室数</label>
+          <select><option>1</option><option selected>2</option><option>3</option><option>4+</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_area">面积 (sqft)</label>
+        <input type="text" placeholder="1,200">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_description">房源描述</label>
+        <textarea rows="4" data-i18n-placeholder="form_desc_ph" placeholder="描述房源的亮点和特色..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_service_type">服务类型</label>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);cursor:pointer"><input type="checkbox" checked> <span data-i18n="service_buy">买卖</span></label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);cursor:pointer"><input type="checkbox"> <span data-i18n="service_rent">租赁</span></label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);cursor:pointer"><input type="checkbox"> <span data-i18n="service_manage">管理</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-action="modal:close" data-modal="modal-listing" data-i18n="btn_cancel">取消</button>
+      <button class="btn btn-primary" data-action="modal:close" data-modal="modal-listing" data-i18n="btn_save_listing">保存房源</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="modal-overlay" id="modal-mark-published">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h3 data-i18n="dialog_mark_published_title">标记为已发布？</h3>
+      <button class="btn btn-ghost" data-action="modal:close" data-modal="modal-mark-published">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="form-hint" data-i18n="dialog_mark_published_message">
+        请确认内容已经手动发布到该平台。可以填写发布后的链接。
+      </p>
+      <div class="form-group">
+        <label class="form-label" for="mark-published-url" data-i18n="post_field_external_url">
+          发布后的链接（可选）
+        </label>
+        <input id="mark-published-url" type="url" placeholder="https://…" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-action="modal:close" data-modal="modal-mark-published" data-i18n="btn_cancel">
+        取消
+      </button>
+      <button class="btn btn-danger" id="mark-published-confirm" data-action="post:mark-published-confirm" data-i18n="action_mark_published">
+        标记为已发布
+      </button>
+    </div>
+  </div>
+</div>

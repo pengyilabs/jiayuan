@@ -1,0 +1,84 @@
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+.filter-group {
+  display: flex;
+  gap: var(--space-2);
+}
+.filter-chip {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--motion-fast);
+  background: var(--bg);
+}
+.filter-chip:hover {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.filter-chip.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.filter-chip svg {
+  margin-left: 4px;
+  flex-shrink: 0;
+  transition: transform var(--motion-fast);
+}
+.filter-dropdown {
+  position: relative;
+}
+.filter-dropdown.open .filter-chip {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.filter-dropdown.open .filter-chip svg {
+  transform: rotate(180deg);
+}
+.filter-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--elev-raised);
+  min-width: 100%;
+  z-index: 50;
+  display: none;
+  padding: 4px;
+}
+.filter-dropdown.open .filter-dropdown-menu {
+  display: block;
+}
+.filter-option {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--fg);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background var(--motion-fast);
+  text-align: left;
+  white-space: nowrap;
+}
+.filter-option:hover {
+  background: var(--surface-warm);
+}
+.filter-option.active {
+  background: var(--surface-warm);
+  font-weight: 600;
+}

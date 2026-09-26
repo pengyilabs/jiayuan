@@ -1,23 +1,9 @@
-# Open Design tooling
-.od-frames/
-.od-skills/
-.open-design/
-
-# Open Design artifacts
-*.artifact.json
-
-# OS files
+node_modules
+dist
+coverage
+playwright-report
+test-results
+.env
+.env.*
+!.env.example
 .DS_Store
-Thumbs.db
-
-# Node (if used)
-node_modules/
-package-lock.json
-
-# Build output
-dist/
-build/
-
-# Design artifacts (screenshots, drawings)
-screenshot-*.png
-drawing-*.png

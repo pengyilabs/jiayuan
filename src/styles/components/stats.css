@@ -1,0 +1,37 @@
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.stat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+.stat-label {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  line-height: 1;
+}
+.stat-change {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.stat-up {
+  color: var(--success);
+}
+.stat-down {
+  color: var(--danger);
+}

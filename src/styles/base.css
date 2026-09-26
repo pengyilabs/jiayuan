@@ -1,0 +1,107 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  font-family: var(--font-body);
+  color: var(--fg);
+  background: var(--bg);
+  line-height: var(--leading-body);
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+button:disabled,
+.btn:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
+}
+/* Foco visible y consistente en todos los controles, incluidos los `div[data-action]`
+   que `app/actions.ts` hace focalizables (nav, pestañas, filtros, tarjetas…). */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+input,
+select,
+textarea {
+  font: inherit;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  background: var(--bg);
+  color: var(--fg);
+  width: 100%;
+  outline: none;
+  transition: border-color var(--motion-fast);
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--fg);
+  box-shadow: var(--focus-ring);
+}
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--surface-warm);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Respeta la preferencia del sistema: sin animaciones ni transiciones decorativas. Se excluyen
+   la barra del aviso y la del botón de acción permanente: no son decorativas, comunican un
+   tiempo real que sigue transcurriendo igual (el temporizador que gobiernan es JavaScript). */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.toast-bar):not(.btn.is-armed)::before,
+  *:not(.toast-bar):not(.btn.is-armed)::after,
+  *:not(.toast-bar):not(.btn.is-armed) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

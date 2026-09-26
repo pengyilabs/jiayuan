@@ -1,0 +1,33 @@
+/* Punto de entrada de estilos. El orden de imports define la cascada. */
+@import './tokens.css';
+@import './base.css';
+@import './layout.css';
+
+/* Componentes reutilizables */
+@import './components/sidebar.css';
+@import './components/topbar.css';
+@import './components/lang-switch.css';
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/badges.css';
+@import './components/stats.css';
+@import './components/filters.css';
+@import './components/table.css';
+@import './components/modal.css';
+@import './components/forms.css';
+@import './components/tabs.css';
+@import './components/misc.css';
+@import './components/toast.css';
+@import './components/dialog.css';
+
+/* Estilos por feature */
+@import './features/listings.css';
+@import './features/templates.css';
+@import './features/home.css';
+@import './features/settings.css';
+@import './features/approvals.css';
+@import './features/posts.css';
+@import './features/auth.css';
+
+/* Media queries (base de F7) */
+@import './responsive.css';

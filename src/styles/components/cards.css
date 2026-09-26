@@ -1,0 +1,34 @@
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow var(--motion-base);
+  cursor: pointer;
+}
+.card:hover {
+  box-shadow: var(--elev-raised);
+}
+.card-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--surface-warm);
+  object-fit: cover;
+}
+.card-body {
+  padding: var(--space-4);
+}
+.card-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.card-meta {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.card-price {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--fg);
+}
