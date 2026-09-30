@@ -1,13 +1,15 @@
-/** Raíz de composición: autenticación y repositorios de la aplicación. */
+/**
+ * Raíz de composición: autenticación y repositorios de la aplicación.
+ * `@supabase/supabase-js` y los módulos que dependen de ella se cargan con `import()` (F8):
+ * en modo demo (`memory`, el valor por defecto) nunca llegan a descargarse, así que el modo
+ * demo no paga el peso de un cliente de Supabase que no usa.
+ */
 import { readConfig } from '../config/env';
-import { createBrowserClient } from '../config/supabase';
 import { createMemoryDirectory } from '../data/memory-directory';
 import { createMemoryRepositories } from '../data/repositories/memory';
-import { createSupabaseRepositories } from '../data/repositories/supabase';
 import type { Repositories } from '../data/repositories/types';
 import { DEMO_PASSWORD } from '../data/seed/users';
 import { createMemoryAuth } from '../features/auth/memory-auth';
-import { createSupabaseAuth } from '../features/auth/supabase-auth';
 import type { AuthService } from '../features/auth/auth-service';
 
 /** Zona horaria de la organización; se actualiza al cargar la configuración. */
@@ -26,10 +28,16 @@ interface Services {
   demoHint: string | null;
 }
 
-function createServices(): Services {
+async function createServices(): Promise<Services> {
   const timeZone = (): string => context.timeZone;
 
   if (config.dataSource === 'supabase' && config.supabase) {
+    const [{ createBrowserClient }, { createSupabaseAuth }, { createSupabaseRepositories }] =
+      await Promise.all([
+        import('../config/supabase'),
+        import('../features/auth/supabase-auth'),
+        import('../data/repositories/supabase'),
+      ]);
     const client = createBrowserClient(config.supabase.url, config.supabase.anonKey);
     return {
       auth: createSupabaseAuth(client),
@@ -51,4 +59,4 @@ function createServices(): Services {
   };
 }
 
-export const { auth, repos, demoHint } = createServices();
+export const { auth, repos, demoHint } = await createServices();

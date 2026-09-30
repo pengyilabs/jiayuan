@@ -1,7 +1,7 @@
 # PropPulse — 加园地产团队
 
 Gestión de contenido para redes sociales (Facebook, Instagram, WeChat, Xiaohongshu, Douyin…) de una agencia inmobiliaria.
-Este repositorio contiene las **Fases 0 a 4** del [plan del proyecto](docs/PLAN.md): modularización del prototipo original, backend Supabase (esquema, RLS, RPC, tests), autenticación/roles/MFA, diálogos/avisos/deshacer, y el flujo completo de posts (crear, aprobar, publicar).
+Este repositorio contiene las **Fases 0 a 8** del [plan del proyecto](docs/PLAN.md) — el alcance completo planificado (F9, la publicación automática, queda fuera): modularización del prototipo original, backend Supabase (esquema, RLS, RPC, tests), autenticación/roles/MFA, diálogos/avisos/deshacer, el flujo completo de posts (crear, aprobar, publicar), templates por plataforma con vista previa en vivo y exportación a PNG, el calendario y filtros de Home, los tres layouts responsive (móvil, tablet, PC), y QA/despliegue (RLS por rol, accesibilidad, rendimiento, CI, guía de despliegue).
 
 ## Requisitos
 
@@ -79,3 +79,8 @@ tests/        unit/ · contract/ (memoria, Supabase y adaptadores de funciones) 
 - Fase 2: [docs/F2.md](docs/F2.md) (autenticación, invitaciones, roles, MFA, cómo probar, limitaciones).
 - Fase 3: [docs/F3.md](docs/F3.md) (diálogos de 3 niveles, avisos con deshacer, estados de controles, cómo probar, limitaciones).
 - Fase 4: [docs/F4.md](docs/F4.md) (formulario de posts, media a Storage, notificaciones, publicación manual, cómo probar, limitaciones).
+- Fase 5: [docs/F5.md](docs/F5.md) (template_variants, renderizador único con container queries, vista previa en vivo, export PNG, cómo probar, limitaciones).
+- Fase 6: [docs/F6.md](docs/F6.md) (calendario mes/semana/agenda, filtros combinables, filtros en la URL, estadísticas reales, cómo probar, limitaciones).
+- Fase 7: [docs/F7.md](docs/F7.md) (puntos de corte compartidos, sidebar cajón/rail/expansible, calendario y listings adaptados, Playwright en 3 tamaños, cómo probar, limitaciones).
+- Fase 8: [docs/F8.md](docs/F8.md) (RLS por rol, accesibilidad con axe-core, rendimiento, CI, cómo probar, limitaciones).
+- [docs/DEPLOY.md](docs/DEPLOY.md): guía de despliegue (Supabase + hosting estático) y checklist de release.

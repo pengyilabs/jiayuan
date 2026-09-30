@@ -5,13 +5,13 @@
   --fg: #222222;
   --fg-2: #3f3f3f;
   --muted: #6a6a6a;
-  --meta: #929292;
+  --meta: #6a6a6a;
   --border: #dddddd;
   --border-soft: #ebebeb;
-  --accent: #ff385c;
+  --accent: #e31c5f;
   --accent-on: #ffffff;
-  --accent-hover: #e31c5f;
-  --accent-active: #e00b41;
+  --accent-hover: #c81653;
+  --accent-active: #ad0f46;
   --success: #008a05;
   --warn: #c47700;
   --danger: #c13515;
