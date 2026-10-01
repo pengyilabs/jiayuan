@@ -1,0 +1,117 @@
+# CI (F8). Cuatro trabajos independientes para que un fallo en uno (p. ej. Playwright, que
+# necesita descargar un navegador) no bloquee la señal rápida de los demás.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Typecheck, lint, formato, tests unitarios/contrato en memoria, build ────────────────────
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - name: Catálogo (seed.sql) al día con los datos en TypeScript
+        run: npm run db:seed:check
+      - run: npm run test -- --coverage
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  # ── Edge Functions: typecheck con Deno (no usa Node) ────────────────────────────────────────
+  functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: npm run functions:check
+        env:
+          # `functions:check` solo hace typecheck (no llama a Deno.serve), pero npm necesita
+          # existir para leer package.json; no hace falta `npm ci` aquí.
+          CI: true
+
+  # ── Base de datos: migraciones + pgTAP (RLS/RPC por rol) + contrato memoria-vs-Supabase real ─
+  database:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        # Imagen oficial de Supabase: ya trae pgTAP, pgcrypto, citext, pg_cron… (Postgres a
+        # secas no). Comprueba la etiqueta más reciente en
+        # https://hub.docker.com/r/supabase/postgres/tags y actualiza si hace falta.
+        image: supabase/postgres:15.1.1.78
+        env:
+          POSTGRES_PASSWORD: meta
+          POSTGRES_USER: meta
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U meta"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: 127.0.0.1
+      PGUSER: meta
+      PGPASSWORD: meta
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Instalar PostgREST
+        run: |
+          curl -sL -o postgrest.tar.xz \
+            https://github.com/PostgREST/postgrest/releases/download/v12.2.3/postgrest-v12.2.3-linux-static-x64.tar.xz
+          tar -xf postgrest.tar.xz
+          sudo mv postgrest /usr/local/bin/postgrest
+          postgrest --help >/dev/null
+
+      - name: pgTAP (migraciones, RLS, RPC, storage — batería completa por rol)
+        run: npm run db:test
+
+      - name: Contrato de repositorios (memoria vs. Supabase real) + adaptadores de las funciones
+        run: npm run db:test:integration
+        env:
+          POSTGREST_BIN: /usr/local/bin/postgrest
+
+  # ── E2E con Playwright: los tres tamaños (F7) contra el build de producción ─────────────────
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

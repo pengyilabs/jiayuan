@@ -1232,7 +1232,7 @@ export type Database = {
       property_type: 'apartment' | 'villa' | 'commercial';
       publish_job_status: 'queued' | 'publishing' | 'published' | 'failed' | 'cancelled';
       publish_mode: 'manual' | 'api';
-      user_role: 'employee' | 'admin';
+      user_role: 'employee' | 'admin' | 'technician';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -1370,7 +1370,7 @@ export const Constants = {
       property_type: ['apartment', 'villa', 'commercial'],
       publish_job_status: ['queued', 'publishing', 'published', 'failed', 'cancelled'],
       publish_mode: ['manual', 'api'],
-      user_role: ['employee', 'admin'],
+      user_role: ['employee', 'admin', 'technician'],
     },
   },
 } as const;

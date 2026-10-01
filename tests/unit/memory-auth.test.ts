@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryDirectory } from '../../src/data/memory-directory';
 import { createMemoryRepositories } from '../../src/data/repositories/memory';
 import { ADMIN_ID, DEMO_PASSWORD } from '../../src/data/seed/users';
 import { AuthError } from '../../src/features/auth/auth-service';
-import { createMemoryAuth } from '../../src/features/auth/memory-auth';
+import { SESSION_TTL_MS, createMemoryAuth } from '../../src/features/auth/memory-auth';
 
 const code = async (promise: Promise<unknown>): Promise<string> =>
   promise.then(
@@ -14,6 +14,10 @@ const code = async (promise: Promise<unknown>): Promise<string> =>
 describe('autenticación en memoria (modo demo)', () => {
   let directory = createMemoryDirectory();
   let auth = createMemoryAuth(directory, sessionStorage);
+
+  afterEach(() => {
+    localStorage.clear();
+  });
 
   beforeEach(() => {
     sessionStorage.clear();
@@ -32,6 +36,34 @@ describe('autenticación en memoria (modo demo)', () => {
     await auth.signOut();
     expect(auth.currentUserId()).toBeNull();
     expect(await code(auth.signIn('zhuyan@homedirect.ca', DEMO_PASSWORD))).toBe('ok');
+  });
+
+  it('la sesión sobrevive al cierre de la pestaña (localStorage) hasta que caduca a los 7 días', async () => {
+    // Otra "pestaña": mismo localStorage, instancias nuevas, y sessionStorage vacío.
+    localStorage.clear();
+    const first = createMemoryAuth(directory, localStorage);
+    await first.signIn('liming', DEMO_PASSWORD);
+
+    sessionStorage.clear(); // cerrar la pestaña borra sessionStorage, no localStorage
+    const reopened = createMemoryAuth(directory, localStorage);
+    expect((await reopened.init()).signedIn).toBe(true);
+
+    vi.useFakeTimers({ now: Date.now() + SESSION_TTL_MS + 1000 });
+    try {
+      const expired = createMemoryAuth(directory, localStorage);
+      expect((await expired.init()).signedIn).toBe(false);
+      expect(localStorage.getItem('proppulse.demo.session')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('cerrar sesión borra la sesión persistida', async () => {
+    localStorage.clear();
+    const a = createMemoryAuth(directory, localStorage);
+    await a.signIn('liming', DEMO_PASSWORD);
+    await a.signOut();
+    expect((await createMemoryAuth(directory, localStorage).init()).signedIn).toBe(false);
   });
 
   it('rechaza credenciales incorrectas con el mismo error y bloquea tras 5 fallos', async () => {

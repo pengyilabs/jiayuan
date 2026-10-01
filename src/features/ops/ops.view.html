@@ -1,0 +1,59 @@
+<div class="page" id="page-ops" data-od-id="page-ops">
+  <div class="role-note" data-role-note="ops"></div>
+
+  <div class="settings-tabs" data-od-id="ops-tabs">
+    <button class="settings-tab active" data-action="ops:tab" data-tab="accounts" data-i18n="ops_tab_accounts">Accounts</button>
+    <button class="settings-tab" data-action="ops:tab" data-tab="settings" data-i18n="ops_tab_settings">Organization settings</button>
+    <button class="settings-tab" data-action="ops:tab" data-tab="system" data-i18n="ops_tab_system">System</button>
+  </div>
+
+  <div class="settings-tab-panel active" id="ops-panel-accounts">
+    <div class="ops-section-head">
+      <h2 data-i18n="ops_accounts_title">All accounts</h2>
+      <button class="btn btn-primary btn-sm" data-action="team:invite-open" data-i18n="ops_invite">
+        Invite account
+      </button>
+    </div>
+    <div id="ops-accounts-list"></div>
+  </div>
+
+  <div class="settings-tab-panel" id="ops-panel-settings">
+    <h2 data-i18n="ops_settings_title">Organization settings</h2>
+    <p class="form-hint" data-i18n="ops_settings_hint">
+      These apply to the whole organization and had no other screen to edit them from.
+    </p>
+    <form id="ops-settings-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="ops-timezone" data-i18n="ops_field_timezone">Timezone (IANA)</label>
+          <input type="text" id="ops-timezone" name="timezone" placeholder="America/Toronto" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ops-undo-window" data-i18n="ops_field_undo_window">Undo window (seconds)</label>
+          <input type="number" id="ops-undo-window" name="undoWindowSeconds" min="0" max="120" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="ops-retention" data-i18n="ops_field_retention">Deleted post retention (days)</label>
+          <input type="number" id="ops-retention" name="deletedRetentionDays" min="1" max="365" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ops-mfa" data-i18n="ops_field_mfa">Require admin MFA</label>
+          <select id="ops-mfa" name="requireAdminMfa">
+            <option value="true" data-i18n="ops_mfa_required">Required</option>
+            <option value="false" data-i18n="ops_mfa_optional">Optional</option>
+          </select>
+        </div>
+      </div>
+      <div id="ops-settings-error" class="form-hint" style="color:var(--danger)" hidden></div>
+      <button type="submit" class="btn btn-primary" data-i18n="btn_save">Save</button>
+      <span id="ops-settings-saved" class="form-hint" hidden data-i18n="ops_settings_saved">Saved.</span>
+    </form>
+  </div>
+
+  <div class="settings-tab-panel" id="ops-panel-system">
+    <h2 data-i18n="ops_system_title">System status</h2>
+    <div class="ops-system-grid" id="ops-system-grid"></div>
+  </div>
+</div>

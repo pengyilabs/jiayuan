@@ -2,13 +2,15 @@ import { loadSnapshot } from '../data/snapshot';
 import { initApprovals } from '../features/approvals';
 import { runAuthGate } from '../features/auth/gate';
 import { startIdleTimer } from '../features/auth/idle';
-import { applyRoleToDocument, canAccess } from '../features/auth/roles';
+import { HOME_PAGE_FOR_ROLE, applyRoleToDocument, canAccess } from '../features/auth/roles';
 import { initUserMenu, signOutAndReload } from '../features/auth/user-menu';
 import { initHome } from '../features/home';
+import { initMobileAgentFeed } from '../features/mobile-agent-feed';
 import { initListings } from '../features/listings';
 import { initNotifications } from '../features/notifications';
 import { initPosts } from '../features/posts';
 import { initSettings } from '../features/settings';
+import { initOps } from '../features/ops';
 import { initTeam } from '../features/team';
 import { initTemplates } from '../features/templates';
 import { applyStaticI18n, t } from '../i18n';
@@ -23,7 +25,7 @@ import { initSidebar } from '../ui/sidebar';
 import { initActionDelegation } from './actions';
 import { initNavigation } from './navigation';
 import { addRouteGuard, initRouter } from './router';
-import { auth, demoHint, repos, setTimeZone } from './services';
+import { auth, demoInfo, repos, setTimeZone } from './services';
 import { mountShell } from './shell';
 import { getState, setState, store } from './state';
 
@@ -40,7 +42,7 @@ export async function bootstrap(root: HTMLElement): Promise<void> {
   // 1 · Puerta de acceso: login, invitación, restablecimiento y MFA.
   let profile;
   try {
-    profile = await runAuthGate(root, { auth, repos, demoHint });
+    profile = await runAuthGate(root, { auth, repos, demoInfo });
   } catch (error) {
     renderBootError(root, error);
     return;
@@ -90,6 +92,7 @@ export async function bootstrap(root: HTMLElement): Promise<void> {
   initNavigation();
 
   initHome();
+  initMobileAgentFeed();
   initListings();
   initPosts();
   initNotifications();
@@ -97,6 +100,7 @@ export async function bootstrap(root: HTMLElement): Promise<void> {
   initApprovals();
   initSettings();
   initTeam();
+  initOps();
 
   const signOut = (reason?: 'idle'): Promise<void> =>
     signOutAndReload(() => auth.signOut(), reason);
@@ -110,10 +114,13 @@ export async function bootstrap(root: HTMLElement): Promise<void> {
   });
 
   // El router impide abrir páginas que el rol no permite (la seguridad real está en RLS).
-  addRouteGuard(to => {
+  addRouteGuard((to, from) => {
     if (canAccess(profile.role, to)) return true;
-    showNotice(t('err_auth_forbidden_page', t('error_forbidden')));
-    return 'dashboard';
+    // `to === from` solo pasa en la carga inicial (la ruta por defecto, "/", no es la home de
+    // este rol) — no es un intento real de entrar a una página ajena, así que no hace falta
+    // avisar; el aviso sí debe verse si de verdad intenta navegar a algo que no le corresponde.
+    if (to !== from) showNotice(t('err_auth_forbidden_page', t('error_forbidden')));
+    return HOME_PAGE_FOR_ROLE[profile.role];
   });
   initRouter();
 }

@@ -8,6 +8,7 @@ export const ROUTES: Readonly<Record<PageId, string>> = {
   templates: '/templates',
   approvals: '/approvals',
   settings: '/settings',
+  ops: '/ops',
 };
 
 /** Devuelve `true` para permitir, o una página alternativa (p. ej. `/login` en F2). */

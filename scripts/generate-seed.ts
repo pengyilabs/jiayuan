@@ -18,6 +18,7 @@ import {
 } from '../src/data/seed/platforms';
 import { postMediaSeed, postsSeed } from '../src/data/seed/posts';
 import { templatesSeed } from '../src/data/seed/templates';
+import { templateVariantsSeed } from '../src/data/seed/template-variants';
 import { ADMIN_ID, DEMO_PASSWORD, demoUsersSeed } from '../src/data/seed/users';
 
 type Row = Record<string, unknown>;
@@ -71,6 +72,7 @@ function catalogSql(): string {
     insert('post_type_group_platforms', postTypeGroupPlatformsSeed, ON_CONFLICT),
     insert('templates', templatesSeed, ON_CONFLICT),
     resetSequence('templates'),
+    insert('template_variants', templateVariantsSeed, ON_CONFLICT),
   ].join('\n');
 }
 

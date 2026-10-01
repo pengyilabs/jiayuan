@@ -1,0 +1,89 @@
+/** Panel de operaciones (F11): la única pantalla del técnico. */
+#page-ops {
+  padding: var(--space-5) var(--space-6);
+}
+.ops-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+}
+.ops-section-head h2 {
+  margin: 0;
+}
+#page-ops h2 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-2);
+}
+
+.ops-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.ops-table th {
+  text-align: left;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-warm);
+  border-bottom: 1px solid var(--border);
+}
+.ops-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: middle;
+}
+.ops-table tr:last-child td {
+  border-bottom: none;
+}
+.ops-account-name {
+  font-weight: 600;
+}
+.ops-account-email {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.ops-system-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+.ops-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.ops-stat-label {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.ops-stat-value {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+}
+
+@media (max-width: 639px) {
+  #page-ops {
+    padding: var(--space-3);
+  }
+  .ops-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

@@ -10,11 +10,11 @@
 }
 .badge-accent {
   background: #fff0f3;
-  color: var(--accent);
+  color: var(--accent-hover);
 }
 .badge-success {
   background: #e6f7e9;
-  color: var(--success);
+  color: #007a05;
 }
 .badge-warn {
   background: #fef3cd;
@@ -45,4 +45,29 @@
 }
 .badge-danger .badge-dot {
   background: var(--danger);
+}
+
+/* Insignia de rol: mismo aspecto en el login demo, los encabezados y el sidebar. */
+.role-pill,
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.role-admin {
+  background: #1f1f1f;
+  color: #fff;
+}
+.role-employee {
+  background: #e8f1ff;
+  color: #0b4aa8;
+}
+.role-technician {
+  background: #3b0764;
+  color: #fff;
 }

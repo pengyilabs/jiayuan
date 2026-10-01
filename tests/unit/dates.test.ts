@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
+  addDays,
+  addMonths,
+  monthGrid,
   parseLocalDate,
+  startOfMonth,
+  startOfWeek,
   toDateInTimeZone,
   toLocalISODate,
   todayInTimeZone,
   todayLocalISO,
   utcIsoToZonedInputValue,
+  weekDays,
   zonedTimeToUtcIso,
 } from '../../src/core/dates';
 
@@ -54,5 +60,33 @@ describe('dates', () => {
     const winter = zonedTimeToUtcIso('2026-11-05T09:00', 'America/Toronto');
     expect(winter).toBe('2026-11-05T14:00:00.000Z');
     expect(utcIsoToZonedInputValue(winter, 'America/Toronto')).toBe('2026-11-05T09:00');
+  });
+
+  it('addDays / addMonths avanzan y retroceden en fechas locales', () => {
+    expect(addDays('2026-01-30', 3)).toBe('2026-02-02');
+    expect(addDays('2026-03-01', -1)).toBe('2026-02-28');
+    expect(addMonths('2026-01-31', 1)).toBe('2026-03-03'); // el desbordamiento de JS Date es esperado
+    expect(addMonths('2026-03-15', -2)).toBe('2026-01-15');
+  });
+
+  it('startOfWeek / startOfMonth', () => {
+    expect(startOfWeek('2026-03-18')).toBe('2026-03-15'); // miércoles → domingo anterior
+    expect(startOfWeek('2026-03-15')).toBe('2026-03-15'); // ya es domingo
+    expect(startOfMonth('2026-03-18')).toBe('2026-03-01');
+  });
+
+  it('monthGrid cubre el mes completo en 42 días empezando en domingo', () => {
+    const grid = monthGrid('2026-03-18');
+    expect(grid).toHaveLength(42);
+    expect(parseLocalDate(grid[0] ?? '').getDay()).toBe(0);
+    expect(grid).toContain('2026-03-01');
+    expect(grid).toContain('2026-03-31');
+  });
+
+  it('weekDays devuelve los 7 días de domingo a sábado', () => {
+    const week = weekDays('2026-03-18');
+    expect(week).toHaveLength(7);
+    expect(week[0]).toBe('2026-03-15');
+    expect(week[6]).toBe('2026-03-21');
   });
 });

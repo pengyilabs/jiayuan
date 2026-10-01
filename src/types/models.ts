@@ -5,7 +5,7 @@ export type Lang = 'zh' | 'en' | 'fr' | 'es';
 /** Texto traducible; los idiomas ausentes se resuelven con `localize()` (idioma → en → zh). */
 export type LocalizedText = Partial<Record<Lang, string>>;
 
-export type PageId = 'dashboard' | 'listings' | 'templates' | 'approvals' | 'settings';
+export type PageId = 'dashboard' | 'listings' | 'templates' | 'approvals' | 'settings' | 'ops';
 
 export type PlatformId =
   | 'facebook'
@@ -18,7 +18,7 @@ export type PlatformId =
   | 'youtube'
   | 'twitter';
 
-export type UserRole = 'employee' | 'admin';
+export type UserRole = 'employee' | 'admin' | 'technician';
 
 /** `invited`: invitación enviada y aún no aceptada; `disabled`: acceso revocado por un administrador. */
 export type ProfileStatus = 'active' | 'invited' | 'disabled';
@@ -52,6 +52,14 @@ export interface OrganizationSettings {
   /** Los administradores deben verificar un código TOTP para actuar como tales. */
   requireAdminMfa: boolean;
 }
+
+/** Campos editables de `OrganizationSettings` desde el panel de operaciones (F11). */
+export type OrganizationSettingsPatch = Partial<
+  Pick<
+    OrganizationSettings,
+    'timezone' | 'undoWindowSeconds' | 'deletedRetentionDays' | 'requireAdminMfa'
+  >
+>;
 
 // ── Posts ───────────────────────────────────────────────────────────────────
 export type PostStatus =
@@ -157,6 +165,11 @@ export interface PostType {
   name: LocalizedText;
   ratio: string;
   group: PostTypeGroup;
+  /** Ratios estructurados (p. ej. `['1:1','4:5']`); F5 sustituye al texto libre de `ratio`. */
+  aspectRatios: readonly string[];
+  maxChars: number | null;
+  maxMedia: number | null;
+  maxDurationSeconds: number | null;
 }
 
 export interface Platform {
@@ -182,6 +195,14 @@ export type PostTypeGroups = Record<PostTypeGroup, PostTypeGroupInfo>;
 export type TemplateLayout =
   'hero' | 'split' | 'gallery' | 'magazine' | 'story' | 'minimal' | 'diagonal' | 'features';
 
+/** Una combinación plataforma+tipo compatible con un template, y sus dimensiones de salida. */
+export interface TemplateVariant {
+  platformId: PlatformId;
+  postTypeId: string;
+  width: number;
+  height: number;
+}
+
 export interface Template {
   id: number;
   nameKey: string;
@@ -191,6 +212,8 @@ export interface Template {
   color: string;
   description: LocalizedText;
   platformTags: string[];
+  /** Combinaciones plataforma+tipo para las que existe una salida con dimensiones definidas. */
+  variants: readonly TemplateVariant[];
 }
 
 // ── Notificaciones ───────────────────────────────────────────────────────────

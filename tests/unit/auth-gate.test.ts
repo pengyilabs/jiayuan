@@ -1,3 +1,4 @@
+import { buildDemoInfo } from '../../src/features/auth/demo';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { setState } from '../../src/app/state';
 import type { Repositories } from '../../src/data/repositories/types';
@@ -131,7 +132,7 @@ beforeEach(() => {
 describe('puerta de acceso', () => {
   it('sin sesión muestra el login; un error de credenciales se muestra y permite reintentar', async () => {
     const { auth, repos } = build();
-    const gate = runAuthGate(root(), { auth, repos, demoHint: null });
+    const gate = runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('login');
 
     submit('login', { username: 'zhuyan', password: 'incorrecta' });
@@ -146,9 +147,20 @@ describe('puerta de acceso', () => {
 
   it('valida campos vacíos sin llamar al servidor y muestra las credenciales demo', async () => {
     const { auth, repos, calls } = build();
-    void runAuthGate(root(), { auth, repos, demoHint: 'zhuyan · demo' });
+    void runAuthGate(root(), { auth, repos, demoInfo: buildDemoInfo() });
     await waitForScreen('login');
-    expect(text()).toContain('zhuyan · demo');
+    // Cada cuenta demo aparece con su rol y la contraseña por defecto, y se rellena al pulsarla.
+    expect(text()).toContain('zhuyan');
+    expect(text()).toContain('liming');
+    expect(text()).toContain('demo-password-123');
+    expect(document.querySelectorAll('[data-demo-user]').length).toBe(3);
+    (document.querySelector('[data-demo-user="liming"]') as HTMLElement).click();
+    expect((document.querySelector('input[name="username"]') as HTMLInputElement).value).toBe(
+      'liming',
+    );
+    expect((document.querySelector('input[name="password"]') as HTMLInputElement).value).toBe(
+      'demo-password-123',
+    );
     submit('login', { username: '', password: '' });
     await vi.waitFor(() => {
       expect(text()).toContain('Please fill in all fields.');
@@ -163,14 +175,14 @@ describe('puerta de acceso', () => {
       requireMfa: true,
       profile: profile({ role: 'employee' }),
     });
-    await expect(runAuthGate(root(), { auth, repos, demoHint: null })).resolves.toMatchObject({
+    await expect(runAuthGate(root(), { auth, repos, demoInfo: null })).resolves.toMatchObject({
       role: 'employee',
     });
   });
 
   it('administrador sin TOTP: fuerza el alta, rechaza un código incorrecto y entra con el correcto', async () => {
     const { auth, repos, calls } = build({ signedIn: true, aal: 'aal1', requireMfa: true });
-    const gate = runAuthGate(root(), { auth, repos, demoHint: null });
+    const gate = runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('enroll');
     expect(text()).toContain('JBSWY3DPEHPK3PXP');
     expect(root().querySelector('img.auth-qr')?.getAttribute('src')).toContain(
@@ -198,7 +210,7 @@ describe('puerta de acceso', () => {
       requireMfa: true,
       factorId: 'f-1',
     });
-    const gate = runAuthGate(root(), { auth, repos, demoHint: null });
+    const gate = runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('mfa');
     submit('verify', { code: '123456' });
     await expect(gate).resolves.toBeDefined();
@@ -206,7 +218,7 @@ describe('puerta de acceso', () => {
 
   it('sin exigencia de MFA (modo demo) el administrador entra con AAL1', async () => {
     const { auth, repos } = build({ signedIn: true, aal: 'aal1', requireMfa: false });
-    await expect(runAuthGate(root(), { auth, repos, demoHint: null })).resolves.toBeDefined();
+    await expect(runAuthGate(root(), { auth, repos, demoInfo: null })).resolves.toBeDefined();
   });
 
   it('una cuenta desactivada o sin perfil no entra y se cierra la sesión', async () => {
@@ -216,7 +228,7 @@ describe('puerta de acceso', () => {
     ] as const) {
       document.body.innerHTML = '<div id="root"></div>';
       const { auth, repos, calls } = build({ signedIn: true, profile: p });
-      void runAuthGate(root(), { auth, repos, demoHint: null });
+      void runAuthGate(root(), { auth, repos, demoInfo: null });
       await waitForScreen('login');
       expect(text().toLowerCase()).toContain(message);
       expect(calls).toContain('signOut');
@@ -226,7 +238,7 @@ describe('puerta de acceso', () => {
   it('invitación: define la contraseña (con validaciones) y entra', async () => {
     const { auth, repos, calls } = build({ signedIn: true, init: { flow: 'invite' } });
     window.history.replaceState(null, '', '/accept-invite');
-    const gate = runAuthGate(root(), { auth, repos, demoHint: null });
+    const gate = runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('set-password');
     expect(text()).toContain('Welcome!');
 
@@ -248,7 +260,7 @@ describe('puerta de acceso', () => {
 
   it('enlace caducado: muestra el error y permite volver al login', async () => {
     const { auth, repos } = build({ init: { flow: 'invite', linkError: true } });
-    void runAuthGate(root(), { auth, repos, demoHint: null });
+    void runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('link-error');
     click('[data-auth="login"]');
     await waitForScreen('login');
@@ -256,7 +268,7 @@ describe('puerta de acceso', () => {
 
   it('recuperación de contraseña: respuesta genérica y sin llamar antes de tiempo', async () => {
     const { auth, repos, calls } = build();
-    void runAuthGate(root(), { auth, repos, demoHint: null });
+    void runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('login');
     click('[data-auth="forgot"]');
     await waitForScreen('forgot');
@@ -269,14 +281,14 @@ describe('puerta de acceso', () => {
   it('avisa cuando la sesión anterior caducó por inactividad', async () => {
     sessionStorage.setItem(SIGN_OUT_REASON_KEY, 'idle');
     const { auth, repos } = build();
-    void runAuthGate(root(), { auth, repos, demoHint: null });
+    void runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('login');
     expect(text()).toContain('inactivity');
   });
 
   it('cambiar de idioma traduce la pantalla', async () => {
     const { auth, repos } = build();
-    void runAuthGate(root(), { auth, repos, demoHint: null });
+    void runAuthGate(root(), { auth, repos, demoInfo: null });
     await waitForScreen('login');
     const select = root().querySelector<HTMLSelectElement>('[data-auth-lang]');
     if (!select) throw new Error('sin selector de idioma');
