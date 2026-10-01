@@ -4,10 +4,11 @@ import type { SafeHtml } from '../../core/html';
 import { LANGS, t } from '../../i18n';
 import type { Lang } from '../../types/models';
 import type { TotpEnrollment } from './auth-service';
+import type { DemoInfo } from './demo';
 
 export type AuthScreen =
   | { name: 'loading' }
-  | { name: 'login'; error?: string; notice?: string }
+  | { name: 'login'; error?: string; notice?: string; username?: string }
   | { name: 'forgot'; error?: string }
   | { name: 'forgot-sent' }
   | { name: 'set-password'; flow: 'invite' | 'recovery'; error?: string }
@@ -26,8 +27,8 @@ export interface AuthHandlers {
 }
 
 export interface AuthViewOptions {
-  /** Solo modo demo: credenciales de ejemplo que se muestran en el login. */
-  demoHint: string | null;
+  /** Solo modo demo: cuentas por defecto con su rol, que se muestran en el login. */
+  demo: DemoInfo | null;
 }
 
 const LANG_NAMES: Readonly<Record<Lang, string>> = {
@@ -37,8 +38,34 @@ const LANG_NAMES: Readonly<Record<Lang, string>> = {
   es: 'Español',
 };
 
-const field = (label: string, input: SafeHtml): SafeHtml =>
-  html`<div class="form-group"><label class="form-label">${label}</label>${input}</div>`;
+/** Cuentas por defecto de un despliegue demo, con su rol y qué puede hacer cada una. */
+function demoPanel(demo: DemoInfo): SafeHtml {
+  return html`<section class="auth-demo-panel" aria-labelledby="auth-demo-title">
+    <h2 id="auth-demo-title">${t('auth_demo_title')}</h2>
+    <p class="auth-demo-intro">${t('auth_demo_intro')}</p>
+    <ul class="auth-demo-list">
+      ${demo.accounts.map(
+        account => html`<li>
+          <button type="button" class="auth-demo-account" data-demo-user="${account.username}">
+            <span class="auth-demo-name">
+              <code>${account.username}</code> · ${account.fullName}
+              <span class="role-pill role-${account.role}">
+                ${t(account.role === 'admin' ? 'role_admin' : 'role_agent')}
+              </span>
+            </span>
+            <span class="auth-demo-desc">
+              ${t(account.role === 'admin' ? 'auth_demo_admin_desc' : 'auth_demo_agent_desc')}
+            </span>
+          </button>
+        </li>`,
+      )}
+    </ul>
+    <p class="auth-demo-password">${t('auth_demo_password')} <code>${demo.password}</code></p>
+  </section>`;
+}
+
+const field = (label: string, id: string, input: SafeHtml): SafeHtml =>
+  html`<div class="form-group"><label class="form-label" for="${id}">${label}</label>${input}</div>`;
 
 function body(screen: AuthScreen, options: AuthViewOptions): SafeHtml {
   switch (screen.name) {
@@ -53,16 +80,18 @@ function body(screen: AuthScreen, options: AuthViewOptions): SafeHtml {
         <form data-form="login" novalidate>
           ${field(
             t('auth_username'),
-            html`<input name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required />`,
+            'auth-username',
+            html`<input id="auth-username" name="username" value="${screen.username ?? ''}" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required />`,
           )}
           ${field(
             t('auth_password'),
-            html`<input name="password" type="password" autocomplete="current-password" required />`,
+            'auth-password',
+            html`<input id="auth-password" name="password" type="password" autocomplete="current-password" required />`,
           )}
           <button class="btn btn-primary auth-submit" type="submit">${t('auth_signin')}</button>
         </form>
         <button class="auth-link" type="button" data-auth="forgot">${t('auth_forgot')}</button>
-        ${options.demoHint ? html`<p class="auth-demo">${t('auth_demo_hint')} <code>${options.demoHint}</code></p>` : ''}`;
+        ${options.demo ? demoPanel(options.demo) : ''}`;
 
     case 'forgot':
       return html`<h1>${t('auth_forgot_title')}</h1>
@@ -71,7 +100,8 @@ function body(screen: AuthScreen, options: AuthViewOptions): SafeHtml {
         <form data-form="forgot" novalidate>
           ${field(
             t('auth_identifier'),
-            html`<input name="identifier" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required />`,
+            'auth-identifier',
+            html`<input id="auth-identifier" name="identifier" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required />`,
           )}
           <button class="btn btn-primary auth-submit" type="submit">${t('auth_send_link')}</button>
         </form>
@@ -91,11 +121,13 @@ function body(screen: AuthScreen, options: AuthViewOptions): SafeHtml {
         <form data-form="set-password" novalidate>
           ${field(
             t('auth_new_password'),
-            html`<input name="password" type="password" autocomplete="new-password" minlength="12" required />`,
+            'auth-password',
+            html`<input id="auth-password" name="password" type="password" autocomplete="new-password" minlength="12" required />`,
           )}
           ${field(
             t('auth_confirm_password'),
-            html`<input name="confirmation" type="password" autocomplete="new-password" required />`,
+            'auth-confirmation',
+            html`<input id="auth-confirmation" name="confirmation" type="password" autocomplete="new-password" required />`,
           )}
           <p class="form-hint">${t('auth_password_rules')}</p>
           <button class="btn btn-primary auth-submit" type="submit">${t('auth_save_password')}</button>
@@ -106,7 +138,7 @@ function body(screen: AuthScreen, options: AuthViewOptions): SafeHtml {
         <p class="auth-hint">${t('auth_mfa_hint')}</p>
         ${screen.error ? html`<div class="auth-alert" role="alert">${screen.error}</div>` : ''}
         <form data-form="verify" novalidate>
-          ${field(t('auth_code'), codeInput())}
+          ${field(t('auth_code'), 'auth-code', codeInput())}
           <button class="btn btn-primary auth-submit" type="submit">${t('auth_verify')}</button>
         </form>
         <button class="auth-link" type="button" data-auth="cancel">${t('auth_logout')}</button>`;
@@ -118,7 +150,7 @@ function body(screen: AuthScreen, options: AuthViewOptions): SafeHtml {
         <img class="auth-qr" src="${screen.enrollment.qrCode}" alt="QR" width="180" height="180" />
         <p class="form-hint">${t('auth_enroll_secret')} <code class="auth-secret">${screen.enrollment.secret}</code></p>
         <form data-form="verify" novalidate>
-          ${field(t('auth_code'), codeInput())}
+          ${field(t('auth_code'), 'auth-code', codeInput())}
           <button class="btn btn-primary auth-submit" type="submit">${t('auth_verify')}</button>
         </form>
         <button class="auth-link" type="button" data-auth="cancel">${t('auth_logout')}</button>`;
@@ -131,7 +163,7 @@ function body(screen: AuthScreen, options: AuthViewOptions): SafeHtml {
 }
 
 const codeInput = (): SafeHtml =>
-  html`<input name="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required />`;
+  html`<input id="auth-code" name="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required />`;
 
 /** Dibuja la pantalla y conecta sus eventos. Cada llamada sustituye por completo el contenido. */
 export function renderAuthScreen(
@@ -193,6 +225,18 @@ export function renderAuthScreen(
   });
 
   shell.addEventListener('click', event => {
+    const demoButton = (event.target as HTMLElement).closest<HTMLElement>('[data-demo-user]');
+    if (demoButton && options.demo) {
+      const form = shell.querySelector<HTMLFormElement>('form[data-form="login"]');
+      const user = form?.querySelector<HTMLInputElement>('input[name="username"]');
+      const password = form?.querySelector<HTMLInputElement>('input[name="password"]');
+      if (user && password) {
+        user.value = demoButton.dataset.demoUser ?? '';
+        password.value = options.demo.password;
+        password.focus();
+      }
+      return;
+    }
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-auth]');
     if (!target) return;
     const action = target.dataset.auth;
@@ -205,5 +249,7 @@ export function renderAuthScreen(
     if (select) handlers.changeLanguage(select.value as Lang);
   });
 
-  shell.querySelector<HTMLInputElement>('input')?.focus();
+  // Tras un intento fallido se conserva el usuario y el foco pasa a la contraseña.
+  const keptUser = screen.name === 'login' && screen.username;
+  shell.querySelector<HTMLInputElement>(keptUser ? 'input[name="password"]' : 'input')?.focus();
 }

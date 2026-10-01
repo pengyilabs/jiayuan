@@ -16,41 +16,41 @@ insert into public.platforms (id, name, color, description, publish_mode, connec
   ('twitter', '{"zh":"X (Twitter)"}'::jsonb, '#000000', '{"zh":"X (Twitter) — 短文、图文、话题讨论","en":"X (Twitter) — short posts, images, threads","fr":"X (Twitter) — posts courts, images, fils"}'::jsonb, 'manual', false, '', 8, default)
 on conflict do nothing;
 
-insert into public.post_types (platform_id, id, name, format_group, ratio_label, sort_order) values
-  ('facebook', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '1:1 · 4:5 · 16:9', 0),
-  ('facebook', 'carousel', '{"zh":"轮播","en":"Carousel","fr":"Carrousel"}'::jsonb, 'carousel', '1:1 · 4:5 × 2-10', 1),
-  ('facebook', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 9:16 · 1:1', 2),
-  ('facebook', 'reels', '{"zh":"Reels短视频","en":"Reels","fr":"Reels"}'::jsonb, 'short_video', '9:16 ≤ 90s', 3),
-  ('facebook', 'stories', '{"zh":"Stories","en":"Stories","fr":"Stories"}'::jsonb, 'story', '9:16 ≤ 24h', 4),
-  ('facebook', 'text', '{"zh":"纯文字","en":"Text Post","fr":"Publication texte"}'::jsonb, 'text', '—', 5),
-  ('instagram', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '1:1 · 4:5', 0),
-  ('instagram', 'carousel', '{"zh":"轮播","en":"Carousel","fr":"Carrousel"}'::jsonb, 'carousel', '1:1 · 4:5 × 2-10', 1),
-  ('instagram', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 4:5', 2),
-  ('instagram', 'reels', '{"zh":"Reels","en":"Reels","fr":"Reels"}'::jsonb, 'short_video', '9:16 ≤ 90s', 3),
-  ('instagram', 'stories', '{"zh":"Stories","en":"Stories","fr":"Stories"}'::jsonb, 'story', '9:16 ≤ 24h', 4),
-  ('wechat_official', 'article', '{"zh":"图文消息","en":"Article","fr":"Article"}'::jsonb, 'article', '封面 2.35:1', 0),
-  ('wechat_official', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '1:1 · 原图', 1),
-  ('wechat_official', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 3:4', 2),
-  ('wechat_channels', 'short_video', '{"zh":"短视频","en":"Short Video","fr":"Vidéo courte"}'::jsonb, 'short_video', '9:16 ≤ 60min', 0),
-  ('wechat_channels', 'live', '{"zh":"直播","en":"Live Stream","fr":"Direct"}'::jsonb, 'live', '9:16', 1),
-  ('wechat_channels', 'link_post', '{"zh":"链接图文","en":"Link Post","fr":"Publication lien"}'::jsonb, 'article', '封面 2.35:1', 2),
-  ('xiaohongshu', 'note', '{"zh":"图文笔记","en":"Image Note","fr":"Note image"}'::jsonb, 'image', '3:4 · 1:1', 0),
-  ('xiaohongshu', 'video_note', '{"zh":"视频笔记","en":"Video Note","fr":"Note vidéo"}'::jsonb, 'short_video', '3:4 · 9:16', 1),
-  ('xiaohongshu', 'carousel', '{"zh":"轮播笔记","en":"Carousel Note","fr":"Note carrousel"}'::jsonb, 'carousel', '3:4 × 2-18', 2),
-  ('douyin', 'short_video', '{"zh":"短视频","en":"Short Video","fr":"Vidéo courte"}'::jsonb, 'short_video', '9:16 ≤ 15min', 0),
-  ('douyin', 'live', '{"zh":"直播","en":"Live Stream","fr":"Direct"}'::jsonb, 'live', '9:16', 1),
-  ('douyin', 'graphic_video', '{"zh":"图文视频","en":"Slideshow Video","fr":"Vidéo diaporama"}'::jsonb, 'short_video', '9:16', 2),
-  ('tiktok', 'short_video', '{"zh":"短视频","en":"Short Video","fr":"Vidéo courte"}'::jsonb, 'short_video', '9:16 ≤ 10min', 0),
-  ('tiktok', 'photo_mode', '{"zh":"照片模式","en":"Photo Mode","fr":"Mode photo"}'::jsonb, 'carousel', '1:1 · 9:16 × up to 35', 1),
-  ('tiktok', 'live', '{"zh":"直播","en":"Live Stream","fr":"Direct"}'::jsonb, 'live', '9:16', 2),
-  ('youtube', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9', 0),
-  ('youtube', 'shorts', '{"zh":"Shorts","en":"Shorts","fr":"Shorts"}'::jsonb, 'short_video', '9:16 ≤ 60s', 1),
-  ('youtube', 'community', '{"zh":"社区帖子","en":"Community Post","fr":"Publication communautaire"}'::jsonb, 'text', '图文/投票', 2),
-  ('twitter', 'text', '{"zh":"纯文字","en":"Text Post","fr":"Publication texte"}'::jsonb, 'text', '≤ 280字符', 0),
-  ('twitter', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '16:9 · 1:1', 1),
-  ('twitter', 'multi_image', '{"zh":"多图","en":"Multi Image","fr":"Image multiple"}'::jsonb, 'image', '最多4张', 2),
-  ('twitter', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 1:1', 3),
-  ('twitter', 'thread', '{"zh":"长推文串","en":"Thread","fr":"Fil"}'::jsonb, 'text', '多条串联', 4)
+insert into public.post_types (platform_id, id, name, format_group, ratio_label, aspect_ratios, max_chars, max_media, max_duration_seconds, sort_order) values
+  ('facebook', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '1:1 · 4:5 · 16:9', array['1:1', '4:5', '16:9']::text[], 2200, 1, null, 0),
+  ('facebook', 'carousel', '{"zh":"轮播","en":"Carousel","fr":"Carrousel"}'::jsonb, 'carousel', '1:1 · 4:5 × 2-10', array['1:1', '4:5']::text[], 2200, 10, null, 1),
+  ('facebook', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 9:16 · 1:1', array['16:9', '9:16', '1:1']::text[], 2200, 1, null, 2),
+  ('facebook', 'reels', '{"zh":"Reels短视频","en":"Reels","fr":"Reels"}'::jsonb, 'short_video', '9:16 ≤ 90s', array['9:16']::text[], 2200, 1, 90, 3),
+  ('facebook', 'stories', '{"zh":"Stories","en":"Stories","fr":"Stories"}'::jsonb, 'story', '9:16 ≤ 24h', array['9:16']::text[], 2200, 1, 86400, 4),
+  ('facebook', 'text', '{"zh":"纯文字","en":"Text Post","fr":"Publication texte"}'::jsonb, 'text', '—', null, 2200, null, null, 5),
+  ('instagram', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '1:1 · 4:5', array['1:1', '4:5']::text[], 2200, 1, null, 0),
+  ('instagram', 'carousel', '{"zh":"轮播","en":"Carousel","fr":"Carrousel"}'::jsonb, 'carousel', '1:1 · 4:5 × 2-10', array['1:1', '4:5']::text[], 2200, 10, null, 1),
+  ('instagram', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 4:5', array['16:9', '4:5']::text[], 2200, 1, null, 2),
+  ('instagram', 'reels', '{"zh":"Reels","en":"Reels","fr":"Reels"}'::jsonb, 'short_video', '9:16 ≤ 90s', array['9:16']::text[], 2200, 1, 90, 3),
+  ('instagram', 'stories', '{"zh":"Stories","en":"Stories","fr":"Stories"}'::jsonb, 'story', '9:16 ≤ 24h', array['9:16']::text[], 2200, 1, 86400, 4),
+  ('wechat_official', 'article', '{"zh":"图文消息","en":"Article","fr":"Article"}'::jsonb, 'article', '封面 2.35:1', array['2.35:1']::text[], 20000, 1, null, 0),
+  ('wechat_official', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '1:1 · 原图', array['1:1']::text[], 20000, 1, null, 1),
+  ('wechat_official', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 3:4', array['16:9', '3:4']::text[], 20000, 1, null, 2),
+  ('wechat_channels', 'short_video', '{"zh":"短视频","en":"Short Video","fr":"Vidéo courte"}'::jsonb, 'short_video', '9:16 ≤ 60min', array['9:16']::text[], 1000, 1, 3600, 0),
+  ('wechat_channels', 'live', '{"zh":"直播","en":"Live Stream","fr":"Direct"}'::jsonb, 'live', '9:16', array['9:16']::text[], null, null, null, 1),
+  ('wechat_channels', 'link_post', '{"zh":"链接图文","en":"Link Post","fr":"Publication lien"}'::jsonb, 'article', '封面 2.35:1', array['2.35:1']::text[], 1000, 1, null, 2),
+  ('xiaohongshu', 'note', '{"zh":"图文笔记","en":"Image Note","fr":"Note image"}'::jsonb, 'image', '3:4 · 1:1', array['3:4', '1:1']::text[], 1000, 1, null, 0),
+  ('xiaohongshu', 'video_note', '{"zh":"视频笔记","en":"Video Note","fr":"Note vidéo"}'::jsonb, 'short_video', '3:4 · 9:16', array['3:4', '9:16']::text[], 1000, 1, null, 1),
+  ('xiaohongshu', 'carousel', '{"zh":"轮播笔记","en":"Carousel Note","fr":"Note carrousel"}'::jsonb, 'carousel', '3:4 × 2-18', array['3:4']::text[], 1000, 18, null, 2),
+  ('douyin', 'short_video', '{"zh":"短视频","en":"Short Video","fr":"Vidéo courte"}'::jsonb, 'short_video', '9:16 ≤ 15min', array['9:16']::text[], 500, 1, 900, 0),
+  ('douyin', 'live', '{"zh":"直播","en":"Live Stream","fr":"Direct"}'::jsonb, 'live', '9:16', array['9:16']::text[], null, null, null, 1),
+  ('douyin', 'graphic_video', '{"zh":"图文视频","en":"Slideshow Video","fr":"Vidéo diaporama"}'::jsonb, 'short_video', '9:16', array['9:16']::text[], 500, 1, null, 2),
+  ('tiktok', 'short_video', '{"zh":"短视频","en":"Short Video","fr":"Vidéo courte"}'::jsonb, 'short_video', '9:16 ≤ 10min', array['9:16']::text[], 2200, 1, 600, 0),
+  ('tiktok', 'photo_mode', '{"zh":"照片模式","en":"Photo Mode","fr":"Mode photo"}'::jsonb, 'carousel', '1:1 · 9:16 × up to 35', array['1:1', '9:16']::text[], 2200, 35, null, 1),
+  ('tiktok', 'live', '{"zh":"直播","en":"Live Stream","fr":"Direct"}'::jsonb, 'live', '9:16', array['9:16']::text[], null, null, null, 2),
+  ('youtube', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9', array['16:9']::text[], 5000, 1, null, 0),
+  ('youtube', 'shorts', '{"zh":"Shorts","en":"Shorts","fr":"Shorts"}'::jsonb, 'short_video', '9:16 ≤ 60s', array['9:16']::text[], 5000, 1, 60, 1),
+  ('youtube', 'community', '{"zh":"社区帖子","en":"Community Post","fr":"Publication communautaire"}'::jsonb, 'text', '图文/投票', null, 5000, null, null, 2),
+  ('twitter', 'text', '{"zh":"纯文字","en":"Text Post","fr":"Publication texte"}'::jsonb, 'text', '≤ 280字符', null, 280, null, null, 0),
+  ('twitter', 'single', '{"zh":"单图","en":"Single Image","fr":"Image unique"}'::jsonb, 'image', '16:9 · 1:1', array['16:9', '1:1']::text[], 280, 1, null, 1),
+  ('twitter', 'multi_image', '{"zh":"多图","en":"Multi Image","fr":"Image multiple"}'::jsonb, 'image', '最多4张', array['16:9']::text[], 280, 4, null, 2),
+  ('twitter', 'video', '{"zh":"视频","en":"Video","fr":"Vidéo"}'::jsonb, 'video', '16:9 · 1:1', array['16:9', '1:1']::text[], 280, 1, null, 3),
+  ('twitter', 'thread', '{"zh":"长推文串","en":"Thread","fr":"Fil"}'::jsonb, 'text', '多条串联', null, 280, null, null, 4)
 on conflict do nothing;
 
 insert into public.post_type_groups (id, name, description, sort_order) values
@@ -114,3 +114,21 @@ insert into public.templates (id, name_key, layout, scene, lang_label, color, de
 on conflict do nothing;
 
 do $$ begin perform setval(pg_get_serial_sequence('public.templates', 'id'), (select coalesce(max(id), 1) from public.templates)); end $$;
+
+insert into public.template_variants (template_id, platform_id, post_type_id, width, height, slots) values
+  (1, 'facebook', 'single', 1080, 1080, '{"image":true,"price":true,"title":true,"logo":true}'::jsonb),
+  (2, 'facebook', 'single', 1920, 1080, '{"image":true,"price":true,"title":true,"badges":true}'::jsonb),
+  (3, 'wechat_official', 'single', 1080, 1080, '{"image":true,"price":true,"title":true,"logo":true}'::jsonb),
+  (4, 'wechat_official', 'article', 1080, 460, '{"image":true,"title":true,"contact":true}'::jsonb),
+  (5, 'instagram', 'single', 1080, 1350, '{"image":true,"price":true,"title":true,"logo":true}'::jsonb),
+  (6, 'facebook', 'video', 1920, 1080, '{"image":true,"price":true,"title":true,"badges":true}'::jsonb),
+  (7, 'facebook', 'carousel', 1080, 1080, '{"images":true,"price":true,"title":true}'::jsonb),
+  (7, 'instagram', 'carousel', 1080, 1080, '{"images":true,"price":true,"title":true}'::jsonb),
+  (8, 'wechat_official', 'article', 1080, 460, '{"image":true,"price":true,"title":true,"excerpt":true,"features":true}'::jsonb),
+  (9, 'facebook', 'stories', 1080, 1920, '{"image":true,"price":true,"title":true,"cta":true}'::jsonb),
+  (9, 'instagram', 'stories', 1080, 1920, '{"image":true,"price":true,"title":true,"cta":true}'::jsonb),
+  (10, 'twitter', 'single', 1600, 900, '{"image":true,"price":true,"title":true}'::jsonb),
+  (11, 'xiaohongshu', 'note', 1080, 1440, '{"image":true,"price":true,"title":true,"cta":true}'::jsonb),
+  (12, 'wechat_official', 'video', 1080, 1440, '{"image":true,"price":true,"title":true,"badges":true}'::jsonb),
+  (12, 'youtube', 'video', 1920, 1080, '{"image":true,"price":true,"title":true,"badges":true}'::jsonb)
+on conflict do nothing;

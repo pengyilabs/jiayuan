@@ -23,7 +23,7 @@ import { initSidebar } from '../ui/sidebar';
 import { initActionDelegation } from './actions';
 import { initNavigation } from './navigation';
 import { addRouteGuard, initRouter } from './router';
-import { auth, demoHint, repos, setTimeZone } from './services';
+import { auth, demoInfo, repos, setTimeZone } from './services';
 import { mountShell } from './shell';
 import { getState, setState, store } from './state';
 
@@ -40,7 +40,7 @@ export async function bootstrap(root: HTMLElement): Promise<void> {
   // 1 · Puerta de acceso: login, invitación, restablecimiento y MFA.
   let profile;
   try {
-    profile = await runAuthGate(root, { auth, repos, demoHint });
+    profile = await runAuthGate(root, { auth, repos, demoInfo });
   } catch (error) {
     renderBootError(root, error);
     return;

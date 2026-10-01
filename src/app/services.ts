@@ -1,14 +1,17 @@
-/** Raíz de composición: autenticación y repositorios de la aplicación. */
+/**
+ * Raíz de composición: autenticación y repositorios de la aplicación.
+ * `@supabase/supabase-js` y los módulos que dependen de ella se cargan con `import()` (F8):
+ * en modo demo (`memory`, el valor por defecto) nunca llegan a descargarse, así que el modo
+ * demo no paga el peso de un cliente de Supabase que no usa.
+ */
 import { readConfig } from '../config/env';
-import { createBrowserClient } from '../config/supabase';
 import { createMemoryDirectory } from '../data/memory-directory';
 import { createMemoryRepositories } from '../data/repositories/memory';
-import { createSupabaseRepositories } from '../data/repositories/supabase';
 import type { Repositories } from '../data/repositories/types';
-import { DEMO_PASSWORD } from '../data/seed/users';
 import { createMemoryAuth } from '../features/auth/memory-auth';
-import { createSupabaseAuth } from '../features/auth/supabase-auth';
 import type { AuthService } from '../features/auth/auth-service';
+import { buildDemoInfo } from '../features/auth/demo';
+import type { DemoInfo } from '../features/auth/demo';
 
 /** Zona horaria de la organización; se actualiza al cargar la configuración. */
 const context = { timeZone: 'America/Toronto' };
@@ -22,19 +25,25 @@ export const config = readConfig(import.meta.env);
 interface Services {
   auth: AuthService;
   repos: Repositories;
-  /** Credenciales de ejemplo del login (solo modo demo). */
-  demoHint: string | null;
+  /** Cuentas y contraseña por defecto (solo modo demo; `null` con backend real). */
+  demoInfo: DemoInfo | null;
 }
 
-function createServices(): Services {
+async function createServices(): Promise<Services> {
   const timeZone = (): string => context.timeZone;
 
   if (config.dataSource === 'supabase' && config.supabase) {
+    const [{ createBrowserClient }, { createSupabaseAuth }, { createSupabaseRepositories }] =
+      await Promise.all([
+        import('../config/supabase'),
+        import('../features/auth/supabase-auth'),
+        import('../data/repositories/supabase'),
+      ]);
     const client = createBrowserClient(config.supabase.url, config.supabase.anonKey);
     return {
       auth: createSupabaseAuth(client),
       repos: createSupabaseRepositories(client, { timeZone }),
-      demoHint: null,
+      demoInfo: null,
     };
   }
 
@@ -47,8 +56,8 @@ function createServices(): Services {
       timeZone,
       currentUserId: () => auth.currentUserId() ?? '',
     }),
-    demoHint: `zhuyan / liming / wangfang · ${DEMO_PASSWORD}`,
+    demoInfo: buildDemoInfo(),
   };
 }
 
-export const { auth, repos, demoHint } = createServices();
+export const { auth, repos, demoInfo } = await createServices();
