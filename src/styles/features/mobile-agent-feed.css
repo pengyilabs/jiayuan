@@ -1,0 +1,1014 @@
+/**
+ * Layout móvil "estilo app" para agentes (F10): reproduce el diseño adjunto (mobile-feed.html)
+ * — topbar, feed con tarjetas por plataforma/plantilla, navegación inferior fija — con datos
+ * reales (posts, listings, plantillas, i18n). Solo se activa en móvil (<640px) para la cuenta
+ * de un agente; admin y tablet/PC siguen con el calendario + feed habituales (F6/F7).
+ *
+ * Las clases nuevas van con el prefijo `m-` para no chocar con las del resto de la app; los
+ * widgets que SÍ son los mismos que en escritorio (idioma, notificaciones) reutilizan sus
+ * clases/acciones reales tal cual, así que ya funcionan sin JS adicional.
+ */
+#mobile-agent-feed {
+  display: none;
+  /* Tokens que usa el diseño portado, mapeados a los tokens reales de la app. */
+  --radius: var(--radius-md);
+  --surface: var(--surface-warm);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --accent-soft: #fff0f3;
+}
+@media (max-width: 639px) {
+  body[data-role='employee'] #mobile-agent-feed {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: var(--surface);
+  }
+  /* El agente ve esta pantalla en vez del calendario + feed habituales de Home. */
+  body[data-role='employee'] #page-dashboard .home-layout {
+    display: none;
+  }
+}
+
+/* ── Status bar spacer ── */
+.m-status-bar {
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  flex-shrink: 0;
+}
+/* ── Top bar ── */
+.m-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.m-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.m-topbar-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+}
+.m-topbar-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+.m-topbar-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.m-topbar-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--fg);
+}
+.m-topbar-icon:active {
+  background: var(--surface);
+}
+.m-topbar-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+}
+.m-topbar-lang {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.m-topbar-lang:active {
+  background: var(--surface);
+}
+/* ── Feed ── */
+.m-feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0 20px;
+  -webkit-overflow-scrolling: touch;
+}
+/* Date group header */
+.m-date-group {
+  padding: 16px 16px 8px;
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 5;
+}
+.m-date-group-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.m-date-group-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--meta);
+  background: var(--border-soft);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+/* Post card */
+.m-post-card {
+  background: var(--bg);
+  margin: 0 12px 12px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-soft);
+}
+.m-post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+}
+.m-post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.m-post-byline {
+  flex: 1;
+  min-width: 0;
+}
+.m-post-author {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.m-post-meta {
+  font-size: 11px;
+  color: var(--meta);
+  margin-top: 1px;
+}
+.m-post-platform-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+.m-tag-fb {
+  background: #1877f2;
+}
+.m-tag-wx {
+  background: #07c160;
+}
+.m-tag-wxch {
+  background: #ff6b2c;
+}
+.m-tag-ig {
+  background: linear-gradient(135deg, #f09433, #dc2743, #bc1888);
+}
+.m-tag-xhs {
+  background: #fe2c55;
+}
+/* Post image */
+.m-post-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  background: var(--surface);
+}
+.m-post-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.m-post-img-wrap.m-ratio-45 {
+  aspect-ratio: 4/5;
+}
+.m-post-img-wrap.m-ratio-169 {
+  aspect-ratio: 16/9;
+}
+.m-post-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.m-post-video-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.m-post-video-play div {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.m-post-video-play svg {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+  margin-left: 2px;
+}
+/* Carousel */
+.m-carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+}
+.m-carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+.m-carousel-track img {
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.m-carousel-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+}
+.m-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s;
+}
+.m-carousel-dot.m-active {
+  background: #fff;
+  width: 16px;
+  border-radius: 3px;
+}
+.m-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+.m-carousel-btn:active {
+  background: #fff;
+}
+.m-carousel-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: #333;
+  fill: none;
+  stroke-width: 2.5;
+}
+.m-carousel-prev {
+  left: 8px;
+}
+.m-carousel-next {
+  right: 8px;
+}
+/* Post body */
+.m-post-body {
+  padding: 10px 14px;
+}
+.m-post-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+.m-post-text {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.m-post-price {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.m-post-hashtags {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--accent);
+  line-height: 1.3;
+}
+.m-post-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+.m-status-published {
+  background: #dcfce7;
+  color: #166534;
+}
+.m-status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.m-status-draft {
+  background: var(--border-soft);
+  color: var(--muted);
+}
+.m-status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+/* Post actions */
+.m-post-actions {
+  display: flex;
+  border-top: 1px solid var(--border-soft);
+  padding: 0;
+}
+.m-post-action {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+}
+.m-post-action:active {
+  background: var(--surface);
+}
+.m-post-action.m-liked {
+  color: var(--accent);
+}
+/* ── Bottom nav ── */
+.m-bottom-nav {
+  display: flex;
+  align-items: flex-end;
+  background: var(--bg);
+  border-top: 1px solid var(--border-soft);
+  padding: 6px 0 calc(6px + var(--safe-bottom));
+  flex-shrink: 0;
+  position: relative;
+  z-index: 40;
+}
+.m-nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: inherit;
+  color: var(--meta);
+}
+.m-nav-btn.m-active {
+  color: var(--accent);
+}
+.m-nav-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+}
+.m-nav-btn span {
+  font-size: 10px;
+  font-weight: 600;
+}
+.m-nav-btn-create {
+  position: relative;
+}
+.m-nav-create-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -16px;
+  box-shadow: 0 2px 10px rgba(255, 56, 92, 0.35);
+  transition: transform 0.15s;
+}
+.m-nav-create-icon:active {
+  transform: scale(0.9);
+}
+.m-nav-create-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 2.5;
+}
+.m-nav-btn-create span {
+  margin-top: 14px;
+}
+/* ── Feed template-styled cards ──────────────────────── */
+.m-feed-tpl {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+.m-feed-tpl .m-post-header {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.m-feed-tpl .m-post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.m-feed-tpl .m-post-byline {
+  flex: 1;
+  min-width: 0;
+}
+.m-feed-tpl .m-post-author {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.m-feed-tpl .m-post-meta {
+  font-size: 11px;
+  color: var(--meta);
+}
+.m-feed-tpl .m-post-actions {
+  display: flex;
+  border-top: 1px solid var(--border-soft);
+}
+.m-feed-tpl .m-post-action {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.m-feed-tpl .m-post-action:active {
+  background: var(--surface);
+}
+.m-feed-tpl .m-post-action.m-liked {
+  color: var(--accent);
+}
+/* Toast */
+.m-toast {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 60px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--fg);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 200;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.m-toast.m-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+/* Empty state */
+.m-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--meta);
+}
+.m-empty-state svg {
+  width: 48px;
+  height: 48px;
+  stroke: var(--border);
+  margin-bottom: 12px;
+}
+.m-empty-state p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+/* Hide scrollbar */
+.m-feed::-webkit-scrollbar,
+.m-sheet::-webkit-scrollbar,
+.m-sheet-body::-webkit-scrollbar {
+  display: none;
+}
+.m-feed,
+.m-sheet,
+.m-sheet-body {
+  scrollbar-width: none;
+}
+
+/* El renderizador real de plantillas (F5) va dentro de la tarjeta: llena el ancho de la
+   tarjeta en vez del máx. de 220px pensado para el formulario de escritorio. */
+#mobile-agent-feed .m-feed-tpl .tpl-preview {
+  width: 100%;
+  border-radius: 0;
+  border: none;
+}
+#mobile-agent-feed .m-feed-tpl .m-feed-tpl-hashtags {
+  font-size: 11px;
+  color: var(--meta);
+  padding: 0 14px;
+  margin-top: 4px;
+}
+#mobile-agent-feed .m-feed-tpl .m-feed-tpl-hashtags:empty {
+  display: none;
+}
+/* Reutiliza el widget real de notificaciones (mismas clases que en escritorio, F4/F8): el
+   posicionamiento y el open/close ya los resuelve `topbar.css`, aquí solo el tamaño del botón. */
+#mobile-agent-feed .notif-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+}
+#mobile-agent-feed .notif-btn:active {
+  background: var(--surface);
+}
+#mobile-agent-feed .notif-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+}
+
+/* ── Hoja de creación de post (F10.1): paso a paso, igual que la referencia ────────────────── */
+.m-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.m-sheet-overlay.m-open {
+  display: flex;
+}
+.m-sheet {
+  background: var(--bg);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 430px;
+  height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: m-slideUp 0.25s ease;
+}
+@keyframes m-slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.m-sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  margin: 10px auto 0;
+}
+.m-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.m-sheet-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+.m-sheet-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+}
+.m-sheet-close svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+.m-sheet-body {
+  padding: 16px 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+.m-sheet-footer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px calc(12px + var(--safe-bottom));
+  border-top: 1px solid var(--border-soft);
+  flex-shrink: 0;
+  background: var(--bg);
+}
+
+.m-create-steps {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.m-create-step {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border-soft);
+  transition: background 0.2s;
+}
+.m-create-step.m-active {
+  background: var(--accent);
+}
+.m-create-step.m-done {
+  background: var(--success);
+}
+.m-step-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--meta);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.m-step-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Paso 1: elegir listing */
+.m-listing-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 8px;
+  width: 100%;
+  text-align: left;
+  background: var(--bg);
+}
+.m-listing-option:active,
+.m-listing-option.m-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.m-listing-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.m-listing-info {
+  flex: 1;
+  min-width: 0;
+}
+.m-listing-name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.m-listing-detail {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.m-listing-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 2px;
+}
+
+/* Paso 2: elegir plataformas */
+.m-platform-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.m-platform-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 8px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+.m-platform-option:active,
+.m-platform-option.m-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.m-platform-option.m-selected::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.m-platform-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.m-platform-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Paso 3: formato + plantilla (en la referencia el orden es al revés; aquí el formato va antes
+   porque en la app real determina qué plantillas son compatibles con las plataformas elegidas —
+   ver la nota en mobile-create-sheet.ts) */
+.m-format-grid {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.m-format-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  background: var(--bg);
+}
+.m-format-option:active,
+.m-format-option.m-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.m-format-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  color: var(--fg);
+  font-size: 16px;
+}
+.m-format-option.m-selected .m-format-icon {
+  background: var(--accent);
+  color: #fff;
+}
+.m-format-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.m-format-desc {
+  font-size: 9px;
+  color: var(--meta);
+  line-height: 1.2;
+}
+
+.m-template-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.m-tpl-card {
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  overflow: hidden;
+  background: var(--bg);
+  text-align: left;
+}
+.m-tpl-card:active,
+.m-tpl-card.m-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.m-tpl-card.m-blank {
+  grid-column: span 2;
+}
+.m-tpl-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+}
+/* El renderizador real (F5) va aquí dentro: se encoge al tamaño de la tarjeta. */
+.m-tpl-preview .tpl-preview {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+}
+.m-tpl-blank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--surface);
+  color: var(--meta);
+}
+.m-tpl-blank svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--border);
+  margin-bottom: 4px;
+}
+.m-tpl-blank span {
+  font-size: 10px;
+  font-weight: 600;
+}
+.m-tpl-label {
+  padding: 6px 8px;
+  text-align: center;
+}
+.m-tpl-label-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.2;
+}
+.m-tpl-label-desc {
+  font-size: 9px;
+  color: var(--meta);
+  margin-top: 1px;
+  line-height: 1.2;
+}
+
+.m-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.m-btn:active {
+  transform: scale(0.97);
+}
+.m-btn-ghost {
+  background: var(--surface);
+  color: var(--fg);
+}
+.m-btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.m-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

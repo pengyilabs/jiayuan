@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
+import { useEnglish } from './helpers';
 
 const DEMO_PASSWORD = 'demo-password-123';
 
@@ -20,7 +21,8 @@ async function loginAsAdmin(page: Page, path = '/'): Promise<void> {
   await page.locator('input[name="username"]').fill('zhuyan');
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
 }
 
 test('el login rechaza credenciales incorrectas y acepta las correctas', async ({ page }) => {
@@ -32,7 +34,8 @@ test('el login rechaza credenciales incorrectas y acepta las correctas', async (
 
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
 });
 
 test('un empleado no ve la sección de administración y el router bloquea /approvals', async ({
@@ -42,7 +45,8 @@ test('un empleado no ve la sección de administración y el router bloquea /appr
   await page.locator('input[name="username"]').fill('liming');
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
   await expect(page.locator('.nav-item[data-page="approvals"]')).toBeHidden();
 
   await page.goto('/approvals');
@@ -81,9 +85,10 @@ test('cambia de idioma y traduce la interfaz', async ({ page }) => {
 });
 
 test('abre y guarda un listing, y muestra el fallback de imágenes rotas', async ({ page }) => {
+  // Las fotos reales ya existen; se fuerza el fallo de una para comprobar el fondo de reserva.
+  await page.route('**/images/listings/condo1.jpg', route => route.abort());
   await loginAsAdmin(page, '/listings');
   await expect(page.locator('.listings-table tbody tr')).toHaveCount(6);
-  // Las imágenes no existen en el repo: el manejador declarativo aplica el fondo de reserva.
   await expect(page.locator('.listings-table .listing-thumb').first()).toHaveAttribute(
     'style',
     /surface-warm/,
@@ -140,14 +145,28 @@ test('rechazar exige un motivo y el aviso permite deshacer', async ({ page }) =>
   await expect(page.locator('#approval-badge')).toHaveText(before ?? '');
 });
 
-test('crea un borrador de post con una plataforma y una imagen', async ({ page }) => {
+test('crea un borrador de post con una plataforma, una plantilla y una imagen', async ({
+  page,
+}) => {
   await loginAsAdmin(page, '/');
   await page.locator('[data-action="post:new"]').first().click();
   await expect(page.locator('#modal-post')).toHaveClass(/open/);
 
+  await page.locator('#post-listing').selectOption({ index: 1 });
   await page.locator('#post-title').fill('Publicación de prueba E2E');
   await page.locator('#post-platform-checks input[data-id="facebook"]').check();
-  await expect(page.locator('[data-od-id="post-row-facebook"]')).toBeVisible();
+  const row = page.locator('[data-od-id="post-row-facebook"]');
+  await expect(row).toBeVisible();
+
+  // Sin plantilla: solo el aviso a elegir una.
+  await expect(page.locator('#post-preview-wrap-facebook')).toContainText('Choose a template');
+
+  // El tipo por defecto de Facebook (imagen única) tiene templates compatibles (F5).
+  const templateSelect = row.locator('select[data-change="post:template"]');
+  await expect(templateSelect.locator('option')).toHaveCount(3); // "sin plantilla" + 2 compatibles
+  await templateSelect.selectOption({ index: 1 });
+  await expect(row.locator('.tpl-preview')).toBeVisible();
+  await expect(row.locator('.tpl-preview')).toContainText('$'); // el precio real del listing elegido
 
   // Sin archivo todavía: el tipo por defecto exige exactamente una imagen.
   await page.locator('#post-save-draft').click();
@@ -168,8 +187,8 @@ test('el panel de notificaciones se abre, marca como leída y se cierra al hacer
   page,
 }) => {
   await loginAsAdmin(page, '/');
-  await page.locator('#notif-btn').click();
-  await expect(page.locator('#notif-dropdown')).toHaveClass(/open/);
+  await page.locator('.dash-header .notif-btn').click();
+  await expect(page.locator('.dash-header .notif-dropdown')).toHaveClass(/open/);
 
   const firstUnread = page.locator('.notif-item.unread').first();
   if (await firstUnread.isVisible()) {
@@ -177,10 +196,57 @@ test('el panel de notificaciones se abre, marca como leída y se cierra al hacer
     await expect(firstUnread).not.toHaveClass(/unread/);
   }
 
-  await page.locator('[data-action="notif:mark-all-read"]').click();
+  await page.locator('.dash-header [data-action="notif:mark-all-read"]').click();
   await expect(page.locator('.notif-item.unread')).toHaveCount(0);
-  await expect(page.locator('#notif-dot')).toBeHidden();
+  await expect(page.locator('.dash-header .notif-dot')).toBeHidden();
 
-  await page.locator('.topbar-title').click();
-  await expect(page.locator('#notif-dropdown')).not.toHaveClass(/open/);
+  await page.locator('.dash-header .dash-team-name').click();
+  await expect(page.locator('.dash-header .notif-dropdown')).not.toHaveClass(/open/);
+});
+
+test('el calendario filtra el feed al hacer clic en un día y lo refleja en la URL', async ({
+  page,
+}) => {
+  await loginAsAdmin(page, '/');
+  await expect(page.locator('.cal-day')).toHaveCount(42);
+
+  // Los posts de la demo están en agosto de 2026; retrocede un mes desde septiembre.
+  await page.locator('[data-action="calendar:nav"][data-dir="-1"]').click();
+  const day = page.locator('.cal-day.has-posts[data-date="2026-08-22"]');
+  await expect(day).toBeVisible();
+  await day.click();
+
+  await expect(page.locator('#feed-day-rows .day-section')).toHaveCount(1);
+  await expect(page).toHaveURL(/from=2026-08-22/);
+  await expect(page.locator('#calendar-clear')).toBeVisible();
+
+  await page.locator('#calendar-clear').click();
+  await expect(page).not.toHaveURL(/from=/);
+
+  // Cambia a semana y a agenda sin errores.
+  await page.locator('[data-action="calendar:mode"][data-mode="week"]').click();
+  await expect(page.locator('.cal-week-row-item')).toHaveCount(7);
+  await page.locator('[data-action="calendar:mode"][data-mode="agenda"]').click();
+  await expect(page.locator('#calendar-body')).toBeVisible();
+});
+
+test('el filtro de estado solo lo ve el administrador, y las estadísticas son reales', async ({
+  page,
+}) => {
+  await loginAsAdmin(page, '/');
+  await expect(page.locator('#feed-status-filters')).toBeVisible();
+  const total = await page.locator('#stat-total').textContent();
+  expect(Number(total)).toBeGreaterThan(0);
+
+  await page.locator('[data-action="feed:status-filter"][data-status="pending"]').click();
+  await expect(page).toHaveURL(/status=pending/);
+
+  await page.locator('#user-logout').evaluate(b => (b as HTMLElement).click());
+  await page.goto('/');
+  await page.locator('input[name="username"]').fill('liming');
+  await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
+  await page.locator('form[data-form="login"] button[type="submit"]').click();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
+  await expect(page.locator('#feed-status-filters')).toBeHidden();
 });

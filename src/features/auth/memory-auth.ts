@@ -10,19 +10,48 @@ import type { AuthInit, AuthService } from './auth-service';
 
 const SESSION_KEY = 'proppulse.demo.session';
 const MAX_FAILURES = 5;
+/**
+ * La sesión del modo demo sobrevive al cierre de la pestaña (localStorage), pero caduca a los
+ * 7 días desde el inicio de sesión — como haría el refresh token del backend real.
+ */
+export const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+interface StoredSession {
+  id: string;
+  at: number;
+}
+
+function readSession(storage: Storage, now: number): string | null {
+  const raw = storage.getItem(SESSION_KEY);
+  if (!raw) return null;
+  try {
+    const data = JSON.parse(raw) as StoredSession;
+    if (
+      typeof data.id === 'string' &&
+      typeof data.at === 'number' &&
+      now - data.at < SESSION_TTL_MS
+    )
+      return data.id;
+  } catch {
+    // formato antiguo o corrupto: se descarta
+  }
+  storage.removeItem(SESSION_KEY);
+  return null;
+}
 
 export function createMemoryAuth(
   directory: MemoryDirectory,
-  storage: Storage = sessionStorage,
+  storage: Storage = localStorage,
 ): AuthService {
-  let userId: string | null = storage.getItem(SESSION_KEY);
+  let userId: string | null = readSession(storage, Date.now());
   let pendingInviteUserId: string | null = null;
   const failures = new Map<string, number>();
   const listeners = new Set<() => void>();
 
   const setSession = (id: string | null): void => {
     userId = id;
-    if (id) storage.setItem(SESSION_KEY, id);
+    if (id)
+      storage.setItem(SESSION_KEY, JSON.stringify({ id, at: Date.now() } satisfies StoredSession));
     else storage.removeItem(SESSION_KEY);
   };
 

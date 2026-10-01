@@ -105,3 +105,24 @@ h4 {
     scroll-behavior: auto !important;
   }
 }
+
+/* Contenido visible solo para lectores de pantalla (F8): encabezados de columnas de solo
+   icono, etc. — el elemento ocupa espacio de layout nulo pero sigue siendo anunciado. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* El atributo `hidden` debe ganar siempre: sin esto, cualquier regla con `display:flex/grid`
+   (p. ej. el filtro de estado solo-admin o "Borrar fecha") lo anulaba y el elemento seguía
+   visible aunque el JS lo hubiera ocultado. */
+[hidden] {
+  display: none !important;
+}

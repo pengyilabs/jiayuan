@@ -33,25 +33,25 @@ beforeAll(async () => {
 describe('panel de notificaciones', () => {
   it('el punto de aviso está visible cuando hay notificaciones sin leer', () => {
     expect(getState().notifications.length).toBeGreaterThan(0);
-    expect($('#notif-dot').hidden).toBe(false);
+    expect($('.dash-header .notif-dot').hidden).toBe(false);
   });
 
   it('se abre y cierra al hacer clic fuera; lista lo pendiente de aprobar', async () => {
-    $('#notif-btn').click();
+    $('.dash-header .notif-btn').click();
     await vi.waitFor(() => {
-      expect($('#notif-dropdown').classList.contains('open')).toBe(true);
+      expect($('.dash-header .notif-dropdown').classList.contains('open')).toBe(true);
     });
-    expect($('#notif-list').textContent).toContain('New post pending approval:');
-    expect($('#notif-list').textContent).toContain('Genera una notificación');
+    expect($('.dash-header .notif-list').textContent).toContain('New post pending approval:');
+    expect($('.dash-header .notif-list').textContent).toContain('Genera una notificación');
 
     document.body.click();
     await vi.waitFor(() => {
-      expect($('#notif-dropdown').classList.contains('open')).toBe(false);
+      expect($('.dash-header .notif-dropdown').classList.contains('open')).toBe(false);
     });
   });
 
   it('marcar una notificación como leída la distingue y actualiza el punto si no quedan más', async () => {
-    $('#notif-btn').click();
+    $('.dash-header .notif-btn').click();
     const before = getState().notifications.filter(n => n.readAt === null).length;
     expect(before).toBeGreaterThan(0);
 
@@ -62,7 +62,7 @@ describe('panel de notificaciones', () => {
 
     if (before === 1) {
       await vi.waitFor(() => {
-        expect($('#notif-dot').hidden).toBe(true);
+        expect($('.dash-header .notif-dot').hidden).toBe(true);
       });
     }
   });
@@ -72,6 +72,6 @@ describe('panel de notificaciones', () => {
     await vi.waitFor(() => {
       expect(getState().notifications.every(n => n.readAt !== null)).toBe(true);
     });
-    expect($('#notif-dot').hidden).toBe(true);
+    expect($('.dash-header .notif-dot').hidden).toBe(true);
   });
 });

@@ -4,7 +4,7 @@ import { getState, setState } from '../../app/state';
 import { getById } from '../../core/dom';
 import { html, joinHtml, raw, setHtml } from '../../core/html';
 import type { SafeHtml } from '../../core/html';
-import { dict } from '../../i18n';
+import { dict, t } from '../../i18n';
 import { formatArea, formatPrice, parseNumber } from '../../data/format';
 import { repos } from '../../app/services';
 import { showNotice } from '../../ui/toast';
@@ -185,7 +185,7 @@ function renderDetail(l: Listing): { content: SafeHtml; mediaCount: number } {
               data-fallback="gallery"
             />`,
       )}
-      <button class="gallery-close" data-action="modal:close" data-modal="${MODAL_ID}">
+      <button class="gallery-close" data-action="modal:close" data-modal="${MODAL_ID}" aria-label="${t('aria_close')}">
         ${REMOVE_ICON}
       </button>
       <div class="gallery-thumbs" id="detail-thumbs-${l.id}">
@@ -249,7 +249,7 @@ function renderDetail(l: Listing): { content: SafeHtml; mediaCount: number } {
     </div>
     <div class="detail-actions">
       <button class="btn btn-primary" data-action="post:new" data-listing-id="${l.id}">${labels.btn_create_post}</button>
-      <button class="btn btn-secondary" data-action="listing:edit" data-id="${l.id}">
+      <button class="btn btn-secondary" data-role-only="admin" data-action="listing:edit" data-id="${l.id}">
         ${labels.btn_edit_listing}
       </button>
       <button class="btn btn-secondary" data-action="modal:close" data-modal="${MODAL_ID}">
@@ -265,6 +265,9 @@ export function openListingModal(id: number, editMode = false): void {
   const listing = getState().listings.find(l => l.id === id);
   const modal = getById(MODAL_ID);
   if (!listing || !modal) return;
+
+  // El título cambia de estructura entre edición y vista (F8: nombre accesible del diálogo).
+  modal.setAttribute('aria-label', listingTitle(listing, getState().lang));
 
   clearGalleryTimer(id);
   if (editMode) {

@@ -4,6 +4,7 @@ import { getState, store } from '../../app/state';
 import { getById } from '../../core/dom';
 import { t } from '../../i18n';
 import { SIGN_OUT_REASON_KEY } from './gate';
+import { renderRoleUi } from './role-ui';
 
 export function renderUserMenu(): void {
   const { currentUser } = getState();
@@ -14,6 +15,7 @@ export function renderUserMenu(): void {
   if (avatar) avatar.textContent = Array.from(currentUser.fullName)[0] ?? '?';
   if (name) name.textContent = currentUser.fullName;
   if (role) role.textContent = t(currentUser.role === 'admin' ? 'role_admin' : 'role_agent');
+  renderRoleUi();
   const logout = getById('user-logout');
   if (logout) logout.title = t('auth_logout');
 }

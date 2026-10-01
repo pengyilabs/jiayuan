@@ -157,6 +157,11 @@ export interface PostType {
   name: LocalizedText;
   ratio: string;
   group: PostTypeGroup;
+  /** Ratios estructurados (p. ej. `['1:1','4:5']`); F5 sustituye al texto libre de `ratio`. */
+  aspectRatios: readonly string[];
+  maxChars: number | null;
+  maxMedia: number | null;
+  maxDurationSeconds: number | null;
 }
 
 export interface Platform {
@@ -182,6 +187,14 @@ export type PostTypeGroups = Record<PostTypeGroup, PostTypeGroupInfo>;
 export type TemplateLayout =
   'hero' | 'split' | 'gallery' | 'magazine' | 'story' | 'minimal' | 'diagonal' | 'features';
 
+/** Una combinación plataforma+tipo compatible con un template, y sus dimensiones de salida. */
+export interface TemplateVariant {
+  platformId: PlatformId;
+  postTypeId: string;
+  width: number;
+  height: number;
+}
+
 export interface Template {
   id: number;
   nameKey: string;
@@ -191,6 +204,8 @@ export interface Template {
   color: string;
   description: LocalizedText;
   platformTags: string[];
+  /** Combinaciones plataforma+tipo para las que existe una salida con dimensiones definidas. */
+  variants: readonly TemplateVariant[];
 }
 
 // ── Notificaciones ───────────────────────────────────────────────────────────
