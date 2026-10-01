@@ -101,7 +101,7 @@ export function runAuthGate(root: HTMLElement, deps: GateDeps): Promise<Profile>
           sessionStorage.removeItem(SIGN_OUT_REASON_KEY);
           await evaluate();
         } catch (error) {
-          fail(error, message => ({ name: 'login', error: message }));
+          fail(error, message => ({ name: 'login', error: message, username: user }));
         }
       },
 

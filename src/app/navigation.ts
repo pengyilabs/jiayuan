@@ -1,4 +1,5 @@
 /** Sincroniza el DOM (página activa, cabecera, título) con la ruta actual. */
+import { currentBreakpoint } from './responsive';
 import { mustGetById, qs, qsa } from '../core/dom';
 import { t } from '../i18n';
 import type { PageId } from '../types/models';
@@ -35,6 +36,9 @@ export function initNavigation(): void {
   registerActions({
     'nav:go': el => {
       navigate(el.dataset.page as PageId);
+      // En móvil, el sidebar es un cajón: navegar debe cerrarlo (en tablet/PC es un rail o un
+      // panel expandido de forma permanente, así que ahí no se toca).
+      if (currentBreakpoint() === 'mobile') qs('.sidebar')?.classList.add('collapsed');
     },
   });
   store.watch(s => s.page, syncPage);

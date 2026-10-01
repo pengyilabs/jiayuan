@@ -201,42 +201,42 @@ Hasta F9, `approved → published` se hace con "Marcar como publicado" (modo man
 
 **Aceptación:** el empleado crea y solicita; el admin aprueba o rechaza; el estado y la fecha se reflejan en Home y Listings según el rol.
 
-### F5 — Templates por red social y tipo de multimedia (5 d)
+### F5 — Templates por red social y tipo de multimedia (5 d) — completado
 
-- [ ] Estructurar `PLATFORMS.postTypes[].ratio` (hoy texto libre) en `aspect_ratios`, `max_chars`, `max_media`
-- [ ] Modelo `template × plataforma × tipo` (`template_variants`) con `slots` (título, precio, imagen, logo)
-- [ ] Renderer único que reutiliza los 8 layouts con `aspect-ratio` y container queries. Ratios: 1:1, 4:5, 16:9, 9:16, 3:4, 2.35:1
-- [ ] Validaciones por plataforma (p. ej. X: 280 caracteres, máx. de imágenes, duración de video)
-- [ ] Vista previa en vivo en el formulario; selector de template filtrado por plataforma y tipo
-- [ ] Export a PNG (`html-to-image`) como output del post
+- [x] Estructurar `PLATFORMS.postTypes[].ratio` (hoy texto libre) en `aspect_ratios`, `max_chars`, `max_media` (y `max_duration_seconds`, columna que ya existía en F1)
+- [x] Modelo `template × plataforma × tipo` (`template_variants`) con `slots` (título, precio, imagen, logo)
+- [x] Renderer único que reutiliza los 8 layouts con `aspect-ratio` y container queries. Ratios: 1:1, 4:5, 16:9, 9:16, 3:4, 2.35:1
+- [x] Validaciones por plataforma (p. ej. X: 280 caracteres, máx. de imágenes, duración de video)
+- [x] Vista previa en vivo en el formulario; selector de template filtrado por plataforma y tipo
+- [x] Export a PNG (`html-to-image`) como output del post
 
 **Aceptación:** cada combinación plataforma/tipo ofrece solo templates compatibles y genera una salida con las dimensiones correctas.
 
-### F6 — Home: calendario y filtros (4 d)
+### F6 — Home: calendario y filtros (4 d) — completado
 
-- [ ] Calendario extendido (mes, semana, agenda) por `scheduled_at`; clic en un día filtra el feed
-- [ ] Filtros combinables: plataforma, rango de fechas y estado
-- [ ] Filtro pendientes / aprobados **solo para admin**, reforzado por RLS
-- [ ] Estado de filtros en la URL; estadísticas reales en lugar de las simuladas
+- [x] Calendario extendido (mes, semana, agenda) por `scheduled_at`; clic en un día filtra el feed
+- [x] Filtros combinables: plataforma, rango de fechas y estado
+- [x] Filtro pendientes / aprobados **solo para admin**, reforzado por RLS
+- [x] Estado de filtros en la URL; estadísticas reales en lugar de las simuladas
 
 **Aceptación:** admin filtra por estado; el empleado no ve el control ni datos ajenos.
 
-### F7 — Responsive (3 d)
+### F7 — Responsive (3 d) — completado
 
-- [ ] **Móvil (<640 px):** navegación inferior o drawer, feed en una columna, calendario en agenda, formularios y modales a pantalla completa
-- [ ] **Tablet (640–1023 px):** sidebar en rail de 60 px, grid de 2 columnas, calendario semanal
-- [ ] **PC (≥1024 px):** sidebar expandible, grid de 3–4 columnas, calendario mensual junto al rail
-- [ ] `100dvh`, tablas convertidas en tarjetas en móvil, áreas táctiles ≥44 px
+- [x] **Móvil (<640 px):** navegación inferior o drawer, feed en una columna, calendario en agenda, formularios y modales a pantalla completa
+- [x] **Tablet (640–1023 px):** sidebar en rail de 60 px, grid de 2 columnas, calendario semanal
+- [x] **PC (≥1024 px):** sidebar expandible, grid de 3–4 columnas, calendario mensual junto al rail
+- [x] `100dvh`, tablas convertidas en tarjetas en móvil, áreas táctiles ≥44 px
 
 **Aceptación:** los tres layouts verificados en Playwright y sin desbordes horizontales.
 
-### F8 — QA y despliegue (2 d)
+### F8 — QA y despliegue (2 d) — completado
 
-- [ ] Unit: transiciones de estado, permisos, fechas y zona horaria
-- [ ] RLS: batería de pruebas por rol
-- [ ] E2E por rol: empleado crea y solicita; admin aprueba, deshace y filtra
-- [ ] Accesibilidad (axe) y rendimiento
-- [ ] CI, despliegue del estático (Vercel/Netlify/Cloudflare Pages) + Supabase, backups y README
+- [x] Unit: transiciones de estado, permisos, fechas y zona horaria
+- [x] RLS: batería de pruebas por rol
+- [x] E2E por rol: empleado crea y solicita; admin aprueba, deshace y filtra
+- [x] Accesibilidad (axe) y rendimiento
+- [x] CI, despliegue del estático (Vercel/Netlify/Cloudflare Pages) + Supabase, backups y README
 
 **Aceptación:** CI verde y checklist de release completado.
 

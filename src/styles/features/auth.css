@@ -163,3 +163,10 @@
 .member-row {
   flex-wrap: wrap;
 }
+
+.auth-persist {
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-align: center;
+}
