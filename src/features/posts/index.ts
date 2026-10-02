@@ -8,8 +8,13 @@ import { getState, setState } from '../../app/state';
 import { getById, mustGetById } from '../../core/dom';
 import { utcIsoToZonedInputValue, zonedTimeToUtcIso } from '../../core/dates';
 import { POST_LANG_LABEL } from '../../data/mappers';
-import { validateMediaFiles, validateImageRatios } from '../../data/media-validation';
+import {
+  validateMediaFiles,
+  validateImageRatios,
+  validateVideoDuration,
+} from '../../data/media-validation';
 import type { MediaFile } from '../../data/media-validation';
+import { exportTemplateAsPng } from '../templates/template-export';
 import { t } from '../../i18n';
 import { armDangerButton, showDialog } from '../../ui/dialog';
 import { errorMessage } from '../../ui/errors';
@@ -22,6 +27,7 @@ import type { Post, PostDraft, PostMedia, PostTypeGroup, PlatformId } from '../.
 import type { Tables } from '../../types/db';
 import { offerPostUndo } from './post-undo';
 import {
+  compatibleTemplates,
   emptyRow,
   openFilePicker,
   renderCharCount,
@@ -29,7 +35,6 @@ import {
   renderMediaIssues,
   renderPlatformChecks,
   renderPlatformRows,
-  renderTemplateOptions,
   revokeRowPreviews,
 } from './post-form';
 import type { FormState, RowState } from './post-form';
@@ -45,10 +50,6 @@ const readListingId = (): number | null => {
   return raw === '' ? null : Number(raw);
 };
 const readTitle = (): string => getById<HTMLInputElement>('post-title')?.value.trim() ?? '';
-const readTemplateId = (): number | null => {
-  const raw = getById<HTMLSelectElement>('post-template')?.value ?? '';
-  return raw === '' ? null : Number(raw);
-};
 const readLangCode = (): Tables<'posts'>['lang'] =>
   (getById<HTMLSelectElement>('post-lang')?.value as Tables<'posts'>['lang'] | undefined) ?? 'zh';
 const readContent = (): string => getById<HTMLTextAreaElement>('post-content')?.value ?? '';
@@ -64,11 +65,7 @@ function showFormError(message: string | null): void {
 
 function updateCharCount(): void {
   if (!form) return;
-  renderCharCount(
-    readContent(),
-    POST_LANG_LABEL[readLangCode()],
-    form.rows.map(r => r.platformId),
-  );
+  renderCharCount(readContent(), POST_LANG_LABEL[readLangCode()], form.rows);
 }
 
 function currentRow(platformId: PlatformId): RowState | undefined {
@@ -77,13 +74,30 @@ function currentRow(platformId: PlatformId): RowState | undefined {
 
 function refreshRows(): void {
   if (!form) return;
-  renderPlatformRows(form.rows);
+  renderPlatformRows(form.rows, readListingId());
   updateCharCount();
 }
 
 /** Prepara y abre el formulario vacío. `listingId` lo pasa "Nueva publicación" de un listing. */
-function openCreate(listingId: number | null): void {
-  form = { mode: 'create', postId: null, rejectionReason: null, rows: [] };
+function openCreate(listingId: number | null, preferredTemplateId: number | null = null): void {
+  const preferredVariant = preferredTemplateId
+    ? getState().templates.find(t => t.id === preferredTemplateId)?.variants[0]
+    : undefined;
+
+  form = {
+    mode: 'create',
+    postId: null,
+    rejectionReason: null,
+    rows: preferredVariant
+      ? [
+          {
+            ...emptyRow(preferredVariant.platformId),
+            postTypeId: preferredVariant.postTypeId,
+            templateId: preferredTemplateId,
+          },
+        ]
+      : [],
+  };
   showFormError(null);
   getById('post-rejected-hint')?.setAttribute('hidden', '');
 
@@ -101,13 +115,17 @@ function openCreate(listingId: number | null): void {
   );
 
   renderListingOptions(listingId);
-  renderTemplateOptions(null);
-  renderPlatformChecks(new Set());
+  renderPlatformChecks(preferredVariant ? new Set([preferredVariant.platformId]) : new Set());
   refreshRows();
 
   closeModal(LISTING_MODAL_ID);
   openModal(POST_MODAL_ID);
   mustGetById<HTMLInputElement>('post-title').focus();
+}
+
+/** Abre el formulario de creación con una plantilla ya elegida (desde "Usar esta plantilla"). */
+export function openCreateWithTemplate(templateId: number): void {
+  openCreate(null, templateId);
 }
 
 /** Abre el formulario con los datos de un post existente (borrador o rechazado). */
@@ -118,6 +136,7 @@ function openEdit(postId: number): void {
   const row: RowState = {
     platformId: post.platformId,
     postTypeId: post.postTypeId,
+    templateId: post.templateId,
     files: [],
     previewUrls: [],
     existingImages: post.images,
@@ -148,7 +167,6 @@ function openEdit(postId: number): void {
   );
 
   renderListingOptions(post.listingId);
-  renderTemplateOptions(post.templateId);
   refreshRows();
 
   closeModal(LISTING_MODAL_ID);
@@ -205,15 +223,19 @@ async function handleSave(button: HTMLElement, submitAfter: boolean): Promise<vo
     showFormError(t('err_post_media_issues'));
     return;
   }
-  // Ratios (asíncrono): se comprueba tras la validación síncrona para no bloquear la escritura.
+  // Ratio y duración (asíncrono): se comprueba tras la validación síncrona para no bloquear
+  // la escritura mientras se pulsan teclas.
   for (const row of form.rows) {
     const type = findPlatform(getState().platforms, row.platformId)?.postTypes.find(
       pt => pt.id === row.postTypeId,
     );
     if (!type || row.files.length === 0) continue;
-    const ratioIssues = await validateImageRatios(row.files, type.ratio);
-    if (ratioIssues.length > 0) {
-      renderMediaIssues(row.platformId, ratioIssues);
+    const issues = [
+      ...(await validateImageRatios(row.files, type.aspectRatios)),
+      ...(await validateVideoDuration(row.files, type.maxDurationSeconds)),
+    ];
+    if (issues.length > 0) {
+      renderMediaIssues(row.platformId, issues);
       allValid = false;
     }
   }
@@ -223,7 +245,6 @@ async function handleSave(button: HTMLElement, submitAfter: boolean): Promise<vo
   }
 
   const listingId = readListingId();
-  const templateId = readTemplateId();
   const lang = POST_LANG_LABEL[readLangCode()];
   const description = readContent();
   const hashtags = readHashtags();
@@ -242,7 +263,7 @@ async function handleSave(button: HTMLElement, submitAfter: boolean): Promise<vo
             listingId,
             platformId: row.platformId,
             postTypeId: row.postTypeId,
-            templateId,
+            templateId: row.templateId,
             media: mediaFormatForRow(row, type?.group),
             lang,
             title,
@@ -263,7 +284,7 @@ async function handleSave(button: HTMLElement, submitAfter: boolean): Promise<vo
         );
         let updated = await repos.posts.update(form.postId, {
           listingId,
-          templateId,
+          templateId: row.templateId,
           postTypeId: row.postTypeId,
           media: mediaFormatForRow(row, type?.group),
           lang,
@@ -344,6 +365,22 @@ async function confirmMarkPublished(button: HTMLElement): Promise<void> {
     setState(state => ({ posts: state.posts.map(p => (p.id === id ? updated : p)) }));
     closeModal(MARK_PUBLISHED_MODAL_ID);
     void offerPostUndo(id, t('toast_post_published_marked'));
+  } catch (error) {
+    showToast(errorMessage(error), { kind: 'error' });
+  }
+}
+
+/** Exporta a PNG la vista previa en vivo de la plantilla elegida para esta fila. */
+async function exportRowPng(platformId: PlatformId): Promise<void> {
+  const row = currentRow(platformId);
+  if (!row?.templateId) return;
+  const tpl = getState().templates.find(t => t.id === row.templateId);
+  const el = document.querySelector<HTMLElement>(
+    `#post-preview-wrap-${CSS.escape(platformId)} .tpl-preview`,
+  );
+  if (!tpl || !el) return;
+  try {
+    await exportTemplateAsPng(el, tpl, `post-${platformId}`, platformId, row.postTypeId);
   } catch (error) {
     showToast(errorMessage(error), { kind: 'error' });
   }
@@ -437,6 +474,9 @@ export function initPosts(): void {
     'post:download-package': el => {
       downloadPackage(Number(el.dataset.id));
     },
+    'post:export-png': el => {
+      void exportRowPng(el.dataset.id as PlatformId);
+    },
   });
 
   onModalClose(MARK_PUBLISHED_MODAL_ID, () => {
@@ -460,7 +500,22 @@ export function initPosts(): void {
     },
     'post:type': el => {
       const row = currentRow(el.dataset.id as PlatformId);
-      if (row) row.postTypeId = (el as HTMLSelectElement).value || null;
+      if (!row) return;
+      row.postTypeId = (el as HTMLSelectElement).value || null;
+      // La plantilla elegida puede dejar de ser compatible con el nuevo tipo.
+      if (
+        !compatibleTemplates(row.platformId, row.postTypeId).some(tpl => tpl.id === row.templateId)
+      ) {
+        row.templateId = null;
+      }
+      refreshRows();
+    },
+    'post:template': el => {
+      const row = currentRow(el.dataset.id as PlatformId);
+      if (!row) return;
+      const raw = (el as HTMLSelectElement).value;
+      row.templateId = raw === '' ? null : Number(raw);
+      refreshRows();
     },
     'post:file-change': el => {
       const row = currentRow(el.dataset.id as PlatformId);
@@ -486,9 +541,11 @@ export function initPosts(): void {
   getById<HTMLSelectElement>('post-lang')?.addEventListener('change', updateCharCount);
   getById<HTMLSelectElement>('post-listing')?.addEventListener('change', () => {
     const titleInput = getById<HTMLInputElement>('post-title');
-    if (!titleInput || titleInput.value.trim() !== '') return;
-    const id = readListingId();
-    const listing = id === null ? null : getState().listings.find(l => l.id === id);
-    if (listing) titleInput.value = listingTitle(listing, getState().lang);
+    if (titleInput && titleInput.value.trim() === '') {
+      const id = readListingId();
+      const listing = id === null ? null : getState().listings.find(l => l.id === id);
+      if (listing) titleInput.value = listingTitle(listing, getState().lang);
+    }
+    refreshRows(); // la vista previa en vivo depende del listing elegido
   });
 }

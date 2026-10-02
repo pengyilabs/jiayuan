@@ -10,11 +10,11 @@
 }
 .badge-accent {
   background: #fff0f3;
-  color: var(--accent);
+  color: var(--accent-hover);
 }
 .badge-success {
   background: #e6f7e9;
-  color: var(--success);
+  color: #007a05;
 }
 .badge-warn {
   background: #fef3cd;

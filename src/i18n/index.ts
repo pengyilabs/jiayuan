@@ -34,7 +34,7 @@ export function localize(text: LocalizedText | null | undefined, lang: Lang): st
   return text[lang] ?? text.en ?? text.zh ?? Object.values(text).find(Boolean) ?? '';
 }
 
-/** Aplica traducciones a los elementos `data-i18n` y `data-i18n-placeholder`. */
+/** Aplica traducciones a los elementos `data-i18n`, `data-i18n-placeholder` y `data-i18n-aria-label`. */
 export function applyStaticI18n(root: ParentNode = document): void {
   const current = dict();
   root.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
@@ -44,5 +44,9 @@ export function applyStaticI18n(root: ParentNode = document): void {
   root.querySelectorAll<HTMLInputElement>('[data-i18n-placeholder]').forEach(el => {
     const value = current[el.dataset.i18nPlaceholder ?? ''];
     if (value) el.placeholder = value;
+  });
+  root.querySelectorAll<HTMLElement>('[data-i18n-aria-label]').forEach(el => {
+    const value = current[el.dataset.i18nAriaLabel ?? ''];
+    if (value) el.setAttribute('aria-label', value);
   });
 }

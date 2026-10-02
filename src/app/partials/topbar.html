@@ -1,5 +1,8 @@
     <header class="topbar page-topbar" data-od-id="topbar" style="display:none">
       <div class="topbar-left">
+        <button class="mobile-menu-btn" data-action="sidebar:toggle" aria-label="Menu" data-i18n-aria-label="aria_menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <h1 class="topbar-title" id="page-title"></h1>
       </div>
       <div class="topbar-right">
@@ -8,18 +11,18 @@
           <input type="text" data-i18n-placeholder="search_placeholder" placeholder="Search...">
         </div>
         <div class="notif-switch">
-          <button id="notif-btn" class="notif-btn" data-od-id="notif-btn" data-action="notif:toggle">
+          <button class="notif-btn" data-action="notif:toggle" aria-label="Notifications" data-i18n-aria-label="aria_notifications">
             <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-            <span class="notif-dot" id="notif-dot" hidden></span>
+            <span class="notif-dot" hidden></span>
           </button>
-          <div class="notif-dropdown" id="notif-dropdown">
+          <div class="notif-dropdown">
             <div class="notif-dropdown-header">
               <strong data-i18n="notif_title">通知</strong>
               <button class="notif-mark-all" data-action="notif:mark-all-read" data-i18n="notif_mark_all_read">
                 全部标为已读
               </button>
             </div>
-            <div id="notif-list"></div>
+            <div class="notif-list"></div>
           </div>
         </div>
       </div>

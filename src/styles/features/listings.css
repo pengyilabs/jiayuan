@@ -356,6 +356,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
+  /* F8.1: dentro del modal (flex en columna, alto máximo), esta es la única sección que debe
+     hacer scroll — la galería y los botones de abajo se quedan fijos. Sin `min-height:0` un
+     hijo flex no se encoge nunca por debajo de su contenido, y el scroll no llega a activarse. */
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .detail-info-top {
   display: flex;
@@ -419,6 +425,7 @@
   padding: 0 var(--space-8) var(--space-6);
   border-top: 1px solid var(--border-soft);
   padding-top: var(--space-5);
+  flex-shrink: 0;
 }
 
 /* ── New/Edit Listing Modal ────────────────────────────── */

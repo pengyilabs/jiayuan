@@ -316,7 +316,13 @@ export function createSupabaseRepositories(client: Client, options: SupabaseOpti
         return toPostTypeGroups(unwrap(groups), unwrap(links));
       },
       async templates() {
-        return unwrap(await client.from('templates').select('*').order('id')).map(toTemplate);
+        const rows = unwrap(
+          await client
+            .from('templates')
+            .select('*, template_variants(platform_id, post_type_id, width, height)')
+            .order('id'),
+        );
+        return rows.map(row => toTemplate(row, row.template_variants));
       },
       async settings() {
         return toSettings(unwrap(await client.from('organization_settings').select('*').single()));
