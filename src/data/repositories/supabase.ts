@@ -327,6 +327,20 @@ export function createSupabaseRepositories(client: Client, options: SupabaseOpti
       async settings() {
         return toSettings(unwrap(await client.from('organization_settings').select('*').single()));
       },
+      async updateSettings(patch) {
+        const row: TablesUpdate<'organization_settings'> = {};
+        if (patch.timezone !== undefined) row.timezone = patch.timezone;
+        if (patch.undoWindowSeconds !== undefined)
+          row.undo_window_seconds = patch.undoWindowSeconds;
+        if (patch.deletedRetentionDays !== undefined)
+          row.deleted_retention_days = patch.deletedRetentionDays;
+        if (patch.requireAdminMfa !== undefined) row.require_admin_mfa = patch.requireAdminMfa;
+        return toSettings(
+          unwrap(
+            await client.from('organization_settings').update(row).eq('id', true).select().single(),
+          ),
+        );
+      },
     },
 
     profiles: {

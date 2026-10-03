@@ -37,6 +37,10 @@ La app usa **History API** (`/`, `/listings`, `/templates`, `/approvals`, `/sett
 - Vercel: `{ "rewrites": [{ "source": "/(.*)", "destination": "/" }] }`
 - Cloudflare Pages: comportamiento SPA por defecto
 
+## Roles, cuentas demo y sesión
+
+Hay tres roles: **Agente** (`employee`) y **Administrador** (`admin`) de siempre, más un **Técnico** (`technician`, F11) — una única cuenta, admin-equivalente en todo el sistema, cuya única pantalla es un panel de operaciones (`/ops`) para administrar cuentas, ajustes de la organización y estado del sistema sin tocar el código. La interfaz hace el rol explícito: insignia con el rol de la cuenta abierta en cada encabezado, etiqueta de la pantalla exclusiva en el menú, y una nota con los permisos de cada rol en cada pantalla. En móvil, un agente además ve una Home rediseñada como feed estilo app (topbar, tarjetas, navegación inferior), con datos y funciones reales — ver [docs/ROLES.md](docs/ROLES.md). Los despliegues demo (`VITE_DATA_SOURCE=memory`) muestran en el login las cuentas por defecto con su rol — `zhuyan` (administrador), `liming` y `wangfang` (agentes), contraseña `demo-password-123` — y **no existen en producción**; la cuenta de técnico nunca aparece ahí, en ningún modo. La sesión sobrevive al cierre de la pestaña (7 días o hasta cerrar sesión). Detalle completo, con la tabla de permisos por pantalla: [docs/ROLES.md](docs/ROLES.md).
+
 ## Arquitectura
 
 ```
@@ -82,5 +86,7 @@ tests/        unit/ · contract/ (memoria, Supabase y adaptadores de funciones) 
 - Fase 5: [docs/F5.md](docs/F5.md) (template_variants, renderizador único con container queries, vista previa en vivo, export PNG, cómo probar, limitaciones).
 - Fase 6: [docs/F6.md](docs/F6.md) (calendario mes/semana/agenda, filtros combinables, filtros en la URL, estadísticas reales, cómo probar, limitaciones).
 - Fase 7: [docs/F7.md](docs/F7.md) (puntos de corte compartidos, sidebar cajón/rail/expansible, calendario y listings adaptados, Playwright en 3 tamaños, cómo probar, limitaciones).
+- Roles, permisos y cuentas demo: [docs/ROLES.md](docs/ROLES.md).
+- Correcciones posteriores: [docs/F8.1.md](docs/F8.1.md).
 - Fase 8: [docs/F8.md](docs/F8.md) (RLS por rol, accesibilidad con axe-core, rendimiento, CI, cómo probar, limitaciones).
 - [docs/DEPLOY.md](docs/DEPLOY.md): guía de despliegue (Supabase + hosting estático) y checklist de release.

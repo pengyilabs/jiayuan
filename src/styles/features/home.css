@@ -727,19 +727,19 @@
   background: #1569d5; /* azul de Facebook, un poco más oscuro para que el texto blanco cumpla WCAG AA */
 }
 .platform-tag-wx {
-  background: #07c160;
+  background: #04803f;
 }
 .platform-tag-wxch {
-  background: #ff6b2c;
+  background: #c2410c;
 }
 .platform-tag-xhs {
-  background: #fe2c55;
+  background: #d81b45;
 }
 .platform-tag-ig {
-  background: linear-gradient(135deg, #f09433, #dc2743, #bc1888);
+  background: linear-gradient(135deg, #b45309, #c1123c, #9d1b8a);
 }
 .platform-tag-yt {
-  background: #ff0000;
+  background: #cc0000;
 }
 .platform-tag-tt {
   background: #010101;

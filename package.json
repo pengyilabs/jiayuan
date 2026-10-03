@@ -27,7 +27,8 @@
     "db:test:integration": "bash scripts/test-integration.sh",
     "db:types": "npx supabase gen types typescript --local --schema public > src/types/database.ts && prettier --write src/types/database.ts",
     "functions:check": "deno check --config supabase/functions/deno.json supabase/functions/*/index.ts",
-    "admin:create": "tsx scripts/create-admin.ts"
+    "admin:create": "tsx scripts/create-admin.ts",
+    "technician:create": "tsx scripts/create-technician.ts"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"

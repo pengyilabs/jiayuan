@@ -246,6 +246,7 @@ body {
   }
 
   /* Áreas táctiles ≥44px en los controles pequeños del prototipo original. */
+  .mobile-menu-btn,
   .notif-btn,
   .lang-trigger,
   .view-toggle-btn,

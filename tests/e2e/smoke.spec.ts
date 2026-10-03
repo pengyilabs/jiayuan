@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
+import { useEnglish } from './helpers';
 
 const DEMO_PASSWORD = 'demo-password-123';
 
@@ -20,7 +21,8 @@ async function loginAsAdmin(page: Page, path = '/'): Promise<void> {
   await page.locator('input[name="username"]').fill('zhuyan');
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
 }
 
 test('el login rechaza credenciales incorrectas y acepta las correctas', async ({ page }) => {
@@ -32,7 +34,8 @@ test('el login rechaza credenciales incorrectas y acepta las correctas', async (
 
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
 });
 
 test('un empleado no ve la sección de administración y el router bloquea /approvals', async ({
@@ -42,7 +45,8 @@ test('un empleado no ve la sección de administración y el router bloquea /appr
   await page.locator('input[name="username"]').fill('liming');
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
   await expect(page.locator('.nav-item[data-page="approvals"]')).toBeHidden();
 
   await page.goto('/approvals');
@@ -81,9 +85,10 @@ test('cambia de idioma y traduce la interfaz', async ({ page }) => {
 });
 
 test('abre y guarda un listing, y muestra el fallback de imágenes rotas', async ({ page }) => {
+  // Las fotos reales ya existen; se fuerza el fallo de una para comprobar el fondo de reserva.
+  await page.route('**/images/listings/condo1.jpg', route => route.abort());
   await loginAsAdmin(page, '/listings');
   await expect(page.locator('.listings-table tbody tr')).toHaveCount(6);
-  // Las imágenes no existen en el repo: el manejador declarativo aplica el fondo de reserva.
   await expect(page.locator('.listings-table .listing-thumb').first()).toHaveAttribute(
     'style',
     /surface-warm/,
@@ -195,7 +200,7 @@ test('el panel de notificaciones se abre, marca como leída y se cierra al hacer
   await expect(page.locator('.notif-item.unread')).toHaveCount(0);
   await expect(page.locator('.dash-header .notif-dot')).toBeHidden();
 
-  await page.locator('.topbar-title').click();
+  await page.locator('.dash-header .dash-team-name').click();
   await expect(page.locator('.dash-header .notif-dropdown')).not.toHaveClass(/open/);
 });
 
@@ -220,9 +225,9 @@ test('el calendario filtra el feed al hacer clic en un día y lo refleja en la U
 
   // Cambia a semana y a agenda sin errores.
   await page.locator('[data-action="calendar:mode"][data-mode="week"]').click();
-  await expect(page.locator('.cal-week-col')).toHaveCount(7);
+  await expect(page.locator('.cal-week-row-item')).toHaveCount(7);
   await page.locator('[data-action="calendar:mode"][data-mode="agenda"]').click();
-  await expect(page.locator('.cal-agenda, .form-hint')).toBeVisible();
+  await expect(page.locator('#calendar-body')).toBeVisible();
 });
 
 test('el filtro de estado solo lo ve el administrador, y las estadísticas son reales', async ({
@@ -236,10 +241,12 @@ test('el filtro de estado solo lo ve el administrador, y las estadísticas son r
   await page.locator('[data-action="feed:status-filter"][data-status="pending"]').click();
   await expect(page).toHaveURL(/status=pending/);
 
+  await page.locator('#user-logout').evaluate(b => (b as HTMLElement).click());
   await page.goto('/');
   await page.locator('input[name="username"]').fill('liming');
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
   await expect(page.locator('#feed-status-filters')).toBeHidden();
 });

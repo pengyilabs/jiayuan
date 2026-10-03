@@ -8,9 +8,10 @@ import { readConfig } from '../config/env';
 import { createMemoryDirectory } from '../data/memory-directory';
 import { createMemoryRepositories } from '../data/repositories/memory';
 import type { Repositories } from '../data/repositories/types';
-import { DEMO_PASSWORD } from '../data/seed/users';
 import { createMemoryAuth } from '../features/auth/memory-auth';
 import type { AuthService } from '../features/auth/auth-service';
+import { buildDemoInfo } from '../features/auth/demo';
+import type { DemoInfo } from '../features/auth/demo';
 
 /** Zona horaria de la organización; se actualiza al cargar la configuración. */
 const context = { timeZone: 'America/Toronto' };
@@ -24,8 +25,8 @@ export const config = readConfig(import.meta.env);
 interface Services {
   auth: AuthService;
   repos: Repositories;
-  /** Credenciales de ejemplo del login (solo modo demo). */
-  demoHint: string | null;
+  /** Cuentas y contraseña por defecto (solo modo demo; `null` con backend real). */
+  demoInfo: DemoInfo | null;
 }
 
 async function createServices(): Promise<Services> {
@@ -42,11 +43,11 @@ async function createServices(): Promise<Services> {
     return {
       auth: createSupabaseAuth(client),
       repos: createSupabaseRepositories(client, { timeZone }),
-      demoHint: null,
+      demoInfo: null,
     };
   }
 
-  const directory = createMemoryDirectory(sessionStorage);
+  const directory = createMemoryDirectory(localStorage);
   const auth = createMemoryAuth(directory);
   return {
     auth,
@@ -55,8 +56,8 @@ async function createServices(): Promise<Services> {
       timeZone,
       currentUserId: () => auth.currentUserId() ?? '',
     }),
-    demoHint: `zhuyan / liming / wangfang · ${DEMO_PASSWORD}`,
+    demoInfo: buildDemoInfo(),
   };
 }
 
-export const { auth, repos, demoHint } = await createServices();
+export const { auth, repos, demoInfo } = await createServices();

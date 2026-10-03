@@ -16,6 +16,8 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop',
+      // El feed móvil de agente (F10) solo existe en <640px: no tiene sentido en escritorio.
+      testIgnore: /mobile-agent-feed\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         launchOptions: executablePath ? { executablePath, args: ['--no-sandbox'] } : {},
@@ -35,9 +37,10 @@ export default defineConfig({
     {
       // Móvil (<640px, F7): viewport táctil real (iPhone 13, 390×844).
       name: 'mobile',
-      testMatch: /(responsive|a11y)\.spec\.ts/,
+      testMatch: /(responsive|a11y|mobile-agent-feed)\.spec\.ts/,
       use: {
         ...devices['iPhone 13'],
+        browserName: 'chromium', // el preset trae WebKit; aquí solo hay Chromium
         launchOptions: executablePath ? { executablePath, args: ['--no-sandbox'] } : {},
       },
     },

@@ -10,6 +10,7 @@ import type {
   ListingPatch,
   Notification,
   OrganizationSettings,
+  OrganizationSettingsPatch,
   Platform,
   Post,
   PostDraft,
@@ -83,6 +84,8 @@ export interface CatalogRepository {
   postTypeGroups(): Promise<PostTypeGroups>;
   templates(): Promise<Template[]>;
   settings(): Promise<OrganizationSettings>;
+  /** Solo técnico (F11): ajustes de la organización que hoy no tienen ninguna otra pantalla. */
+  updateSettings(patch: OrganizationSettingsPatch): Promise<OrganizationSettings>;
 }
 
 export interface ProfilesRepository {

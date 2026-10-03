@@ -33,6 +33,15 @@ PropPulse es un sitio estático (Vite) que habla con un proyecto de Supabase. El
    npm run admin:create -- --email ti@tuempresa.com --username tuusuario --name "Tu nombre"
    ```
    Guarda la clave `service_role` fuera del repositorio (gestor de secretos del equipo); no debe llegar nunca al navegador ni a ningún archivo `.env` que se suba a un hosting estático.
+7. **Cuenta de técnico** (F11, opcional pero recomendado): la única cuenta con acceso a un panel de operaciones (`/ops`) para administrar cuentas, ajustes de la organización y estado del sistema sin tocar el código. Es admin-equivalente en todo lo demás. Nunca se crea por seed; la contraseña siempre se genera al azar y se muestra una sola vez:
+   ```bash
+   SUPABASE_URL=https://<project-ref>.supabase.co \
+   SUPABASE_SERVICE_ROLE_KEY=<service-role-key> \
+   npm run technician:create -- --email tech@tuempresa.com --username root_tech --name "Nombre"
+   ```
+   Si ya existe una, el script se niega (no admite `--force`) — es una cuenta única a propósito. Detalle completo: [ROLES.md](ROLES.md#panel-de-operaciones-técnico).
+
+> **Despliegues demo vs. producción.** Con `VITE_DATA_SOURCE=memory` (por defecto) el login muestra las cuentas demo con su rol (`zhuyan` admin; `liming` y `wangfang` agentes; contraseña `demo-password-123`) y Ajustes las recuerda. Sirve para enseñar la aplicación, **nunca para datos reales**. Con `supabase` nada de eso aparece. La cuenta de técnico (paso 7) nunca aparece en ese panel, en ningún modo — se documenta aparte. Permisos por rol y pantalla: [ROLES.md](ROLES.md).
 
 ## 2. Variables de entorno del sitio estático
 
@@ -93,7 +102,9 @@ Build: `npm run build` (comando estándar; el hosting lo ejecuta automáticament
 - [ ] `npm run build` sin avisos de tamaño de bundle nuevos.
 - [ ] Migraciones aplicadas al proyecto de Supabase de destino (`supabase db push`) y `supabase/seed.sql` aplicado (sin `seed.demo.sql` en producción).
 - [ ] Los cuatro Edge Functions desplegados, con `SITE_URL`/`ALLOWED_ORIGINS` apuntando al dominio real.
+- [ ] Comprobado que el login **no** muestra cuentas demo (`VITE_DATA_SOURCE=supabase`) y que `seed.demo.sql` no está aplicado.
 - [ ] Primer administrador creado con `npm run admin:create` y con su TOTP configurado en el primer inicio de sesión.
+- [ ] (Opcional) Cuenta de técnico creada con `npm run technician:create`, contraseña generada guardada en el gestor de secretos del equipo (no en el repositorio), y TOTP configurado en el primer inicio de sesión.
 - [ ] Variables de entorno del hosting configuradas (`VITE_DATA_SOURCE=supabase` + URL + clave `anon`).
 - [ ] `Site URL`/`Redirect URLs` de Supabase Auth apuntando al dominio real.
 - [ ] Backups activados (automáticos si el plan los incluye; si no, un `pg_dump` documentado y calendarizado).

@@ -249,7 +249,7 @@ function renderDetail(l: Listing): { content: SafeHtml; mediaCount: number } {
     </div>
     <div class="detail-actions">
       <button class="btn btn-primary" data-action="post:new" data-listing-id="${l.id}">${labels.btn_create_post}</button>
-      <button class="btn btn-secondary" data-action="listing:edit" data-id="${l.id}">
+      <button class="btn btn-secondary" data-role-only="admin" data-action="listing:edit" data-id="${l.id}">
         ${labels.btn_edit_listing}
       </button>
       <button class="btn btn-secondary" data-action="modal:close" data-modal="${MODAL_ID}">

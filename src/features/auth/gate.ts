@@ -10,6 +10,7 @@ import { t } from '../../i18n';
 import type { Lang, Profile } from '../../types/models';
 import { authErrorMessage } from '../../ui/errors';
 import { AuthError } from './auth-service';
+import type { DemoInfo } from './demo';
 import type { AuthInit, AuthService, TotpEnrollment } from './auth-service';
 import { renderAuthScreen } from './auth-view';
 import type { AuthScreen } from './auth-view';
@@ -19,8 +20,8 @@ export const SIGN_OUT_REASON_KEY = 'proppulse.signout_reason';
 export interface GateDeps {
   auth: AuthService;
   repos: Repositories;
-  /** Texto de credenciales de ejemplo (solo modo demo). */
-  demoHint: string | null;
+  /** Cuentas demo con sus roles (solo modo demo). */
+  demoInfo: DemoInfo | null;
 }
 
 export function runAuthGate(root: HTMLElement, deps: GateDeps): Promise<Profile> {
@@ -35,7 +36,7 @@ export function runAuthGate(root: HTMLElement, deps: GateDeps): Promise<Profile>
 
     const render = (next: AuthScreen): void => {
       screen = next;
-      renderAuthScreen(root, next, getState().lang, handlers, { demoHint: deps.demoHint });
+      renderAuthScreen(root, next, getState().lang, handlers, { demo: deps.demoInfo });
     };
 
     const fail = (error: unknown, screenFor: (message: string) => AuthScreen): void => {
@@ -101,7 +102,7 @@ export function runAuthGate(root: HTMLElement, deps: GateDeps): Promise<Profile>
           sessionStorage.removeItem(SIGN_OUT_REASON_KEY);
           await evaluate();
         } catch (error) {
-          fail(error, message => ({ name: 'login', error: message }));
+          fail(error, message => ({ name: 'login', error: message, username: user }));
         }
       },
 

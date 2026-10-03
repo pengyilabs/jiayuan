@@ -128,6 +128,18 @@ export function createMemoryRepositories(options: MemoryOptions = {}): Repositor
     ...seed,
   }));
 
+  // Los ajustes de organización (F11: editables desde el panel de operaciones) sobreviven a un
+  // recargo de la página igual que la sesión y el directorio de usuarios (F9) — si no, "Guardar"
+  // parecería funcionar y perderse en el siguiente F5.
+  const SETTINGS_STORAGE_KEY = 'proppulse.demo.settings';
+  const persistedSettings = (): Partial<Tables<'organization_settings'>> => {
+    try {
+      const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as Partial<Tables<'organization_settings'>>) : {};
+    } catch {
+      return {};
+    }
+  };
   const settings: Tables<'organization_settings'> = {
     id: true,
     name: 'HOME DIRECT',
@@ -137,6 +149,14 @@ export function createMemoryRepositories(options: MemoryOptions = {}): Repositor
     require_admin_mfa: false, // el modo demo no tiene TOTP
     updated_at: EPOCH,
     ...structuredClone(organizationSettingsSeed),
+    ...persistedSettings(),
+  };
+  const persistSettings = (): void => {
+    try {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    } catch {
+      // almacenamiento no disponible (p. ej. en pruebas sin jsdom completo): se ignora
+    }
   };
 
   const posts: PostRow[] = structuredClone(postsSeed).map(seed => ({
@@ -203,7 +223,9 @@ export function createMemoryRepositories(options: MemoryOptions = {}): Repositor
     if (!row?.active) throw new RepositoryError('forbidden', 'Acceso denegado');
     return row;
   };
-  const isAdmin = (): boolean => me().role === 'admin';
+  // El técnico (F11) es admin-equivalente en todas partes (igual que is_admin() en Postgres,
+  // que también se amplió para incluirlo) — más el panel de operaciones, exclusivo suyo.
+  const isAdmin = (): boolean => me().role === 'admin' || me().role === 'technician';
   const requireAdmin = (): void => {
     if (!isAdmin())
       throw new RepositoryError('forbidden', 'Solo un administrador puede realizar esta acción');
@@ -678,6 +700,18 @@ export function createMemoryRepositories(options: MemoryOptions = {}): Repositor
         me();
         return Promise.resolve(toSettings(settings));
       },
+      updateSettings(patch) {
+        requireAdmin();
+        if (patch.timezone !== undefined) settings.timezone = patch.timezone;
+        if (patch.undoWindowSeconds !== undefined)
+          settings.undo_window_seconds = patch.undoWindowSeconds;
+        if (patch.deletedRetentionDays !== undefined)
+          settings.deleted_retention_days = patch.deletedRetentionDays;
+        if (patch.requireAdminMfa !== undefined) settings.require_admin_mfa = patch.requireAdminMfa;
+        settings.updated_at = new Date().toISOString();
+        persistSettings();
+        return Promise.resolve(toSettings(settings));
+      },
     },
 
     profiles: {
@@ -699,8 +733,12 @@ export function createMemoryRepositories(options: MemoryOptions = {}): Repositor
       },
       setRole(userId, role: UserRole) {
         requireAdmin();
+        if (role === 'technician')
+          throw new RepositoryError('forbidden', 'El rol de técnico no se asigna por aquí.');
         const row = profiles.find(p => p.id === userId);
         if (!row) return Promise.reject(new RepositoryError('not_found', 'Usuario no encontrado'));
+        if (row.role === 'technician')
+          throw new RepositoryError('forbidden', 'La cuenta de técnico no se puede modificar.');
         guardLastAdmin(row, role, row.active);
         row.role = role;
         return Promise.resolve(toProfile(row));

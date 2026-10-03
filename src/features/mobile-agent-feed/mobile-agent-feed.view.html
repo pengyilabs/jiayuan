@@ -1,0 +1,88 @@
+<div id="mobile-agent-feed" data-od-id="mobile-agent-feed">
+  <div class="m-status-bar"></div>
+
+  <header class="m-topbar" aria-label="Mobile header" data-i18n-aria-label="m_topbar_label">
+    <div class="m-topbar-brand">
+      <div class="m-topbar-logo">加</div>
+      <div class="m-topbar-title" data-i18n="brand_short">HOME DIRECT</div>
+    </div>
+    <div class="m-topbar-actions">
+      <button
+        class="m-topbar-lang"
+        id="m-lang-cycle"
+        data-action="mobile-feed:cycle-lang"
+        aria-label="Language"
+      ></button>
+      <button
+        class="m-topbar-icon"
+        data-action="mobile-feed:search"
+        aria-label="Search"
+        data-i18n-aria-label="nav_listings"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      </button>
+      <div class="notif-switch">
+        <button
+          class="notif-btn"
+          data-action="notif:toggle"
+          aria-label="Notifications"
+          data-i18n-aria-label="aria_notifications"
+        >
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" /></svg>
+          <span class="notif-dot" hidden></span>
+        </button>
+        <div class="notif-dropdown">
+          <div class="notif-dropdown-header">
+            <strong data-i18n="notif_title">Notifications</strong>
+            <button class="notif-mark-all" data-action="notif:mark-all-read" data-i18n="notif_mark_all_read">
+              Mark all as read
+            </button>
+          </div>
+          <div class="notif-list"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="m-feed" id="m-feed"></div>
+
+  <nav class="m-bottom-nav" aria-label="Primary" data-i18n-aria-label="m_bottom_nav_label">
+    <button class="m-nav-btn m-active" data-action="mobile-feed:tab" data-tab="feed">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+      <span data-i18n="m_nav_feed">Feed</span>
+    </button>
+    <button class="m-nav-btn m-nav-btn-create" data-action="mobile-feed:open-create">
+      <div class="m-nav-create-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      </div>
+      <span data-i18n="m_nav_create">Post</span>
+    </button>
+    <button class="m-nav-btn" data-action="mobile-feed:tab" data-tab="listings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+        <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+      </svg>
+      <span data-i18n="nav_listings">Listings</span>
+    </button>
+  </nav>
+
+  <div class="m-sheet-overlay" id="m-sheet-overlay">
+    <div class="m-sheet" id="m-create-sheet">
+      <div class="m-sheet-handle"></div>
+      <div class="m-sheet-header">
+        <div class="m-sheet-title" id="m-sheet-title"></div>
+        <button class="m-sheet-close" id="m-sheet-close" aria-label="Close">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+      </div>
+      <div class="m-sheet-body" id="m-sheet-body"></div>
+      <div class="m-sheet-footer" id="m-sheet-footer"></div>
+    </div>
+  </div>
+</div>

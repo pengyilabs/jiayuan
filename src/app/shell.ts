@@ -4,6 +4,7 @@ import sidebar from './partials/sidebar.html?raw';
 import topbar from './partials/topbar.html?raw';
 import homeHeader from '../features/home/home-header.html?raw';
 import homeView from '../features/home/home.view.html?raw';
+import mobileAgentFeedView from '../features/mobile-agent-feed/mobile-agent-feed.view.html?raw';
 import listingsView from '../features/listings/listings.view.html?raw';
 import listingDetailModal from '../features/listings/listing-detail.modal.html?raw';
 import newListingModal from '../features/listings/new-listing.modal.html?raw';
@@ -15,8 +16,10 @@ import approvalsView from '../features/approvals/approvals.view.html?raw';
 import rejectModal from '../features/approvals/reject.modal.html?raw';
 import inviteModal from '../features/team/invite.modal.html?raw';
 import settingsView from '../features/settings/settings.view.html?raw';
+import opsView from '../features/ops/ops.view.html?raw';
 
-const PAGES = [homeView, listingsView, templatesView, approvalsView, settingsView];
+const composedHomeView = homeView.replace('<!--@mobile-agent-feed-->', mobileAgentFeedView);
+const PAGES = [composedHomeView, listingsView, templatesView, approvalsView, settingsView, opsView];
 const MODALS = [
   newListingModal,
   postModal,

@@ -22,8 +22,9 @@ beforeAll(async () => {
 });
 
 describe('arranque', () => {
-  it('monta las 5 páginas y activa Home', () => {
-    expect($$('.page')).toHaveLength(5);
+  it('monta las 6 páginas y activa Home', () => {
+    // dashboard, listings, templates, approvals, settings y ops (F11, del técnico).
+    expect($$('.page')).toHaveLength(6);
     expect($('#page-dashboard').classList.contains('active')).toBe(true);
     expect(document.documentElement.lang).toBe('en');
   });

@@ -119,3 +119,10 @@ h4 {
   white-space: nowrap;
   border: 0;
 }
+
+/* El atributo `hidden` debe ganar siempre: sin esto, cualquier regla con `display:flex/grid`
+   (p. ej. el filtro de estado solo-admin o "Borrar fecha") lo anulaba y el elemento seguía
+   visible aunque el JS lo hubiera ocultado. */
+[hidden] {
+  display: none !important;
+}

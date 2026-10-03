@@ -6,6 +6,7 @@
  */
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
+import { goToPage } from './helpers';
 
 const DEMO_PASSWORD = 'demo-password-123';
 
@@ -35,10 +36,11 @@ test('Home, Listings y el formulario de posts no desbordan horizontalmente', asy
   await loginAsAdmin(page);
   await expectNoHorizontalOverflow(page);
 
-  await page.locator('[data-action="nav:go"][data-page="listings"]').click();
+  await goToPage(page, 'listings');
   await expect(page.locator('#page-listings')).toHaveClass(/active/);
   await expectNoHorizontalOverflow(page);
 
+  await goToPage(page, 'dashboard');
   await page.locator('[data-action="post:new"]').first().click();
   await expect(page.locator('#modal-post')).toHaveClass(/open/);
   await expectNoHorizontalOverflow(page);
@@ -62,7 +64,7 @@ test('el sidebar se comporta según el tamaño (cajón en móvil, rail en tablet
     await expect(sidebar).not.toHaveClass(/collapsed/);
     await expect(page.locator('.sidebar-overlay')).toBeVisible();
 
-    await page.locator('.sidebar-overlay').click({ position: { x: 5, y: 5 } });
+    await page.locator('.sidebar-overlay').click({ position: { x: width - 10, y: 300 } }); // la zona libre, a la derecha del cajón
     await expect(sidebar).toHaveClass(/collapsed/);
   } else if (breakpoint === 'tablet') {
     const box = await sidebar.boundingBox();
@@ -72,8 +74,10 @@ test('el sidebar se comporta según el tamaño (cajón en móvil, rail en tablet
     // PC: el botón interno de la sidebar puede expandirla/contraerla.
     const before = await sidebar.boundingBox();
     await page.locator('.sidebar-toggle').click();
-    const after = await sidebar.boundingBox();
-    expect(after?.width).not.toBeCloseTo(before?.width ?? 0, 0);
+    // El ancho se anima (transición CSS): se espera a que cambie en vez de medir al instante.
+    await expect
+      .poll(async () => (await sidebar.boundingBox())?.width ?? 0)
+      .not.toBeCloseTo(before?.width ?? 0, 0);
   }
   await expectNoHorizontalOverflow(page);
 });
@@ -103,7 +107,7 @@ test('el calendario ofrece el modo correcto según el tamaño', async ({ page })
 
 test('Listings usa tarjetas en móvil en vez de la tabla', async ({ page }) => {
   await loginAsAdmin(page);
-  await page.locator('[data-action="nav:go"][data-page="listings"]').click();
+  await goToPage(page, 'listings');
   const width = page.viewportSize()?.width ?? 1280;
 
   if (breakpointOf(width) === 'mobile') {

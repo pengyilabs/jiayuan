@@ -65,7 +65,10 @@ export function defineRepositoryContract(name: string, repositoriesFor: Reposito
       it('el perfil actual y la lista de perfiles respetan el rol', async () => {
         expect((await liming().profiles.current())?.fullName).toBe('李明');
         expect((await admin().profiles.current())?.role).toBe('admin');
-        expect(await admin().profiles.list()).toHaveLength(3);
+        // En memoria hay además una cuenta de técnico (F11, no forma parte de la semilla común
+        // a ambos backends — ver docs/ROLES.md); se comprueba el subconjunto, no un total fijo.
+        const adminIds = (await admin().profiles.list()).map(p => p.id);
+        expect(adminIds).toEqual(expect.arrayContaining([ADMIN_ID, LIMING_ID, WANGFANG_ID]));
         expect((await liming().profiles.list()).map(p => p.id)).toEqual([LIMING_ID]);
       });
     });

@@ -7,6 +7,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
+import { useEnglish } from './helpers';
 
 const DEMO_PASSWORD = 'demo-password-123';
 
@@ -15,7 +16,8 @@ async function loginAsAdmin(page: Page): Promise<void> {
   await page.locator('input[name="username"]').fill('zhuyan');
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
 }
 
 async function expectNoViolations(page: Page): Promise<void> {

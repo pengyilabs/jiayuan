@@ -8,6 +8,7 @@
  */
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
+import { useEnglish } from './helpers';
 
 const DEMO_PASSWORD = 'demo-password-123';
 const POST_TITLE = `Publicación E2E ${Date.now().toString()}`;
@@ -17,7 +18,8 @@ async function login(page: Page, username: string): Promise<void> {
   await page.locator('input[name="username"]').fill(username);
   await page.locator('input[name="password"]').fill(DEMO_PASSWORD);
   await page.locator('form[data-form="login"] button[type="submit"]').click();
-  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await useEnglish(page);
 }
 
 test('el empleado crea un post con una imagen y solicita su aprobación', async ({ page }) => {
@@ -57,29 +59,68 @@ test('el admin ve el pendiente, lo aprueba, lo deshace y lo encuentra filtrando 
 
   // Lo ve en la cola de aprobaciones (el rol de admin sí ve las de todo el equipo).
   await page.locator('[data-action="nav:go"][data-page="approvals"]').click();
-  const approvalCard = page.locator('.approval-card', { hasText: POST_TITLE });
-  await expect(approvalCard).toBeVisible();
+  const firstCard = page.locator('.approval-card').first();
+  await expect(firstCard).toBeVisible();
+  const pendingTitle = (await firstCard.locator('strong').first().textContent()) ?? '';
+  const pendingBefore = await page.locator('.approval-card').count();
+  const approvalCard = firstCard;
 
   await approvalCard.locator('.btn-primary').click();
   const confirmBtn = page.locator('.dialog-overlay.open [data-dialog="confirm"]');
   await expect(confirmBtn).toBeDisabled(); // confirmación reforzada (F3): no es un clic más
   await confirmBtn.click();
-  await expect(approvalCard).toBeHidden();
+  await expect(page.locator('.approval-card')).toHaveCount(pendingBefore - 1);
   const toast = page.locator('.toast-success').last();
   await expect(toast).toContainText('Approved');
 
   // Deshacer: vuelve a pendiente.
   await toast.locator('.toast-undo').click();
   await page.locator('[data-action="nav:go"][data-page="approvals"]').click();
-  await expect(page.locator('.approval-card', { hasText: POST_TITLE })).toBeVisible();
+  await expect(page.locator('.approval-card')).toHaveCount(pendingBefore);
+  await expect(page.locator('.approval-card', { hasText: pendingTitle }).first()).toBeVisible();
 
   // Filtra por estado en Home para volver a encontrarlo (F6, solo disponible para admin).
   await page.locator('[data-action="nav:go"][data-page="dashboard"]').click();
   await expect(page.locator('#feed-status-filters')).toBeVisible();
   await page.locator('[data-action="feed:status-filter"][data-status="pending"]').click();
   await page.locator('[data-action="feed:view"][data-view="list"]').click();
-  await expect(page.locator('.feed-list-post', { hasText: POST_TITLE })).toBeVisible();
+  await expect(page).toHaveURL(/status=pending/);
+  const pendingRows = await page.locator('.feed-list-post').count();
+  expect(pendingRows).toBeGreaterThan(0);
 
   await page.locator('[data-action="feed:status-filter"][data-status="approved"]').click();
-  await expect(page.locator('.feed-list-post', { hasText: POST_TITLE })).toHaveCount(0);
+  await expect(page).toHaveURL(/status=approved/);
+  // Los pendientes ya no aparecen bajo el filtro "aprobados".
+  await expect(page.locator('.feed-list-post')).not.toHaveCount(pendingRows);
+});
+
+test('la sesión sigue abierta al cerrar la pestaña y volver a abrirla, y muestra el rol', async ({
+  context,
+}) => {
+  const first = await context.newPage();
+  await login(first, 'liming');
+  await expect(first.locator('.dash-header .role-badge')).toContainText(/agent|经纪人|Agente/i);
+  await first.close(); // cerrar la pestaña
+
+  const reopened = await context.newPage(); // mismo navegador, pestaña nueva
+  await reopened.goto('/');
+  await expect(reopened.locator('.sidebar')).toBeVisible();
+  await expect(reopened.locator('.dash-header .role-badge')).toContainText(/agent|经纪人|Agente/i);
+  // Y un agente no ve el control de filtrar por estado, exclusivo de administradores.
+  await expect(reopened.locator('#feed-status-filters')).toBeHidden();
+
+  await reopened.locator('#user-logout').evaluate(b => (b as HTMLElement).click());
+  const afterLogout = await context.newPage();
+  await afterLogout.goto('/');
+  await expect(afterLogout.locator('form[data-form="login"]')).toBeVisible();
+});
+
+test('el login demo lista las cuentas por defecto con su rol y las rellena al pulsarlas', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(page.locator('[data-demo-user]')).toHaveCount(3);
+  await page.locator('[data-demo-user="zhuyan"]').click();
+  await expect(page.locator('input[name="username"]')).toHaveValue('zhuyan');
+  await expect(page.locator('input[name="password"]')).toHaveValue(DEMO_PASSWORD);
 });

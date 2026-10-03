@@ -3,7 +3,7 @@
  * Lo comparten el servicio de autenticación en memoria y los repositorios en memoria.
  */
 import type { Tables } from '../types/db';
-import { DEMO_PASSWORD, demoUsersSeed } from './seed/users';
+import { DEMO_PASSWORD, TECHNICIAN_PASSWORD, demoUsersSeed, technicianSeed } from './seed/users';
 
 const EPOCH = '2026-08-01T00:00:00.000Z';
 
@@ -56,8 +56,9 @@ export function createMemoryDirectory(storage?: Storage): MemoryDirectory {
 }
 
 function seedDirectory(): MemoryDirectory {
+  const allUsers = [...demoUsersSeed, technicianSeed];
   return {
-    profiles: demoUsersSeed.map(u => ({
+    profiles: allUsers.map(u => ({
       id: u.id,
       username: u.username,
       full_name: u.fullName,
@@ -72,7 +73,10 @@ function seedDirectory(): MemoryDirectory {
       created_at: EPOCH,
       updated_at: EPOCH,
     })),
-    passwords: new Map(demoUsersSeed.map(u => [u.id, DEMO_PASSWORD])),
+    passwords: new Map([
+      ...demoUsersSeed.map((u): [string, string] => [u.id, DEMO_PASSWORD]),
+      [technicianSeed.id, TECHNICIAN_PASSWORD],
+    ]),
     invites: new Map(),
   };
 }
