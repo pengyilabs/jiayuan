@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>加园地产团队 — PropPulse</title>
+<script>if(!sessionStorage.getItem('pp-role'))location.replace('login.html');</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -57,6 +58,10 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;line-height:var(--le
 .user-info{flex:1;min-width:0}
 .user-name{font-size:var(--text-sm);font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .user-role{font-size:var(--text-xs);color:#999}
+.sidebar-logout{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:6px;padding:8px;border-radius:var(--radius-sm);color:#888;font-size:var(--text-xs);font-weight:600;transition:all var(--motion-fast)}
+.sidebar-logout:hover{background:#2a2a2a;color:#fff}
+.sidebar-logout svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sidebar.collapsed .sidebar-logout span{display:none}
 
 /* Collapsible sidebar */
 .sidebar.collapsed{width:60px}
@@ -823,6 +828,10 @@ tr:hover td{background:var(--surface-warm)}
           <div class="user-role" data-i18n="role_admin">团队主管</div>
         </div>
       </div>
+      <button class="sidebar-logout" onclick="try{sessionStorage.removeItem('pp-role')}catch(e){};location.href='login.html'" title="退出登录">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>退出登录</span>
+      </button>
     </div>
   </aside>
 
@@ -2089,12 +2098,14 @@ function toggleLangDropdown() {
 }
 function selectLang(lang) {
   currentLang = lang;
+  try { localStorage.setItem("pp-lang", lang); } catch (e) {}
   document.querySelectorAll(".lang-option").forEach(o => {
     o.classList.toggle("active", o.dataset.lang === lang);
   });
   document.getElementById("lang-current").textContent =
     lang === "zh" ? "简体" : lang === "en" ? "EN" : lang === "fr" ? "FR" : "ES";
-  toggleLangDropdown();
+  const dd = document.getElementById("lang-dropdown");
+  if (dd.classList.contains("open")) toggleLangDropdown();
   applyI18n(lang);
 }
 document.addEventListener("click", e => {
@@ -3465,7 +3476,8 @@ function approvePost(id) {
 }
 
 // ── Init ──────────────────────────────────────────────────
-applyI18n("en");
+const savedLang = (() => { try { return localStorage.getItem("pp-lang"); } catch (e) { return null; } })();
+selectLang(["zh","en","fr","es"].includes(savedLang) ? savedLang : "en");
 // Set default listings view to table
 document.querySelector(".listings-view-toggle .view-toggle-btn[data-view='table']")?.classList.add("active");
 </script>

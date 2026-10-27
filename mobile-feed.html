@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>加园地产 · 移动端</title>
+<script>if(!sessionStorage.getItem('pp-role'))location.replace('login.html');</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -281,6 +282,7 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
     <button class="topbar-lang" id="lang-toggle" onclick="toggleLang()">简体</button>
     <button class="topbar-icon" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
     <button class="topbar-icon" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></button>
+    <button class="topbar-icon" aria-label="退出登录" onclick="try{sessionStorage.removeItem('pp-role')}catch(e){};location.href='login.html'"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
   </div>
 </header>
 
@@ -360,6 +362,7 @@ function toggleLang() {
   const order = ["zh","en","fr","es"];
   const idx = order.indexOf(currentLang);
   currentLang = order[(idx + 1) % order.length];
+  try { localStorage.setItem('pp-lang', currentLang); } catch (e) {}
   document.getElementById("lang-toggle").textContent = LANGS.find(l => l.id === currentLang).label;
   document.getElementById("nav-feed").textContent = t('navFeed');
   document.getElementById("nav-create").textContent = t('navCreate');
@@ -941,7 +944,9 @@ document.querySelectorAll(".nav-btn").forEach(btn => {
 });
 
 // ── Init ────────────────────────────────────────────────
-document.getElementById("lang-toggle").textContent = "EN";
+const initLang = (() => { try { return localStorage.getItem('pp-lang'); } catch (e) { return null; } })();
+if (LANGS.some(l => l.id === initLang)) currentLang = initLang;
+document.getElementById("lang-toggle").textContent = LANGS.find(l => l.id === currentLang).label;
 document.getElementById("nav-feed").textContent = t('navFeed');
 document.getElementById("nav-create").textContent = t('navCreate');
 document.getElementById("nav-listings").textContent = t('navListings');
