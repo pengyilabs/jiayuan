@@ -1,3 +1,10 @@
-# Static site: no build step — publish the repository root.
+# React + Vite SPA: build and publish dist/.
 [build]
-  publish = "."
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback so BrowserRouter routes (/feed, /listings, /login) work on refresh.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
