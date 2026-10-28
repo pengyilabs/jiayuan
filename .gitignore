@@ -10,9 +10,10 @@
 .DS_Store
 Thumbs.db
 
-# Node (if used)
+# Node
 node_modules/
-package-lock.json
+.netlify/
+.trae-html-share-packages/
 
 # Build output
 dist/
