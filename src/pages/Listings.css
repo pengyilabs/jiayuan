@@ -433,6 +433,7 @@
   width: 100%;
   margin: 10px auto 0;
   padding: 0 28px;
+  overflow-x: auto;
 }
 .ls-page .ls-table {
   width: 100%;
@@ -453,9 +454,6 @@
   white-space: nowrap;
 }
 .ls-page .ls-table thead th {
-  position: sticky;
-  top: 65px;
-  z-index: 2;
   background: var(--surface-warm);
   border-bottom: 1px solid var(--border);
   font-size: 11.5px;
