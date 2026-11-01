@@ -432,12 +432,12 @@
   max-width: 1240px;
   width: 100%;
   margin: 10px auto 0;
-  padding: 0 28px;
   overflow-x: auto;
 }
 .ls-page .ls-table {
   width: 100%;
   min-width: 1120px;
+  margin: 0 28px;
   border-collapse: separate;
   border-spacing: 0;
   background: var(--bg);
@@ -471,6 +471,37 @@
 }
 .ls-page .ls-table tbody tr:hover {
   background: var(--accent-soft);
+}
+/* Frozen columns — Property pinned left, Actions pinned right while the middle scrolls */
+.ls-page .ls-table tbody tr {
+  background: var(--bg);
+}
+.ls-page .ls-table thead th:first-child,
+.ls-page .ls-table thead th:last-child {
+  position: sticky;
+  z-index: 3;
+}
+.ls-page .ls-table thead th:first-child {
+  left: 0;
+  box-shadow: 1px 0 0 var(--border);
+}
+.ls-page .ls-table thead th:last-child {
+  right: 0;
+  box-shadow: -1px 0 0 var(--border);
+}
+.ls-page .ls-table tbody td:first-child,
+.ls-page .ls-table tbody td:last-child {
+  position: sticky;
+  z-index: 2;
+  background: inherit;
+}
+.ls-page .ls-table tbody td:first-child {
+  left: 0;
+  box-shadow: 1px 0 0 var(--border-soft);
+}
+.ls-page .ls-table tbody td:last-child {
+  right: 0;
+  box-shadow: -1px 0 0 var(--border-soft);
 }
 .ls-page .ls-table-prop {
   display: flex;
@@ -912,10 +943,12 @@
   }
   .ls-page .ls-toolbar,
   .ls-page .ls-grid,
-  .ls-page .ls-table-wrap,
   .ls-page .ls-foot {
     padding-left: 20px;
     padding-right: 20px;
+  }
+  .ls-page .ls-table {
+    margin: 0 20px;
   }
 }
 @media (max-width: 640px) {
