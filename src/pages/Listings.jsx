@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useLang } from '../lib/i18n.jsx';
-import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
+import TopBar from '../components/TopBar.jsx';
 import {
   subscribe, listListings, createListing, updateListing,
   deleteListing, getStats, formatPrice
@@ -39,30 +38,35 @@ const EMPTY_FORM = {
   beds: '', baths: '', area: '', agent: '', image: DEFAULT_IMAGE
 };
 
-const STAT_CARDS = [
-  { key: 'ls_stats_total', get: (s) => s.total, accent: true },
-  { key: 'ls_stats_active', get: (s) => s.active },
-  { key: 'ls_stats_pending', get: (s) => s.pending },
-  { key: 'ls_stats_sold', get: (s) => s.sold },
-  { key: 'ls_stats_for_sale', get: (s) => s.forSale },
-  { key: 'ls_stats_for_rent', get: (s) => s.forRent },
-  { key: 'ls_stats_total_value', get: (s) => formatPrice(s.totalValue) }
+const CHIPS = [
+  { id: 'all', labelKey: 'ls_filter_all', get: (s) => s.total },
+  { id: 'active', labelKey: 'ls_status_active', get: (s) => s.active },
+  { id: 'pending', labelKey: 'ls_status_pending', get: (s) => s.pending },
+  { id: 'sold', labelKey: 'ls_status_sold', get: (s) => s.sold },
+  { id: 'sale', labelKey: 'ls_type_sale', get: (s) => s.forSale },
+  { id: 'rent', labelKey: 'ls_type_rent', get: (s) => s.forRent }
 ];
+
+function chipFilter(id) {
+  if (id === 'sale' || id === 'rent') return { type: id };
+  if (id === 'all') return {};
+  return { status: id };
+}
 
 export default function Listings() {
   const { t } = useLang();
-  const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
   const [stats, setStats] = useState(null);
-  const [status, setStatus] = useState('all');
-  const [type, setType] = useState('all');
+  const [chip, setChip] = useState('all');
+  const [view, setView] = useState('grid');
   const [search, setSearch] = useState('');
   const [q, setQ] = useState('');
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [menu, setMenu] = useState(null);
   const reqRef = useRef(0);
 
   useEffect(() => {
@@ -72,14 +76,15 @@ export default function Listings() {
 
   const refresh = useCallback(async () => {
     const req = ++reqRef.current;
+    const filter = Object.assign({}, chipFilter(chip), q ? { q } : {});
     const [list, s] = await Promise.all([
-      listListings({ status, type, q }),
+      listListings(filter),
       getStats()
     ]);
     if (req !== reqRef.current) return;
     setItems(list);
     setStats(s);
-  }, [status, type, q]);
+  }, [chip, q]);
 
   useEffect(() => { refresh(); }, [refresh]);
   useEffect(() => subscribe(refresh), [refresh]);
@@ -87,20 +92,34 @@ export default function Listings() {
   useEffect(() => { document.title = t('ls_page_title'); }, [t]);
 
   useEffect(() => {
-    if (!modal && !deleteTarget) return undefined;
+    if (!modal && !deleteTarget && !menu) return undefined;
     function onKey(e) {
       if (e.key !== 'Escape') return;
-      if (deleteTarget) setDeleteTarget(null);
+      if (menu) setMenu(null);
+      else if (deleteTarget) setDeleteTarget(null);
       else setModal(null);
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [modal, deleteTarget]);
+  }, [modal, deleteTarget, menu]);
 
-  function handleLogout() {
-    try { sessionStorage.removeItem('pp-role'); } catch (e) {}
-    navigate('/login');
-  }
+  useEffect(() => {
+    if (!menu) return undefined;
+    function onDown(e) {
+      const el = e.target;
+      if (el.closest && (el.closest('.ls-row-menu') || el.closest('.ls-row-menu-btn'))) return;
+      setMenu(null);
+    }
+    function onClose() { setMenu(null); }
+    document.addEventListener('mousedown', onDown);
+    window.addEventListener('scroll', onClose, true);
+    window.addEventListener('resize', onClose);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      window.removeEventListener('scroll', onClose, true);
+      window.removeEventListener('resize', onClose);
+    };
+  }, [menu]);
 
   function setField(name, value) {
     setForm((f) => ({ ...f, [name]: value }));
@@ -130,10 +149,21 @@ export default function Listings() {
   }
 
   function clearFilters() {
-    setStatus('all');
-    setType('all');
+    setChip('all');
     setSearch('');
     setQ('');
+  }
+
+  function toggleMenu(e, item) {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const MENU_H = 136;
+    const openUp = rect.bottom + MENU_H > window.innerHeight;
+    setMenu((cur) => (cur && cur.item.id === item.id ? null : {
+      item,
+      top: openUp ? rect.top - MENU_H - 6 : rect.bottom + 6,
+      left: rect.right
+    }));
   }
 
   async function handleSubmit(e) {
@@ -169,80 +199,50 @@ export default function Listings() {
     setDeleteTarget(null);
   }
 
+  const rowMenuBtn = (item) => (
+    <button
+      type="button"
+      className="ls-row-menu-btn"
+      aria-haspopup="menu"
+      aria-expanded={!!(menu && menu.item.id === item.id)}
+      aria-label={t('ls_menu_more')}
+      onClick={(e) => toggleMenu(e, item)}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" /></svg>
+    </button>
+  );
+
   return (
     <div className="ls-page">
-      <header className="ls-header">
-        <div className="ls-topbar">
-          <Link to="/" className="ls-brand">
-            <span className="ls-brand-logo">加</span>
-            <span className="ls-brand-name">{t('ls_brand_name')}</span>
-          </Link>
-          <nav className="ls-nav">
-            <Link to="/" className="ls-nav-link">{t('ls_nav_home')}</Link>
-            <Link to="/feed" className="ls-nav-link">{t('ls_nav_feed')}</Link>
-            <Link to="/listings" className="ls-nav-link ls-nav-active">{t('ls_nav_listings')}</Link>
-          </nav>
-          <div className="ls-top-actions">
-            <LanguageSwitcher />
-            <button type="button" className="ls-btn-logout" onClick={handleLogout}>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
-              <span>{t('ls_logout')}</span>
-            </button>
-          </div>
-        </div>
+      <TopBar />
 
-        <div className="ls-hero">
-          <div className="ls-hero-text">
+      <header className="ls-header">
+        <div className="ls-header-bar">
+          <div className="ls-header-left">
             <span className="ls-eyebrow">{t('ls_eyebrow')}</span>
             <h1 className="ls-title">{t('ls_heading')}</h1>
-            <p className="ls-sub">{t('ls_subheading')}</p>
           </div>
-          <button type="button" className="ls-btn ls-btn-accent ls-btn-lg" onClick={openAdd}>
+          <button type="button" className="ls-btn ls-btn-accent" onClick={openAdd}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
             <span>{t('ls_add_listing')}</span>
           </button>
         </div>
       </header>
 
-      <section className="ls-stats">
-        {STAT_CARDS.map((def) => (
-          <div
-            key={def.key}
-            className={'ls-stat' + (def.accent ? ' ls-stat-accent' : '') + (def.key === 'ls_stats_total_value' ? ' ls-stat-wide' : '')}
-          >
-            <span className="ls-stat-label">{t(def.key)}</span>
-            <span className="ls-stat-value">{stats ? def.get(stats) : '—'}</span>
-          </div>
-        ))}
-      </section>
-
-      <section className="ls-filters">
-        <div className="ls-filter-field">
-          <label className="ls-filter-label" htmlFor="ls-filter-status">{t('ls_filter_status_label')}</label>
-          <select
-            id="ls-filter-status"
-            className="ls-select"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="all">{t('ls_filter_all')}</option>
-            <option value="active">{t('ls_status_active')}</option>
-            <option value="pending">{t('ls_status_pending')}</option>
-            <option value="sold">{t('ls_status_sold')}</option>
-          </select>
-        </div>
-        <div className="ls-filter-field">
-          <label className="ls-filter-label" htmlFor="ls-filter-type">{t('ls_filter_type_label')}</label>
-          <select
-            id="ls-filter-type"
-            className="ls-select"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <option value="all">{t('ls_filter_all')}</option>
-            <option value="sale">{t('ls_type_sale')}</option>
-            <option value="rent">{t('ls_type_rent')}</option>
-          </select>
+      <div className="ls-toolbar">
+        <div className="od-filters" role="group" aria-label={t('od_filter_label')}>
+          {CHIPS.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              className={'od-feed-filter' + (chip === c.id ? ' od-active' : '')}
+              onClick={() => setChip(c.id)}
+              aria-pressed={chip === c.id}
+            >
+              <span>{t(c.labelKey)}</span>
+              <span className="od-feed-filter-count">{stats ? c.get(stats) : '—'}</span>
+            </button>
+          ))}
         </div>
         <div className="ls-search">
           <svg className="ls-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><line x1="20" y1="20" x2="16.5" y2="16.5" /></svg>
@@ -256,16 +256,50 @@ export default function Listings() {
             aria-label={t('ls_search_label')}
           />
         </div>
+        <div className="od-view-toggle" role="group" aria-label={t('od_view_label')}>
+          <button
+            type="button"
+            className={'od-view-toggle-btn' + (view === 'grid' ? ' od-active' : '')}
+            onClick={() => setView('grid')}
+            title={t('od_view_grid')}
+            aria-label={t('od_view_grid')}
+            aria-pressed={view === 'grid'}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /></svg>
+          </button>
+          <button
+            type="button"
+            className={'od-view-toggle-btn' + (view === 'table' ? ' od-active' : '')}
+            onClick={() => setView('table')}
+            title={t('ls_view_table')}
+            aria-label={t('ls_view_table')}
+            aria-pressed={view === 'table'}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><line x1="3" y1="10" x2="21" y2="10" /><line x1="3" y1="15" x2="21" y2="15" /><line x1="9" y1="4" x2="9" y2="20" /></svg>
+          </button>
+        </div>
         <div className="ls-results">
           <strong>{items.length}</strong>
           <span>{t('ls_results_count')}</span>
         </div>
-      </section>
+      </div>
 
-      {items.length > 0 ? (
+      {items.length === 0 ? (
+        <section className="ls-empty">
+          <div className="ls-empty-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18" /><path d="M5 21V8l7-5 7 5v13" /><path d="M9 21v-7h6v7" /></svg>
+          </div>
+          <h2 className="ls-empty-title">{t('ls_empty_title')}</h2>
+          <p className="ls-empty-body">{t('ls_empty_body')}</p>
+          <div className="ls-empty-actions">
+            <button type="button" className="ls-btn ls-btn-outline" onClick={clearFilters}>{t('ls_empty_clear')}</button>
+            <button type="button" className="ls-btn ls-btn-accent" onClick={openAdd}>{t('ls_add_listing')}</button>
+          </div>
+        </section>
+      ) : view === 'grid' ? (
         <section className="ls-grid">
           {items.map((item) => (
-            <article className="ls-card" key={item.id}>
+            <article className="ls-card" key={item.id} onClick={() => openEdit(item)}>
               <div className="ls-card-media">
                 <img className="ls-card-img" src={item.image} alt={item.title} loading="lazy" />
                 <div className="ls-card-badges">
@@ -294,14 +328,7 @@ export default function Listings() {
                     <span className="ls-card-updated">{t('ls_updated')} {item.updatedAt}</span>
                   </div>
                   <div className="ls-card-actions">
-                    <button type="button" className="ls-btn ls-btn-sm ls-btn-outline" onClick={() => openEdit(item)}>
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></svg>
-                      <span>{t('ls_card_edit')}</span>
-                    </button>
-                    <button type="button" className="ls-btn ls-btn-sm ls-btn-ghost" onClick={() => setDeleteTarget(item)}>
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
-                      <span>{t('ls_card_delete')}</span>
-                    </button>
+                    {rowMenuBtn(item)}
                   </div>
                 </div>
               </div>
@@ -309,20 +336,94 @@ export default function Listings() {
           ))}
         </section>
       ) : (
-        <section className="ls-empty">
-          <div className="ls-empty-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18" /><path d="M5 21V8l7-5 7 5v13" /><path d="M9 21v-7h6v7" /></svg>
-          </div>
-          <h2 className="ls-empty-title">{t('ls_empty_title')}</h2>
-          <p className="ls-empty-body">{t('ls_empty_body')}</p>
-          <div className="ls-empty-actions">
-            <button type="button" className="ls-btn ls-btn-outline" onClick={clearFilters}>{t('ls_empty_clear')}</button>
-            <button type="button" className="ls-btn ls-btn-accent" onClick={openAdd}>{t('ls_add_listing')}</button>
-          </div>
-        </section>
+        <div className="ls-table-wrap">
+          <table className="ls-table">
+            <thead>
+              <tr>
+                <th scope="col">{t('ls_th_property')}</th>
+                <th scope="col">{t('ls_field_location')}</th>
+                <th scope="col">{t('ls_filter_status_label')}</th>
+                <th scope="col">{t('ls_filter_type_label')}</th>
+                <th scope="col">{t('ls_field_price')}</th>
+                <th scope="col">{t('ls_field_beds')}</th>
+                <th scope="col">{t('ls_field_baths')}</th>
+                <th scope="col">{t('ls_field_area')}</th>
+                <th scope="col">{t('ls_agent_label')}</th>
+                <th scope="col">{t('ls_updated')}</th>
+                <th scope="col">{t('ls_th_actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id} onClick={() => openEdit(item)}>
+                  <td>
+                    <div className="ls-table-prop">
+                      <img className="ls-table-thumb" src={item.image} alt={item.title} loading="lazy" />
+                      <span className="ls-table-title">{item.title}</span>
+                    </div>
+                  </td>
+                  <td>{item.location}</td>
+                  <td><span className={'ls-badge ls-badge-' + item.status}>{t('ls_status_' + item.status)}</span></td>
+                  <td><span className={'ls-badge ls-badge-' + item.type}>{t('ls_type_' + item.type)}</span></td>
+                  <td className="ls-table-price">
+                    {formatPrice(item.price)}
+                    {item.type === 'rent' ? <span className="ls-price-unit">{t('ls_unit_month')}</span> : null}
+                  </td>
+                  <td>{item.beds}</td>
+                  <td>{item.baths}</td>
+                  <td>{item.area}</td>
+                  <td>{item.agent}</td>
+                  <td className="ls-table-updated">{item.updatedAt}</td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <div className="ls-table-actions">
+                      {rowMenuBtn(item)}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <footer className="ls-foot">{t('ls_brand_foot')}</footer>
+
+      {menu ? (
+        <div
+          className="ls-row-menu"
+          role="menu"
+          style={{ top: menu.top, left: menu.left }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            role="menuitem"
+            className="ls-row-menu-item"
+            onClick={() => { setMenu(null); openEdit(menu.item); }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" /><circle cx="12" cy="12" r="3" /></svg>
+            <span>{t('ls_menu_view')}</span>
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="ls-row-menu-item"
+            onClick={() => { setMenu(null); openEdit(menu.item); }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></svg>
+            <span>{t('ls_card_edit')}</span>
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="ls-row-menu-item ls-row-menu-danger"
+            onClick={() => { setMenu(null); setDeleteTarget(menu.item); }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+            <span>{t('ls_card_delete')}</span>
+          </button>
+        </div>
+      ) : null}
 
       {modal ? (
         <div

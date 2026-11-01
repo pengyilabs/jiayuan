@@ -1,0 +1,110 @@
+/* Shared top bar (Listings + Agent feed) — classes prefixed tb- */
+
+.tb-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+}
+.tb-topbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 14px 28px;
+}
+.tb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.tb-brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tb-brand-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.tb-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tb-nav-link {
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color var(--motion), background var(--motion);
+}
+.tb-nav-link:hover {
+  color: var(--fg);
+  background: var(--surface-warm);
+}
+.tb-nav-link.tb-nav-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.tb-top-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tb-btn-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.tb-btn-logout:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.tb-btn-logout svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 880px) {
+  .tb-topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .tb-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-top: 4px;
+  }
+}

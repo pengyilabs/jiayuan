@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/Login.jsx';
-import OwnerDashboard from './pages/OwnerDashboard.jsx';
 import AgentFeed from './pages/AgentFeed.jsx';
 import Listings from './pages/Listings.jsx';
 
@@ -15,9 +14,10 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<RequireRole><OwnerDashboard /></RequireRole>} />
-      <Route path="/feed" element={<RequireRole><AgentFeed /></RequireRole>} />
+      <Route path="/" element={<RequireRole><Listings /></RequireRole>} />
       <Route path="/listings" element={<RequireRole><Listings /></RequireRole>} />
+      <Route path="/dashboard" element={<Navigate to="/" replace />} />
+      <Route path="/feed" element={<RequireRole><AgentFeed /></RequireRole>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

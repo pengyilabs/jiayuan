@@ -1,8 +1,10 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLang } from '../lib/i18n.jsx';
-import { listListings, subscribe, formatPrice } from '../lib/store.js';
-import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
+import {
+  listListings, listPosts, createPost, deletePost, subscribe, formatPrice
+} from '../lib/store.js';
+import TopBar from '../components/TopBar.jsx';
 import './AgentFeed.css';
 
 const IMG = '/images/listings/';
@@ -15,24 +17,6 @@ const PLATFORMS = [
   { id: 'wxch', key: 'platform_wxch', color: '#FF6B2C', icon: 'W', tagCls: 'tag-wxch' },
   { id: 'Instagram', key: 'platform_ig', color: '#E1306C', icon: 'ig', tagCls: 'tag-ig' }
 ];
-
-const STATUS_LABEL_KEY = {
-  published: 'status_published',
-  pending: 'status_pending',
-  draft: 'status_draft',
-  rejected: 'status_rejected',
-  active: 'status_active',
-  sold: 'status_sold'
-};
-
-const STATUS_CLS = {
-  published: 'status-published',
-  pending: 'status-pending',
-  draft: 'status-draft',
-  rejected: 'status-rejected',
-  active: 'status-active',
-  sold: 'status-sold'
-};
 
 const LOCALES = { zh: 'zh-CN', en: 'en-US', fr: 'fr-FR', es: 'es-ES' };
 
@@ -53,6 +37,14 @@ function localISO(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+function parseDay(iso) {
+  return new Date(String(iso).slice(0, 10) + 'T00:00:00');
+}
+
+function formatWeekday(iso, lang) {
+  return new Intl.DateTimeFormat(LOCALES[lang] || 'en-US', { weekday: 'short' }).format(parseDay(iso));
+}
+
 function dateGroupLabel(dateStr, lang, t) {
   const [y, m, d] = dateStr.split('-').map(Number);
   const dt = new Date(y, (m || 1) - 1, d || 1);
@@ -67,67 +59,14 @@ function dateGroupLabel(dateStr, lang, t) {
   return dateStr === localISO(new Date()) ? `${t('date_today')} · ${formatted}` : formatted;
 }
 
-function listingToItem(l, t) {
-  const isRent = l.type === 'rent';
-  return {
-    kind: 'listing',
-    id: l.id,
-    date: l.updatedAt,
-    title: l.title,
-    subtitle: l.location,
-    text: l.location,
-    price: formatPrice(l.price) + (isRent ? t('per_month') : ''),
-    beds: l.beds,
-    baths: l.baths,
-    area: l.area,
-    location: l.location,
-    statusKey: l.status,
-    typeKey: l.type,
-    images: [l.image || IMG + 'condo1.jpg'],
-    media: 'single',
-    platform: null,
-    templateId: null,
-    hashtags: ''
-  };
-}
-
-function Carousel({ images, t }) {
-  const [idx, setIdx] = useState(0);
-  const startX = useRef(0);
-  const total = images.length;
-  const go = (i) => setIdx(((i % total) + total) % total);
-  return (
-    <div className="carousel">
-      <div
-        className="carousel-track"
-        style={{ transform: `translateX(-${idx * 100}%)` }}
-        onTouchStart={(e) => { startX.current = e.touches[0].clientX; }}
-        onTouchEnd={(e) => {
-          const diff = startX.current - e.changedTouches[0].clientX;
-          if (Math.abs(diff) > 40) go(idx + (diff > 0 ? 1 : -1));
-        }}
-      >
-        {images.map((src, i) => <img key={i} src={src} alt="" loading="lazy" />)}
-      </div>
-      <div className="carousel-dots">
-        {images.slice(0, 7).map((_, i) => (
-          <button
-            type="button"
-            key={i}
-            className={'carousel-dot' + (i === idx ? ' active' : '')}
-            aria-label={String(i + 1)}
-            onClick={(e) => { e.stopPropagation(); go(i); }}
-          />
-        ))}
-      </div>
-      <button type="button" className="carousel-btn carousel-prev" aria-label={t('btn_prev')} onClick={(e) => { e.stopPropagation(); go(idx - 1); }}>
-        <svg viewBox="0 0 24 24"><polyline points="15,4 9,12 15,20" /></svg>
-      </button>
-      <button type="button" className="carousel-btn carousel-next" aria-label={t('btn_next')} onClick={(e) => { e.stopPropagation(); go(idx + 1); }}>
-        <svg viewBox="0 0 24 24"><polyline points="9,4 15,12 9,20" /></svg>
-      </button>
-    </div>
-  );
+function groupByDay(items) {
+  const map = new Map();
+  for (const item of items) {
+    const key = String(item.date || '').slice(0, 10);
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(item);
+  }
+  return [...map.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1));
 }
 
 function VideoPlay() {
@@ -138,34 +77,22 @@ function VideoPlay() {
   );
 }
 
-function PostMedia({ item, variant, t }) {
-  const isCarousel = item.media === 'carousel' && item.images.length > 1;
-  const isVideo = item.media === 'video';
-  const cover = item.images[0] || IMG + 'condo1.jpg';
-
-  if (variant === 'plain') {
-    if (isCarousel) return <Carousel images={item.images} t={t} />;
-    return (
-      <div className={'post-img-wrap' + (isVideo ? ' ratio-169' : '')}>
-        <img src={cover} alt="" loading="lazy" />
-        {isVideo && <VideoPlay />}
-        {isVideo && <div className="post-badge">▶ {t('status_pending')}</div>}
-      </div>
-    );
-  }
-
-  if (isCarousel) {
-    return <div className="feed-media"><Carousel images={item.images} t={t} /></div>;
-  }
-  if (isVideo) {
-    return (
-      <div className="feed-media">
-        <img src={cover} alt="" loading="lazy" />
-        <VideoPlay />
-      </div>
-    );
-  }
-  return <img className="feed-photo" src={cover} alt="" loading="lazy" />;
+function PostMedia({ post }) {
+  const cover = post.images[0] || IMG + 'condo1.jpg';
+  const isVideo = post.media === 'video';
+  const isCarousel = post.media === 'carousel' && post.images.length > 1;
+  return (
+    <div className="post-img-wrap">
+      <img src={cover} alt="" loading="lazy" />
+      {isVideo && <VideoPlay />}
+      {isCarousel && (
+        <div className="af-stack">
+          {post.images.slice(1, 4).map((src, i) => <img key={i} src={src} alt="" loading="lazy" />)}
+          <span className="af-stack-count">{post.images.length}</span>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function PlatformTag({ platform, t }) {
@@ -177,134 +104,41 @@ function PlatformTag({ platform, t }) {
   );
 }
 
-function PostActions({ item, t, liked, onToggleLike }) {
+function PostCard({ post, t, liked, onToggleLike, onDelete }) {
   return (
-    <div className="post-actions">
-      <button type="button" className={'post-action' + (liked ? ' liked' : '')} onClick={() => onToggleLike(item.id)}>
-        {liked ? t('liked') : t('like')}
-      </button>
-      <button type="button" className="post-action">{t('comment')}</button>
-      <button type="button" className="post-action">{t('share')}</button>
-    </div>
-  );
-}
-
-function PostHeader({ item, t }) {
-  return (
-    <div className="post-header">
-      <div className="post-avatar">HD</div>
-      <div className="post-byline">
-        <div className="post-author">{t('brand')}</div>
-        <div className="post-meta">{item.date}</div>
+    <article className="post-card">
+      <div className="post-header">
+        <div className="post-avatar">HD</div>
+        <div className="post-byline">
+          <div className="post-author">{t('brand')}</div>
+          <div className="post-meta">{post.date}</div>
+        </div>
+        <PlatformTag platform={post.platform} t={t} />
       </div>
-      {item.platform
-        ? <PlatformTag platform={item.platform} t={t} />
-        : <span className={'post-type-tag ' + (item.typeKey === 'rent' ? 'type-rent' : 'type-sale')}>{t(item.typeKey === 'rent' ? 'rent_label' : 'sale_label')}</span>}
-    </div>
-  );
-}
-
-function PostBadges({ item, t }) {
-  return (
-    <div className="post-badges">
-      {item.kind === 'listing' && (
-        <span className={'post-type-tag ' + (item.typeKey === 'rent' ? 'type-rent' : 'type-sale')}>
-          {t(item.typeKey === 'rent' ? 'rent_label' : 'sale_label')}
-        </span>
-      )}
-      <span className={'post-status ' + (STATUS_CLS[item.statusKey] || 'status-pending')}>
-        {t(STATUS_LABEL_KEY[item.statusKey] || 'status_pending')}
-      </span>
-    </div>
-  );
-}
-
-function PlainCard({ item, t, liked, onToggleLike }) {
-  return (
-    <div className="post-card">
-      <PostHeader item={item} t={t} />
-      <PostMedia item={item} variant="plain" t={t} />
+      <PostMedia post={post} />
       <div className="post-body">
-        <div className="post-title">{item.title}</div>
-        <div className="post-text">{item.text}</div>
-        {item.price ? <div className="post-price">{item.price}</div> : null}
-        {(item.beds > 0 || item.location) && (
-          <div className="post-chips">
-            {item.location && <span className="chip">📍 {item.location}</span>}
-            {item.beds > 0 && <span className="chip">🛏 {item.beds} {t('beds_unit')}</span>}
-            {item.baths > 0 && <span className="chip">🚿 {item.baths} {t('baths_unit')}</span>}
-            {item.area > 0 && <span className="chip">📐 {item.area} {t('area_unit')}</span>}
-          </div>
-        )}
-        {item.hashtags ? <div className="post-hashtags">{item.hashtags}</div> : null}
-        <PostBadges item={item} t={t} />
+        <div className="post-title">{post.title}</div>
+        <div className="post-text">{post.text}</div>
+        {post.hashtags ? <div className="post-hashtags">{post.hashtags}</div> : null}
+        {post.listingTitle ? (
+          <Link className="af-post-promo" to="/listings">{t('af_promotes')} · {post.listingTitle}</Link>
+        ) : null}
       </div>
-      <PostActions item={item} t={t} liked={liked} onToggleLike={onToggleLike} />
-    </div>
-  );
-}
-
-function TplDesign({ item, t }) {
-  const price = item.price || '';
-  const address = `${item.subtitle || item.title} · ${item.beds} ${t('beds_unit')} ${item.baths} ${t('baths_unit')}`;
-
-  if (item.templateId === 1) {
-    return (
-      <div className="feed-design-a">
-        <div className="feed-brand">{t('brand')}</div>
-        <div className="feed-price">{price}</div>
-        <div className="feed-title">{item.title}</div>
-        <PostMedia item={item} variant="a" t={t} />
+      <div className="post-actions">
+        <button type="button" className={'post-action' + (liked ? ' liked' : '')} onClick={() => onToggleLike(post.id)}>
+          {liked ? t('liked') : t('like')}
+        </button>
+        <button
+          type="button"
+          className="post-action af-post-delete"
+          aria-label={t('ls_card_delete')}
+          onClick={() => onDelete(post.id)}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /></svg>
+          {t('ls_card_delete')}
+        </button>
       </div>
-    );
-  }
-  if (item.templateId === 2) {
-    return (
-      <div className="feed-design-b">
-        <PostMedia item={item} variant="b" t={t} />
-        <div className="feed-info">
-          <div className="feed-badge">{t('for_sale')}</div>
-          <div className="feed-price">{price}</div>
-          <div className="feed-address">{address}</div>
-        </div>
-        <div className="feed-brand">{t('brand_mark')}</div>
-      </div>
-    );
-  }
-  if (item.templateId === 3) {
-    return (
-      <div className="feed-design-c">
-        <PostMedia item={item} variant="c" t={t} />
-        <div className="feed-overlay">
-          <div className="feed-brand">{t('brand')}</div>
-          <div className="feed-price">{price}</div>
-          <div className="feed-title">{item.title}</div>
-          <div className="feed-tag">{t('rent_label')}</div>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="feed-design-d">
-      <div className="feed-left">
-        <div className="feed-brand">{t('brand_mark')}</div>
-        <div className="feed-zh">{item.title}</div>
-        <div className="feed-en">{item.subtitle}</div>
-      </div>
-      <PostMedia item={item} variant="d" t={t} />
-      <div className="feed-price-bar">{price}</div>
-    </div>
-  );
-}
-
-function TplCard({ item, t, liked, onToggleLike }) {
-  return (
-    <div className="feed-tpl">
-      <PostHeader item={item} t={t} />
-      <TplDesign item={item} t={t} />
-      {item.hashtags ? <div className="tpl-hashtags">{item.hashtags}</div> : null}
-      <PostActions item={item} t={t} liked={liked} onToggleLike={onToggleLike} />
-    </div>
+    </article>
   );
 }
 
@@ -342,7 +176,6 @@ function FormatOption({ selected, onSelect, icon, name, desc }) {
 
 export default function AgentFeed() {
   const { lang, t } = useLang();
-  const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [posts, setPosts] = useState([]);
   const [liked, setLiked] = useState(() => new Set());
@@ -350,17 +183,18 @@ export default function AgentFeed() {
   const [createStep, setCreateStep] = useState(0);
   const [createState, setCreateState] = useState({ platforms: [], templateFormat: 'single' });
   const [toast, setToast] = useState('');
-  const feedRef = useRef(null);
+  const [activeDay, setActiveDay] = useState('');
   const toastTimer = useRef(null);
 
   useEffect(() => {
-    document.title = t('af_page_title');
+    document.title = `${t('af_heading')} — ${t('brand_mark')}`;
   }, [t]);
 
   useEffect(() => {
     let alive = true;
     const refresh = () => {
       listListings().then((items) => { if (alive) setListings(items); });
+      listPosts().then((items) => { if (alive) setPosts(items); });
     };
     refresh();
     const unsub = subscribe(refresh);
@@ -369,20 +203,45 @@ export default function AgentFeed() {
 
   useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
 
-  const feedItems = useMemo(() => {
-    const listingItems = listings.map((l) => listingToItem(l, t));
-    return [...posts, ...listingItems];
-  }, [listings, posts, t]);
+  const sorted = useMemo(
+    () => posts.slice().sort((a, b) => String(b.date).localeCompare(String(a.date))),
+    [posts]
+  );
+  const days = useMemo(() => groupByDay(sorted), [sorted]);
+  const today = localISO(new Date());
 
-  const groups = useMemo(() => {
-    const map = new Map();
-    feedItems.forEach((item) => {
-      const date = item.date || localISO(new Date());
-      if (!map.has(date)) map.set(date, []);
-      map.get(date).push(item);
-    });
-    return Array.from(map.entries()).sort((a, b) => b[0].localeCompare(a[0]));
-  }, [feedItems]);
+  useEffect(() => {
+    if (days.length === 0) {
+      setActiveDay('');
+      return;
+    }
+    setActiveDay((cur) => (days.some(([key]) => key === cur) ? cur : days[0][0]));
+  }, [days]);
+
+  useEffect(() => {
+    if (days.length === 0) return undefined;
+    const order = new Map(days.map(([key], i) => [key, i]));
+    const seen = new Map();
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) seen.set(entry.target.id, entry.isIntersecting);
+      const visible = [...seen.entries()]
+        .filter(([, ok]) => ok)
+        .map(([id]) => id.replace('af-day-', ''))
+        .sort((a, b) => (order.get(a) ?? 999) - (order.get(b) ?? 999));
+      if (visible.length > 0) setActiveDay(visible[0]);
+    }, { rootMargin: '-140px 0px -55% 0px' });
+    for (const [key] of days) {
+      const el = document.getElementById('af-day-' + key);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, [days]);
+
+  function jumpToDay(key) {
+    setActiveDay(key);
+    const el = document.getElementById('af-day-' + key);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   function toggleLike(id) {
     setLiked((prev) => {
@@ -398,9 +257,9 @@ export default function AgentFeed() {
     toastTimer.current = setTimeout(() => setToast(''), 2000);
   }
 
-  function logout() {
-    try { sessionStorage.removeItem('pp-role'); } catch (e) {}
-    navigate('/login');
+  async function handleDelete(id) {
+    await deletePost(id);
+    showToast(t('af_toast_deleted'));
   }
 
   function openCreate() {
@@ -432,13 +291,12 @@ export default function AgentFeed() {
     setCreateState((s) => ({ ...s, templateFormat: fmt }));
   }
 
-  function confirmPost() {
+  async function confirmPost() {
     const listing = listings.find((l) => l.id === createState.listingId) || null;
     const hasTemplate = createState.templateId !== undefined && createState.templateId !== null;
     const fmt = createState.templateFormat || 'single';
     const date = localISO(new Date());
     const title = listing ? `${listing.title} · ${t('post_title_suffix')}` : t('post_new_title');
-    const price = listing ? formatPrice(listing.price) + (listing.type === 'rent' ? t('per_month') : '') : '';
     const baseImage = listing ? listing.image : IMG + 'condo3.jpg';
 
     let media = 'single';
@@ -452,33 +310,28 @@ export default function AgentFeed() {
       }
     }
 
-    const created = createState.platforms.map((platform, i) => ({
-      kind: 'post',
-      id: 'p-' + Date.now().toString(36) + '-' + i,
-      date,
-      title,
-      subtitle: listing ? listing.location : '',
-      text: listing
-        ? `${listing.title}，${listing.beds} ${t('beds_unit')} ${listing.baths} ${t('baths_unit')}，${formatPrice(listing.price)}`
-        : t('post_new_desc'),
-      price,
-      beds: listing ? listing.beds : 0,
-      baths: listing ? listing.baths : 0,
-      area: listing ? listing.area : 0,
-      location: '',
-      statusKey: 'pending',
-      typeKey: listing ? listing.type : 'sale',
-      images,
-      media,
-      platform,
-      templateId: hasTemplate ? createState.templateId : null,
-      hashtags: ''
-    }));
+    const text = listing
+      ? `${listing.title}，${listing.beds} ${t('beds_unit')} ${listing.baths} ${t('baths_unit')}，${formatPrice(listing.price)}`
+      : t('post_new_desc');
 
-    setPosts((prev) => [...created, ...prev]);
+    for (const platform of createState.platforms) {
+      await createPost({
+        listingId: listing ? listing.id : null,
+        listingTitle: listing ? listing.title : '',
+        title,
+        text,
+        images,
+        media,
+        platform,
+        templateId: hasTemplate ? createState.templateId : null,
+        hashtags: '',
+        date
+      });
+    }
+
     setSheetOpen(false);
-    showToast(`${created.length} ${t('toast_posted')}`);
-    if (feedRef.current) feedRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast(`${createState.platforms.length} ${t('toast_posted')}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const selCount = createState.platforms.length;
@@ -639,66 +492,73 @@ export default function AgentFeed() {
 
   return (
     <div className="af-page">
-      <div className="status-bar" />
+      <TopBar />
 
-      <header className="topbar">
-        <div className="topbar-brand">
-          <div className="topbar-logo">HD</div>
-          <div className="topbar-title">{t('brand_mark')}</div>
-        </div>
-        <div className="topbar-actions">
-          <LanguageSwitcher />
-          <button type="button" className="topbar-icon" aria-label={t('aria_search')}>
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
-          </button>
-          <button type="button" className="topbar-icon" aria-label={t('aria_notifications')}>
-            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" /></svg>
-          </button>
-          <button type="button" className="topbar-icon" aria-label={t('aria_logout')} onClick={logout}>
-            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+      <header className="af-header">
+        <div className="af-header-bar">
+          <div className="af-header-left">
+            <span className="af-eyebrow">{t('af_eyebrow')}</span>
+            <h1 className="af-title">{t('af_heading')}</h1>
+          </div>
+          <button type="button" className="af-btn af-btn-accent" onClick={openCreate}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            <span>{t('af_create_post')}</span>
           </button>
         </div>
       </header>
 
-      <div className="feed" ref={feedRef}>
-        {groups.length === 0 ? (
+      <div className="af-feed">
+        {days.length === 0 ? (
           <div className="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
             <p>{t('feed_empty')}</p>
+            <button type="button" className="af-btn af-btn-accent af-empty-btn" onClick={openCreate}>{t('af_create_post')}</button>
           </div>
-        ) : groups.map(([date, items]) => (
-          <Fragment key={date}>
-            <div className="date-group">
-              <div className="date-group-label">
-                {dateGroupLabel(date, lang, t)}
-                <span className="date-group-count">{items.length} {t('posts_unit')}</span>
-              </div>
+        ) : (
+          <div className="af-social-feed">
+            <nav className="af-date-rail" aria-label={t('af_date_rail_label')}>
+              {days.map(([key]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={
+                    'af-date-pill' +
+                    (activeDay === key ? ' af-active' : '') +
+                    (key === today ? ' af-today' : '')
+                  }
+                  onClick={() => jumpToDay(key)}
+                >
+                  <span className="af-dr-weekday">{formatWeekday(key, lang)}</span>
+                  <span className="af-dr-day">{parseDay(key).getDate()}</span>
+                  <span className="af-dr-dot" />
+                </button>
+              ))}
+            </nav>
+            <div className="af-day-rows">
+              {days.map(([key, dayPosts]) => (
+                <section className="af-day-section" id={'af-day-' + key} key={key}>
+                  <div className="af-day-header">
+                    <h2 className="af-day-date">{dateGroupLabel(key, lang, t)}</h2>
+                    <span className="af-day-count">{dayPosts.length} {t('posts_unit')}</span>
+                  </div>
+                  <div className="af-day-posts">
+                    {dayPosts.map((post) => (
+                      <PostCard
+                        key={post.id}
+                        post={post}
+                        t={t}
+                        liked={liked.has(post.id)}
+                        onToggleLike={toggleLike}
+                        onDelete={handleDelete}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
             </div>
-            {items.map((item) => (
-              item.templateId
-                ? <TplCard key={item.id} item={item} t={t} liked={liked.has(item.id)} onToggleLike={toggleLike} />
-                : <PlainCard key={item.id} item={item} t={t} liked={liked.has(item.id)} onToggleLike={toggleLike} />
-            ))}
-          </Fragment>
-        ))}
-      </div>
-
-      <nav className="bottom-nav">
-        <button type="button" className="nav-btn active" onClick={() => navigate('/feed')}>
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
-          <span>{t('nav_feed')}</span>
-        </button>
-        <button type="button" className="nav-btn nav-btn-create" onClick={openCreate}>
-          <div className="nav-create-icon">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
           </div>
-          <span>{t('nav_create')}</span>
-        </button>
-        <button type="button" className="nav-btn" onClick={() => navigate('/listings')}>
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /></svg>
-          <span>{t('nav_listings')}</span>
-        </button>
-      </nav>
+        )}
+      </div>
 
       <div className={'sheet-overlay' + (sheetOpen ? ' open' : '')} onClick={(e) => { if (e.target === e.currentTarget) closeCreate(); }}>
         <div className="sheet">
