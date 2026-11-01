@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLang } from '../lib/i18n.jsx';
 import TopBar from '../components/TopBar.jsx';
 import {
@@ -38,8 +38,6 @@ const EMPTY_FORM = {
   beds: '', baths: '', area: '', agent: '', image: DEFAULT_IMAGE
 };
 
-const LOCALES = { zh: 'zh-CN', en: 'en-US', fr: 'fr-FR', es: 'es-ES' };
-
 const CHIPS = [
   { id: 'all', labelKey: 'ls_filter_all', get: (s) => s.total },
   { id: 'active', labelKey: 'ls_status_active', get: (s) => s.active },
@@ -55,41 +53,8 @@ function chipFilter(id) {
   return { status: id };
 }
 
-function parseDay(iso) {
-  return new Date(String(iso).slice(0, 10) + 'T00:00:00');
-}
-
-function todayIso() {
-  const d = new Date();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return d.getFullYear() + '-' + m + '-' + day;
-}
-
-function formatDayLong(iso, lang) {
-  return new Intl.DateTimeFormat(LOCALES[lang] || 'en-US', { weekday: 'short', month: 'short', day: 'numeric' }).format(parseDay(iso));
-}
-
-function formatWeekday(iso, lang) {
-  return new Intl.DateTimeFormat(LOCALES[lang] || 'en-US', { weekday: 'short' }).format(parseDay(iso));
-}
-
-function formatDayShort(iso, lang) {
-  return new Intl.DateTimeFormat(LOCALES[lang] || 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(parseDay(iso));
-}
-
-function groupByDay(items) {
-  const map = new Map();
-  for (const item of items) {
-    const key = String(item.updatedAt || '').slice(0, 10);
-    if (!map.has(key)) map.set(key, []);
-    map.get(key).push(item);
-  }
-  return [...map.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1));
-}
-
 export default function Listings() {
-  const { t, lang } = useLang();
+  const { t } = useLang();
 
   const [items, setItems] = useState([]);
   const [stats, setStats] = useState(null);
@@ -97,11 +62,11 @@ export default function Listings() {
   const [view, setView] = useState('grid');
   const [search, setSearch] = useState('');
   const [q, setQ] = useState('');
-  const [activeDay, setActiveDay] = useState('');
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [menu, setMenu] = useState(null);
   const reqRef = useRef(0);
 
   useEffect(() => {
@@ -126,62 +91,35 @@ export default function Listings() {
 
   useEffect(() => { document.title = t('ls_page_title'); }, [t]);
 
-  const sorted = useMemo(
-    () => items.slice().sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : a.updatedAt > b.updatedAt ? -1 : 0)),
-    [items]
-  );
-  const days = useMemo(() => groupByDay(sorted), [sorted]);
-  const today = todayIso();
-
   useEffect(() => {
-    if (days.length === 0) {
-      setActiveDay('');
-      return;
-    }
-    setActiveDay((cur) => (days.some(([key]) => key === cur) ? cur : days[0][0]));
-  }, [days]);
-
-  useEffect(() => {
-    if (view !== 'by-date' || days.length === 0) return undefined;
-    const order = new Map(days.map(([key], i) => [key, i]));
-    const seen = new Map();
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) seen.set(entry.target.id, entry.isIntersecting);
-      const visible = [...seen.entries()]
-        .filter(([, ok]) => ok)
-        .map(([id]) => id.replace('od-day-', ''))
-        .sort((a, b) => (order.get(a) ?? 999) - (order.get(b) ?? 999));
-      if (visible.length > 0) setActiveDay(visible[0]);
-    }, { rootMargin: '-140px 0px -55% 0px' });
-    for (const [key] of days) {
-      const el = document.getElementById('od-day-' + key);
-      if (el) observer.observe(el);
-    }
-    return () => observer.disconnect();
-  }, [view, days]);
-
-  useEffect(() => {
-    if (!modal && !deleteTarget) return undefined;
+    if (!modal && !deleteTarget && !menu) return undefined;
     function onKey(e) {
       if (e.key !== 'Escape') return;
-      if (deleteTarget) setDeleteTarget(null);
+      if (menu) setMenu(null);
+      else if (deleteTarget) setDeleteTarget(null);
       else setModal(null);
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [modal, deleteTarget]);
+  }, [modal, deleteTarget, menu]);
 
-  function jumpToDay(key) {
-    setActiveDay(key);
-    const el = document.getElementById('od-day-' + key);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function scrollDay(e, dir) {
-    const wrap = e.currentTarget.closest('.od-day-scroll-wrap');
-    const row = wrap && wrap.querySelector('.od-day-scroll');
-    if (row) row.scrollBy({ left: dir * 672, behavior: 'smooth' });
-  }
+  useEffect(() => {
+    if (!menu) return undefined;
+    function onDown(e) {
+      const el = e.target;
+      if (el.closest && (el.closest('.ls-row-menu') || el.closest('.ls-row-menu-btn'))) return;
+      setMenu(null);
+    }
+    function onClose() { setMenu(null); }
+    document.addEventListener('mousedown', onDown);
+    window.addEventListener('scroll', onClose, true);
+    window.addEventListener('resize', onClose);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      window.removeEventListener('scroll', onClose, true);
+      window.removeEventListener('resize', onClose);
+    };
+  }, [menu]);
 
   function setField(name, value) {
     setForm((f) => ({ ...f, [name]: value }));
@@ -214,6 +152,18 @@ export default function Listings() {
     setChip('all');
     setSearch('');
     setQ('');
+  }
+
+  function toggleMenu(e, item) {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const MENU_H = 136;
+    const openUp = rect.bottom + MENU_H > window.innerHeight;
+    setMenu((cur) => (cur && cur.item.id === item.id ? null : {
+      item,
+      top: openUp ? rect.top - MENU_H - 6 : rect.bottom + 6,
+      left: rect.right
+    }));
   }
 
   async function handleSubmit(e) {
@@ -249,17 +199,16 @@ export default function Listings() {
     setDeleteTarget(null);
   }
 
-  const editBtn = (item) => (
-    <button type="button" className="ls-btn ls-btn-sm ls-btn-outline" onClick={() => openEdit(item)}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></svg>
-      <span>{t('ls_card_edit')}</span>
-    </button>
-  );
-
-  const deleteBtn = (item) => (
-    <button type="button" className="ls-btn ls-btn-sm ls-btn-ghost" onClick={() => setDeleteTarget(item)}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
-      <span>{t('ls_card_delete')}</span>
+  const rowMenuBtn = (item) => (
+    <button
+      type="button"
+      className="ls-row-menu-btn"
+      aria-haspopup="menu"
+      aria-expanded={!!(menu && menu.item.id === item.id)}
+      aria-label={t('ls_menu_more')}
+      onClick={(e) => toggleMenu(e, item)}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" /></svg>
     </button>
   );
 
@@ -320,13 +269,13 @@ export default function Listings() {
           </button>
           <button
             type="button"
-            className={'od-view-toggle-btn' + (view === 'by-date' ? ' od-active' : '')}
-            onClick={() => setView('by-date')}
-            title={t('ls_view_by_date')}
-            aria-label={t('ls_view_by_date')}
-            aria-pressed={view === 'by-date'}
+            className={'od-view-toggle-btn' + (view === 'table' ? ' od-active' : '')}
+            onClick={() => setView('table')}
+            title={t('ls_view_table')}
+            aria-label={t('ls_view_table')}
+            aria-pressed={view === 'table'}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="16" y1="2" x2="16" y2="6" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><line x1="3" y1="10" x2="21" y2="10" /><line x1="3" y1="15" x2="21" y2="15" /><line x1="9" y1="4" x2="9" y2="20" /></svg>
           </button>
         </div>
         <div className="ls-results">
@@ -350,7 +299,7 @@ export default function Listings() {
       ) : view === 'grid' ? (
         <section className="ls-grid">
           {items.map((item) => (
-            <article className="ls-card" key={item.id}>
+            <article className="ls-card" key={item.id} onClick={() => openEdit(item)}>
               <div className="ls-card-media">
                 <img className="ls-card-img" src={item.image} alt={item.title} loading="lazy" />
                 <div className="ls-card-badges">
@@ -379,8 +328,7 @@ export default function Listings() {
                     <span className="ls-card-updated">{t('ls_updated')} {item.updatedAt}</span>
                   </div>
                   <div className="ls-card-actions">
-                    {editBtn(item)}
-                    {deleteBtn(item)}
+                    {rowMenuBtn(item)}
                   </div>
                 </div>
               </div>
@@ -388,84 +336,94 @@ export default function Listings() {
           ))}
         </section>
       ) : (
-        <div className="od-social-feed">
-          <nav className="od-date-rail" aria-label={t('od_date_rail_label')}>
-            {days.map(([key]) => (
-              <button
-                key={key}
-                type="button"
-                className={
-                  'od-date-rail-pill od-has-posts' +
-                  (activeDay === key ? ' od-active' : '') +
-                  (key === today ? ' od-today' : '')
-                }
-                onClick={() => jumpToDay(key)}
-              >
-                <span className="od-dr-weekday">{formatWeekday(key, lang)}</span>
-                <span className="od-dr-day">{parseDay(key).getDate()}</span>
-                <span className="od-dr-dot" />
-              </button>
-            ))}
-          </nav>
-          <div className="od-feed-day-rows">
-            {days.map(([key, dayItems]) => (
-              <section className="od-day-section" id={'od-day-' + key} key={key}>
-                <div className="od-day-section-header">
-                  <div className="od-day-section-date">
-                    {key === today ? t('od_today') : formatDayLong(key, lang)}
-                    <span className="od-day-badge">{dayItems.length} {t('od_day_count')}</span>
-                  </div>
-                </div>
-                <div className="od-day-scroll-wrap">
-                  <button type="button" className="od-day-scroll-btn od-prev" onClick={(e) => scrollDay(e, -1)} aria-label={t('od_scroll_prev')}>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15,4 9,12 15,20" /></svg>
-                  </button>
-                  <div className="od-day-scroll">
-                    {dayItems.map((item) => (
-                      <article className="od-feed-card" key={item.id}>
-                        <div className="od-card-media">
-                          <img src={item.image} alt={item.title} loading="lazy" />
-                          <div className="od-card-badges">
-                            <span className={'od-badge od-badge-' + item.status}>{t('ls_status_' + item.status)}</span>
-                            <span className={'od-badge od-badge-' + item.type}>{t('ls_type_' + item.type)}</span>
-                          </div>
-                          <div className="od-card-price">
-                            {formatPrice(item.price)}
-                            {item.type === 'rent' ? <span className="od-price-unit">{t('ls_unit_month')}</span> : null}
-                          </div>
-                        </div>
-                        <div className="od-card-body">
-                          <h3 className="od-card-title">{item.title}</h3>
-                          <div className="od-card-location">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                            <span>{item.location}</span>
-                          </div>
-                          <div className="od-card-meta">
-                            {item.beds} {t('ls_unit_beds')} · {item.baths} {t('ls_unit_baths')} · {item.area} {t('ls_unit_area')}
-                          </div>
-                          <div className="od-card-foot">
-                            <span className="od-card-agent">{t('ls_agent_label')} · {item.agent}</span>
-                            <span className="od-card-updated">{t('ls_updated')} {formatDayShort(item.updatedAt, lang)}</span>
-                          </div>
-                          <div className="ls-card-actions od-card-actions">
-                            {editBtn(item)}
-                            {deleteBtn(item)}
-                          </div>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                  <button type="button" className="od-day-scroll-btn od-next" onClick={(e) => scrollDay(e, 1)} aria-label={t('od_scroll_next')}>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9,4 15,12 9,20" /></svg>
-                  </button>
-                </div>
-              </section>
-            ))}
-          </div>
+        <div className="ls-table-wrap">
+          <table className="ls-table">
+            <thead>
+              <tr>
+                <th scope="col">{t('ls_th_property')}</th>
+                <th scope="col">{t('ls_field_location')}</th>
+                <th scope="col">{t('ls_filter_status_label')}</th>
+                <th scope="col">{t('ls_filter_type_label')}</th>
+                <th scope="col">{t('ls_field_price')}</th>
+                <th scope="col">{t('ls_field_beds')}</th>
+                <th scope="col">{t('ls_field_baths')}</th>
+                <th scope="col">{t('ls_field_area')}</th>
+                <th scope="col">{t('ls_agent_label')}</th>
+                <th scope="col">{t('ls_updated')}</th>
+                <th scope="col">{t('ls_th_actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id} onClick={() => openEdit(item)}>
+                  <td>
+                    <div className="ls-table-prop">
+                      <img className="ls-table-thumb" src={item.image} alt={item.title} loading="lazy" />
+                      <span className="ls-table-title">{item.title}</span>
+                    </div>
+                  </td>
+                  <td>{item.location}</td>
+                  <td><span className={'ls-badge ls-badge-' + item.status}>{t('ls_status_' + item.status)}</span></td>
+                  <td><span className={'ls-badge ls-badge-' + item.type}>{t('ls_type_' + item.type)}</span></td>
+                  <td className="ls-table-price">
+                    {formatPrice(item.price)}
+                    {item.type === 'rent' ? <span className="ls-price-unit">{t('ls_unit_month')}</span> : null}
+                  </td>
+                  <td>{item.beds}</td>
+                  <td>{item.baths}</td>
+                  <td>{item.area}</td>
+                  <td>{item.agent}</td>
+                  <td className="ls-table-updated">{item.updatedAt}</td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <div className="ls-table-actions">
+                      {rowMenuBtn(item)}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
       <footer className="ls-foot">{t('ls_brand_foot')}</footer>
+
+      {menu ? (
+        <div
+          className="ls-row-menu"
+          role="menu"
+          style={{ top: menu.top, left: menu.left }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            role="menuitem"
+            className="ls-row-menu-item"
+            onClick={() => { setMenu(null); openEdit(menu.item); }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" /><circle cx="12" cy="12" r="3" /></svg>
+            <span>{t('ls_menu_view')}</span>
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="ls-row-menu-item"
+            onClick={() => { setMenu(null); openEdit(menu.item); }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></svg>
+            <span>{t('ls_card_edit')}</span>
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="ls-row-menu-item ls-row-menu-danger"
+            onClick={() => { setMenu(null); setDeleteTarget(menu.item); }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+            <span>{t('ls_card_delete')}</span>
+          </button>
+        </div>
+      ) : null}
 
       {modal ? (
         <div
