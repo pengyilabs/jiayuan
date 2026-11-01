@@ -432,13 +432,12 @@
   max-width: 1240px;
   width: 100%;
   margin: 10px auto 0;
-  padding: 0 28px;
-  overflow: auto;
-  max-height: calc(100vh - 260px);
+  overflow-x: auto;
 }
 .ls-page .ls-table {
   width: 100%;
   min-width: 1120px;
+  margin: 0 28px;
   border-collapse: separate;
   border-spacing: 0;
   background: var(--bg);
@@ -455,9 +454,6 @@
   white-space: nowrap;
 }
 .ls-page .ls-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   background: var(--surface-warm);
   border-bottom: 1px solid var(--border);
   font-size: 11.5px;
@@ -475,6 +471,23 @@
 }
 .ls-page .ls-table tbody tr:hover {
   background: var(--accent-soft);
+}
+/* Frozen column — Property pinned left while the middle scrolls */
+.ls-page .ls-table tbody tr {
+  background: var(--bg);
+}
+.ls-page .ls-table thead th:first-child {
+  position: sticky;
+  z-index: 3;
+  left: 0;
+  box-shadow: 1px 0 0 var(--border);
+}
+.ls-page .ls-table tbody td:first-child {
+  position: sticky;
+  z-index: 2;
+  background: inherit;
+  left: 0;
+  box-shadow: 1px 0 0 var(--border-soft);
 }
 .ls-page .ls-table-prop {
   display: flex;
@@ -508,12 +521,6 @@
 .ls-page .ls-table-updated {
   font-size: 12px;
   color: var(--meta);
-  white-space: nowrap;
-}
-.ls-page .ls-table-actions {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end;
   white-space: nowrap;
 }
 
@@ -595,6 +602,15 @@
   height: 16px;
   fill: currentColor;
 }
+.ls-page .ls-table .ls-row-menu-btn {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.ls-page .ls-table .ls-row-menu-btn svg {
+  width: 13px;
+  height: 13px;
+}
 .ls-page .ls-row-menu {
   position: fixed;
   z-index: 90;
@@ -606,6 +622,10 @@
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
   transform: translateX(-100%);
   animation: ls-menu-in 140ms ease;
+}
+.ls-page .ls-row-menu-right {
+  transform: none;
+  animation: ls-menu-in-right 140ms ease;
 }
 .ls-page .ls-row-menu-item {
   display: flex;
@@ -904,6 +924,10 @@
   from { opacity: 0; transform: translateX(-100%) translateY(-4px); }
   to { opacity: 1; transform: translateX(-100%); }
 }
+@keyframes ls-menu-in-right {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
 
 /* ── Responsive ── */
 @media (max-width: 880px) {
@@ -916,10 +940,12 @@
   }
   .ls-page .ls-toolbar,
   .ls-page .ls-grid,
-  .ls-page .ls-table-wrap,
   .ls-page .ls-foot {
     padding-left: 20px;
     padding-right: 20px;
+  }
+  .ls-page .ls-table {
+    margin: 0 20px;
   }
 }
 @media (max-width: 640px) {
