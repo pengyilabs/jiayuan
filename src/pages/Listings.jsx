@@ -159,10 +159,12 @@ export default function Listings() {
     const rect = e.currentTarget.getBoundingClientRect();
     const MENU_H = 136;
     const openUp = rect.bottom + MENU_H > window.innerHeight;
+    const openRight = rect.left < 200;
     setMenu((cur) => (cur && cur.item.id === item.id ? null : {
       item,
       top: openUp ? rect.top - MENU_H - 6 : rect.bottom + 6,
-      left: rect.right
+      left: openRight ? rect.left : rect.right,
+      openRight
     }));
   }
 
@@ -350,7 +352,6 @@ export default function Listings() {
                 <th scope="col">{t('ls_field_area')}</th>
                 <th scope="col">{t('ls_agent_label')}</th>
                 <th scope="col">{t('ls_updated')}</th>
-                <th scope="col">{t('ls_th_actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -358,6 +359,7 @@ export default function Listings() {
                 <tr key={item.id} onClick={() => openEdit(item)}>
                   <td>
                     <div className="ls-table-prop">
+                      {rowMenuBtn(item)}
                       <img className="ls-table-thumb" src={item.image} alt={item.title} loading="lazy" />
                       <span className="ls-table-title">{item.title}</span>
                     </div>
@@ -374,11 +376,6 @@ export default function Listings() {
                   <td>{item.area}</td>
                   <td>{item.agent}</td>
                   <td className="ls-table-updated">{item.updatedAt}</td>
-                  <td onClick={(e) => e.stopPropagation()}>
-                    <div className="ls-table-actions">
-                      {rowMenuBtn(item)}
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -390,7 +387,7 @@ export default function Listings() {
 
       {menu ? (
         <div
-          className="ls-row-menu"
+          className={'ls-row-menu' + (menu.openRight ? ' ls-row-menu-right' : '')}
           role="menu"
           style={{ top: menu.top, left: menu.left }}
           onClick={(e) => e.stopPropagation()}
