@@ -5,26 +5,49 @@ const KEY = 'pp-listings';
 const listeners = new Set();
 
 const SEED = [
-  { id: 'l-1001', title: 'Riverside Garden Villa', type: 'sale', status: 'active', price: 12800000, location: '上海 · 徐汇滨江', beds: 4, baths: 3, area: 268, image: '/images/listings/villa1.jpg', agent: 'Chen Wei', updatedAt: '2026-10-20' },
-  { id: 'l-1002', title: 'Emerald Lake Residence', type: 'sale', status: 'active', price: 8600000, location: '上海 · 翠湖天地', beds: 3, baths: 2, area: 186, image: '/images/listings/garden1.jpg', agent: 'Lin Yue', updatedAt: '2026-10-21' },
-  { id: 'l-1003', title: 'Downtown Loft 12F', type: 'rent', status: 'active', price: 28000, location: '上海 · 静安寺', beds: 2, baths: 1, area: 96, image: '/images/listings/loft1.jpg', agent: 'Chen Wei', updatedAt: '2026-10-22' },
-  { id: 'l-1004', title: 'Skyline View Apartment', type: 'sale', status: 'pending', price: 6300000, location: '上海 · 陆家嘴', beds: 2, baths: 2, area: 128, image: '/images/listings/view1.jpg', agent: 'Zhao Min', updatedAt: '2026-10-23' },
-  { id: 'l-1005', title: 'Garden Townhouse', type: 'sale', status: 'sold', price: 9900000, location: '上海 · 虹桥', beds: 4, baths: 3, area: 220, image: '/images/listings/town1.jpg', agent: 'Lin Yue', updatedAt: '2026-10-18' },
-  { id: 'l-1006', title: 'Modern Condo 8F', type: 'rent', status: 'active', price: 16500, location: '上海 · 长宁', beds: 1, baths: 1, area: 62, image: '/images/listings/condo1.jpg', agent: 'Zhao Min', updatedAt: '2026-10-24' },
-  { id: 'l-1007', title: 'Lakeview Family Home', type: 'sale', status: 'active', price: 7400000, location: '上海 · 苏州湾', beds: 3, baths: 2, area: 174, image: '/images/listings/garden2.jpg', agent: 'Chen Wei', updatedAt: '2026-10-25' },
-  { id: 'l-1008', title: 'Penthouse Duplex', type: 'sale', status: 'pending', price: 15600000, location: '上海 · 外滩', beds: 5, baths: 4, area: 320, image: '/images/listings/villa2.jpg', agent: 'Lin Yue', updatedAt: '2026-10-26' }
+  { id: 'l-1001', title: 'Riverside Garden Villa', type: 'sale', status: 'active', price: 12800000, currency: 'CNY', location: '上海 · 徐汇滨江', unitNumber: 'No. 12', propertyType: 'house', beds: 4, baths: 3, area: 268, parking: { count: 2, type: 'covered' }, furnishedLevel: 'semi', petsAllowed: true, photos: ['/images/listings/villa1.jpg', '/images/listings/villa2.jpg', '/images/listings/villa3.jpg'], cover: '/images/listings/villa1.jpg', agent: 'Chen Wei', ownerName: 'Wang Jianguo', ownerPhone: '+86 138 0013 8000', notes: 'Owner prefers weekend viewings.', updatedAt: '2026-10-20' },
+  { id: 'l-1002', title: 'Emerald Lake Residence', type: 'sale', status: 'active', price: 8600000, currency: 'CNY', location: '上海 · 翠湖天地', unitNumber: 'Bldg 3 · 1202', propertyType: 'apartment', beds: 3, baths: 2, area: 186, parking: { count: 1, type: 'covered' }, furnishedLevel: 'full', petsAllowed: false, photos: ['/images/listings/garden1.jpg', '/images/listings/garden3.jpg'], cover: '/images/listings/garden1.jpg', agent: 'Lin Yue', ownerName: 'Li Hongmei', ownerPhone: '+86 139 2200 3311', notes: '', updatedAt: '2026-10-21' },
+  { id: 'l-1003', title: 'Downtown Loft 12F', type: 'rent', status: 'active', price: 28000, currency: 'CNY', location: '上海 · 静安寺', unitNumber: '12F-A', propertyType: 'loft', beds: 2, baths: 1, area: 96, parking: { count: 1, type: 'available' }, furnishedLevel: 'full', petsAllowed: false, photos: ['/images/listings/loft1.jpg', '/images/listings/loft2.jpg'], cover: '/images/listings/loft1.jpg', agent: 'Chen Wei', ownerName: 'Zhou Min', ownerPhone: '+86 137 5566 7788', notes: 'Short-term lease possible.', updatedAt: '2026-10-22' },
+  { id: 'l-1004', title: 'Skyline View Apartment', type: 'sale', status: 'pending', price: 6300000, currency: 'CNY', location: '上海 · 陆家嘴', unitNumber: 'Tower 2 · 3305', propertyType: 'apartment', beds: 2, baths: 2, area: 128, parking: { count: 1, type: 'private' }, furnishedLevel: 'appliances', petsAllowed: true, photos: ['/images/listings/view1.jpg', '/images/listings/view2.jpg'], cover: '/images/listings/view1.jpg', agent: 'Zhao Min', ownerName: 'Chen Guoqiang', ownerPhone: '+86 136 9090 1212', notes: '', updatedAt: '2026-10-23' },
+  { id: 'l-1005', title: 'Garden Townhouse', type: 'sale', status: 'sold', price: 9900000, currency: 'CNY', location: '上海 · 虹桥', unitNumber: 'Row 5 · 7', propertyType: 'townhouse', beds: 4, baths: 3, area: 220, parking: { count: 2, type: 'private' }, furnishedLevel: 'none', petsAllowed: true, photos: ['/images/listings/town1.jpg', '/images/listings/town2.jpg'], cover: '/images/listings/town1.jpg', agent: 'Lin Yue', ownerName: 'Sun Yaping', ownerPhone: '+86 135 4433 2211', notes: 'Closed 2026-10-18.', updatedAt: '2026-10-18' },
+  { id: 'l-1006', title: 'Modern Condo 8F', type: 'rent', status: 'rented', price: 16500, currency: 'CNY', location: '上海 · 长宁', unitNumber: '8F-B', propertyType: 'apartment', beds: 1, baths: 1, area: 62, parking: { count: 0, type: 'none' }, furnishedLevel: 'semi', petsAllowed: false, photos: ['/images/listings/condo1.jpg', '/images/listings/condo2.jpg'], cover: '/images/listings/condo1.jpg', agent: 'Zhao Min', ownerName: 'He Ling', ownerPhone: '+86 134 7788 9900', notes: 'Lease ends 2027-04.', updatedAt: '2026-10-24' },
+  { id: 'l-1007', title: 'Lakeview Family Home', type: 'sale', status: 'active', price: 7400000, currency: 'CNY', location: '上海 · 苏州湾', unitNumber: '', propertyType: 'house', beds: 3, baths: 2, area: 174, parking: { count: 1, type: 'covered' }, furnishedLevel: 'appliances', petsAllowed: true, photos: ['/images/listings/garden2.jpg', '/images/listings/garden4.jpg'], cover: '/images/listings/garden2.jpg', agent: 'Chen Wei', ownerName: 'Xu Wenbo', ownerPhone: '+86 133 2020 4040', notes: '', updatedAt: '2026-10-25' },
+  { id: 'l-1008', title: 'Penthouse Duplex', type: 'sale', status: 'pending', price: 15600000, currency: 'CNY', location: '上海 · 外滩', unitNumber: 'PH-2', propertyType: 'apartment', beds: 5, baths: 4, area: 320, parking: { count: 3, type: 'private' }, furnishedLevel: 'full', petsAllowed: true, photos: ['/images/listings/villa2.jpg', '/images/listings/villa4.jpg', '/images/listings/view3.jpg'], cover: '/images/listings/villa2.jpg', agent: 'Lin Yue', ownerName: 'Gao Peng', ownerPhone: '+86 132 6677 8899', notes: 'Dual currency offers discussed.', updatedAt: '2026-10-26' }
 ];
+
+// Fills newer listing fields on old localStorage records and keeps the legacy
+// `image` field in sync with the cover so pages not yet migrated keep working.
+function normalize(item) {
+  const photos = Array.isArray(item.photos) && item.photos.length
+    ? item.photos.slice()
+    : (item.image ? [item.image] : []);
+  const cover = photos.indexOf(item.cover) >= 0 ? item.cover : (photos[0] || '');
+  return Object.assign({}, item, {
+    propertyType: item.propertyType || '',
+    unitNumber: item.unitNumber || '',
+    parking: Object.assign({ count: 0, type: 'none' }, item.parking || {}),
+    furnishedLevel: item.furnishedLevel || 'none',
+    petsAllowed: !!item.petsAllowed,
+    photos,
+    cover,
+    image: cover,
+    currency: item.currency || 'CNY',
+    ownerName: item.ownerName || '',
+    ownerPhone: item.ownerPhone || '',
+    notes: item.notes || ''
+  });
+}
 
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) return parsed.map(normalize);
     }
   } catch (e) {}
-  persist(SEED);
-  return SEED.slice();
+  persist(SEED.map(normalize));
+  return SEED.map(normalize);
 }
 
 function persist(list) {
@@ -63,10 +86,10 @@ export async function getListing(id) {
 
 export async function createListing(data) {
   const items = load();
-  const item = Object.assign({}, data, {
+  const item = normalize(Object.assign({}, data, {
     id: 'l-' + Date.now().toString(36),
     updatedAt: new Date().toISOString().slice(0, 10)
-  });
+  }));
   items.unshift(item);
   persist(items);
   emit();
@@ -77,9 +100,9 @@ export async function updateListing(id, patch) {
   const items = load();
   const idx = items.findIndex((i) => i.id === id);
   if (idx < 0) return null;
-  items[idx] = Object.assign({}, items[idx], patch, {
+  items[idx] = normalize(Object.assign({}, items[idx], patch, {
     updatedAt: new Date().toISOString().slice(0, 10)
-  });
+  }));
   persist(items);
   emit();
   return items[idx];
@@ -100,6 +123,8 @@ export async function getStats() {
     active: active.length,
     pending: items.filter((i) => i.status === 'pending').length,
     sold: sold.length,
+    rented: items.filter((i) => i.status === 'rented').length,
+    otherAgent: items.filter((i) => i.status === 'other_agent').length,
     forSale: items.filter((i) => i.type === 'sale').length,
     forRent: items.filter((i) => i.type === 'rent').length,
     totalValue: items.reduce((sum, i) => sum + (Number(i.price) || 0), 0),
@@ -108,8 +133,10 @@ export async function getStats() {
   };
 }
 
-export function formatPrice(n) {
-  return '¥' + Number(n || 0).toLocaleString('en-US');
+const CURRENCY_SYMBOLS = { CNY: '¥', USD: '$', EUR: '€' };
+
+export function formatPrice(n, currency) {
+  return (CURRENCY_SYMBOLS[currency] || '¥') + Number(n || 0).toLocaleString('en-US');
 }
 
 // Posts data layer (social media posts created to promote listings).

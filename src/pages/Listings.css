@@ -315,6 +315,12 @@
 .ls-page .ls-badge-sold {
   color: var(--dark);
 }
+.ls-page .ls-badge-rented {
+  color: #1f4f9c;
+}
+.ls-page .ls-badge-other_agent {
+  color: #6b21a8;
+}
 .ls-page .ls-badge-sale {
   color: var(--accent);
 }
@@ -504,6 +510,9 @@
   background: var(--surface-warm);
 }
 .ls-page .ls-table-title {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.35;
@@ -512,6 +521,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.ls-page .ls-table-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--meta);
 }
 .ls-page .ls-table-price {
   font-size: 13px;
@@ -744,6 +758,37 @@
 .ls-page .ls-form {
   padding: 20px 24px 24px;
 }
+.ls-page .ls-form-section {
+  min-width: 0;
+  margin: 0 0 18px;
+  padding: 16px 16px 4px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.ls-page .ls-form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+}
+.ls-page .ls-form-private {
+  background: var(--surface-warm);
+  border-color: var(--border);
+}
+.ls-page .ls-private-tag {
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
 .ls-page .ls-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -846,6 +891,90 @@
   opacity: 1;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.22);
+}
+
+/* ── Cover picker ── */
+.ls-page .ls-cover-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 2px 2px 8px;
+}
+.ls-page .ls-cover-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 108px;
+  padding: 5px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: border-color var(--motion), box-shadow var(--motion);
+}
+.ls-page .ls-cover-chip:hover {
+  border-color: var(--accent);
+}
+.ls-page .ls-cover-chip img {
+  width: 100%;
+  height: 58px;
+  object-fit: cover;
+  display: block;
+  border-radius: 6px;
+}
+.ls-page .ls-cover-chip-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--meta);
+}
+.ls-page .ls-cover-chip-star svg {
+  width: 11px;
+  height: 11px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+.ls-page .ls-cover-chip.ls-cover-chip-sel {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.18);
+}
+.ls-page .ls-cover-chip.ls-cover-chip-sel .ls-cover-chip-star {
+  color: var(--accent);
+}
+.ls-page .ls-cover-chip.ls-cover-chip-sel .ls-cover-chip-star svg {
+  fill: currentColor;
+}
+
+/* ── Checkbox / textarea ── */
+.ls-page .ls-field-check {
+  justify-content: flex-start;
+}
+.ls-page .ls-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 41px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--fg);
+  cursor: pointer;
+}
+.ls-page .ls-check input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.ls-page .ls-textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.5;
 }
 
 /* ── Modal actions / delete confirm ── */

@@ -33,9 +33,21 @@ const IMAGES = [
 
 const DEFAULT_IMAGE = '/images/listings/condo1.jpg';
 
+const PROPERTY_TYPES = ['apartment', 'house', 'townhouse', 'loft', 'lot', 'commercial'];
+const STATUSES = ['active', 'pending', 'sold', 'rented', 'other_agent'];
+const PARKING_TYPES = ['none', 'covered', 'private', 'available'];
+const FURNISHED_LEVELS = ['none', 'appliances', 'semi', 'full'];
+const CURRENCIES = ['CNY', 'USD', 'EUR'];
+
 const EMPTY_FORM = {
-  title: '', type: 'sale', status: 'active', price: '', location: '',
-  beds: '', baths: '', area: '', agent: '', image: DEFAULT_IMAGE
+  title: '', type: 'sale', status: 'active', price: '', currency: 'CNY', location: '',
+  propertyType: 'apartment', unitNumber: '',
+  beds: '', baths: '', area: '',
+  parkingCount: '0', parkingType: 'none',
+  furnishedLevel: 'none', petsAllowed: false,
+  photos: [], cover: '',
+  agent: '',
+  ownerName: '', ownerPhone: '', notes: ''
 };
 
 const CHIPS = [
@@ -43,6 +55,7 @@ const CHIPS = [
   { id: 'active', labelKey: 'ls_status_active', get: (s) => s.active },
   { id: 'pending', labelKey: 'ls_status_pending', get: (s) => s.pending },
   { id: 'sold', labelKey: 'ls_status_sold', get: (s) => s.sold },
+  { id: 'rented', labelKey: 'ls_status_rented', get: (s) => s.rented },
   { id: 'sale', labelKey: 'ls_type_sale', get: (s) => s.forSale },
   { id: 'rent', labelKey: 'ls_type_rent', get: (s) => s.forRent }
 ];
@@ -125,6 +138,21 @@ export default function Listings() {
     setForm((f) => ({ ...f, [name]: value }));
   }
 
+  function togglePhoto(img) {
+    setForm((f) => {
+      const selected = f.photos.indexOf(img) >= 0;
+      const photos = selected ? f.photos.filter((p) => p !== img) : f.photos.concat(img);
+      let cover = f.cover;
+      if (selected && cover === img) cover = photos[0] || '';
+      if (!selected && !cover) cover = img;
+      return { ...f, photos, cover };
+    });
+  }
+
+  function setCover(img) {
+    setForm((f) => (f.photos.indexOf(img) >= 0 ? { ...f, cover: img } : f));
+  }
+
   function openAdd() {
     setForm({ ...EMPTY_FORM });
     setErrors({});
@@ -137,12 +165,23 @@ export default function Listings() {
       type: item.type,
       status: item.status,
       price: String(item.price ?? ''),
+      currency: item.currency || 'CNY',
       location: item.location,
+      propertyType: item.propertyType || 'apartment',
+      unitNumber: item.unitNumber || '',
       beds: String(item.beds ?? ''),
       baths: String(item.baths ?? ''),
       area: String(item.area ?? ''),
+      parkingCount: String(item.parking?.count ?? 0),
+      parkingType: item.parking?.type || 'none',
+      furnishedLevel: item.furnishedLevel || 'none',
+      petsAllowed: !!item.petsAllowed,
+      photos: (item.photos || []).slice(),
+      cover: item.cover || '',
       agent: item.agent || '',
-      image: item.image || DEFAULT_IMAGE
+      ownerName: item.ownerName || '',
+      ownerPhone: item.ownerPhone || '',
+      notes: item.notes || ''
     });
     setErrors({});
     setModal({ mode: 'edit', id: item.id });
@@ -178,17 +217,28 @@ export default function Listings() {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
 
+    const photos = form.photos.length ? form.photos.slice() : [DEFAULT_IMAGE];
     const payload = {
       title: form.title.trim(),
       type: form.type,
       status: form.status,
       price: Number(form.price),
+      currency: form.currency,
       location: form.location.trim(),
+      propertyType: form.propertyType,
+      unitNumber: form.unitNumber.trim(),
       beds: Number(form.beds) || 0,
       baths: Number(form.baths) || 0,
       area: Number(form.area) || 0,
+      parking: { count: Number(form.parkingCount) || 0, type: form.parkingType },
+      furnishedLevel: form.furnishedLevel,
+      petsAllowed: !!form.petsAllowed,
+      photos,
+      cover: photos.indexOf(form.cover) >= 0 ? form.cover : photos[0],
       agent: form.agent.trim(),
-      image: form.image
+      ownerName: form.ownerName.trim(),
+      ownerPhone: form.ownerPhone.trim(),
+      notes: form.notes.trim()
     };
     if (modal.mode === 'add') await createListing(payload);
     else await updateListing(modal.id, payload);
@@ -303,13 +353,13 @@ export default function Listings() {
           {items.map((item) => (
             <article className="ls-card" key={item.id} onClick={() => openEdit(item)}>
               <div className="ls-card-media">
-                <img className="ls-card-img" src={item.image} alt={item.title} loading="lazy" />
+                <img className="ls-card-img" src={item.cover} alt={item.title} loading="lazy" />
                 <div className="ls-card-badges">
                   <span className={'ls-badge ls-badge-' + item.status}>{t('ls_status_' + item.status)}</span>
                   <span className={'ls-badge ls-badge-' + item.type}>{t('ls_type_' + item.type)}</span>
                 </div>
                 <div className="ls-card-price">
-                  {formatPrice(item.price)}
+                  {formatPrice(item.price, item.currency)}
                   {item.type === 'rent' ? <span className="ls-price-unit">{t('ls_unit_month')}</span> : null}
                 </div>
               </div>
@@ -317,12 +367,16 @@ export default function Listings() {
                 <h2 className="ls-card-title">{item.title}</h2>
                 <p className="ls-card-location">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-5.2-7-11a7 7 0 1 1 14 0c0 5.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
-                  <span>{item.location}</span>
+                  <span>{item.location}{item.unitNumber ? ' · ' + item.unitNumber : ''}</span>
                 </p>
                 <div className="ls-card-meta">
+                  {item.propertyType ? <span>{t('ls_ptype_' + item.propertyType)}</span> : null}
                   <span>{item.beds} {t('ls_unit_beds')}</span>
                   <span>{item.baths} {t('ls_unit_baths')}</span>
                   <span>{item.area} {t('ls_unit_area')}</span>
+                  {item.parking && item.parking.count > 0 ? (
+                    <span>{item.parking.count} {t('ls_unit_parking')}</span>
+                  ) : null}
                 </div>
                 <div className="ls-card-foot">
                   <div className="ls-card-info">
@@ -360,15 +414,15 @@ export default function Listings() {
                   <td>
                     <div className="ls-table-prop">
                       {rowMenuBtn(item)}
-                      <img className="ls-table-thumb" src={item.image} alt={item.title} loading="lazy" />
-                      <span className="ls-table-title">{item.title}</span>
+                      <img className="ls-table-thumb" src={item.cover} alt={item.title} loading="lazy" />
+                      <span className="ls-table-title">{item.title}{item.unitNumber ? <small className="ls-table-unit">{item.unitNumber}</small> : null}</span>
                     </div>
                   </td>
                   <td>{item.location}</td>
                   <td><span className={'ls-badge ls-badge-' + item.status}>{t('ls_status_' + item.status)}</span></td>
                   <td><span className={'ls-badge ls-badge-' + item.type}>{t('ls_type_' + item.type)}</span></td>
                   <td className="ls-table-price">
-                    {formatPrice(item.price)}
+                    {formatPrice(item.price, item.currency)}
                     {item.type === 'rent' ? <span className="ls-price-unit">{t('ls_unit_month')}</span> : null}
                   </td>
                   <td>{item.beds}</td>
@@ -436,32 +490,60 @@ export default function Listings() {
             </div>
 
             <form className="ls-form" onSubmit={handleSubmit} noValidate>
-              <div className="ls-field ls-field-full">
-                <label className="ls-label" htmlFor="ls-f-title">{t('ls_field_title')}<span className="ls-req">*</span></label>
-                <input
-                  id="ls-f-title"
-                  className={'ls-input' + (errors.title ? ' ls-input-invalid' : '')}
-                  value={form.title}
-                  onChange={(e) => setField('title', e.target.value)}
-                  placeholder={t('ls_field_title_ph')}
-                />
-                {errors.title ? <p className="ls-error">{errors.title}</p> : null}
-              </div>
-
-              <div className="ls-form-row">
-                <div className="ls-field">
-                  <label className="ls-label" htmlFor="ls-f-price">{t('ls_field_price')}<span className="ls-req">*</span></label>
+              <fieldset className="ls-form-section">
+                <legend className="ls-form-section-title">{t('ls_section_basic')}</legend>
+                <div className="ls-field ls-field-full">
+                  <label className="ls-label" htmlFor="ls-f-title">{t('ls_field_title')}<span className="ls-req">*</span></label>
                   <input
-                    id="ls-f-price"
-                    className={'ls-input' + (errors.price ? ' ls-input-invalid' : '')}
-                    value={form.price}
-                    onChange={(e) => setField('price', e.target.value)}
-                    placeholder={t('ls_field_price_ph')}
-                    inputMode="numeric"
+                    id="ls-f-title"
+                    className={'ls-input' + (errors.title ? ' ls-input-invalid' : '')}
+                    value={form.title}
+                    onChange={(e) => setField('title', e.target.value)}
+                    placeholder={t('ls_field_title_ph')}
                   />
-                  {errors.price ? <p className="ls-error">{errors.price}</p> : null}
+                  {errors.title ? <p className="ls-error">{errors.title}</p> : null}
                 </div>
-                <div className="ls-field">
+
+                <div className="ls-form-row">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-type">{t('ls_field_type')}</label>
+                    <select id="ls-f-type" className="ls-input" value={form.type} onChange={(e) => setField('type', e.target.value)}>
+                      <option value="sale">{t('ls_type_sale')}</option>
+                      <option value="rent">{t('ls_type_rent')}</option>
+                    </select>
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-status">{t('ls_field_status')}</label>
+                    <select id="ls-f-status" className="ls-input" value={form.status} onChange={(e) => setField('status', e.target.value)}>
+                      {STATUSES.map((s) => (
+                        <option key={s} value={s}>{t('ls_status_' + s)}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="ls-form-row">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-price">{t('ls_field_price')}<span className="ls-req">*</span></label>
+                    <input
+                      id="ls-f-price"
+                      className={'ls-input' + (errors.price ? ' ls-input-invalid' : '')}
+                      value={form.price}
+                      onChange={(e) => setField('price', e.target.value)}
+                      placeholder={t('ls_field_price_ph')}
+                      inputMode="numeric"
+                    />
+                    {errors.price ? <p className="ls-error">{errors.price}</p> : null}
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-currency">{t('ls_field_currency')}</label>
+                    <select id="ls-f-currency" className="ls-input" value={form.currency} onChange={(e) => setField('currency', e.target.value)}>
+                      {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="ls-field ls-field-full">
                   <label className="ls-label" htmlFor="ls-f-location">{t('ls_field_location')}<span className="ls-req">*</span></label>
                   <input
                     id="ls-f-location"
@@ -472,88 +554,204 @@ export default function Listings() {
                   />
                   {errors.location ? <p className="ls-error">{errors.location}</p> : null}
                 </div>
-              </div>
 
-              <div className="ls-form-row">
-                <div className="ls-field">
-                  <label className="ls-label" htmlFor="ls-f-type">{t('ls_field_type')}</label>
-                  <select id="ls-f-type" className="ls-input" value={form.type} onChange={(e) => setField('type', e.target.value)}>
-                    <option value="sale">{t('ls_type_sale')}</option>
-                    <option value="rent">{t('ls_type_rent')}</option>
-                  </select>
+                <div className="ls-form-row">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-ptype">{t('ls_field_property_type')}</label>
+                    <select id="ls-f-ptype" className="ls-input" value={form.propertyType} onChange={(e) => setField('propertyType', e.target.value)}>
+                      {PROPERTY_TYPES.map((p) => (
+                        <option key={p} value={p}>{t('ls_ptype_' + p)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-unit">{t('ls_field_unit')}</label>
+                    <input
+                      id="ls-f-unit"
+                      className="ls-input"
+                      value={form.unitNumber}
+                      onChange={(e) => setField('unitNumber', e.target.value)}
+                      placeholder={t('ls_field_unit_ph')}
+                    />
+                  </div>
                 </div>
-                <div className="ls-field">
-                  <label className="ls-label" htmlFor="ls-f-status">{t('ls_field_status')}</label>
-                  <select id="ls-f-status" className="ls-input" value={form.status} onChange={(e) => setField('status', e.target.value)}>
-                    <option value="active">{t('ls_status_active')}</option>
-                    <option value="pending">{t('ls_status_pending')}</option>
-                    <option value="sold">{t('ls_status_sold')}</option>
-                  </select>
-                </div>
-              </div>
+              </fieldset>
 
-              <div className="ls-form-row ls-form-row-thirds">
-                <div className="ls-field">
-                  <label className="ls-label" htmlFor="ls-f-beds">{t('ls_field_beds')}</label>
-                  <input
-                    id="ls-f-beds"
-                    className="ls-input"
-                    value={form.beds}
-                    onChange={(e) => setField('beds', e.target.value)}
-                    inputMode="numeric"
-                  />
+              <fieldset className="ls-form-section">
+                <legend className="ls-form-section-title">{t('ls_section_details')}</legend>
+                <div className="ls-form-row ls-form-row-thirds">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-beds">{t('ls_field_beds')}</label>
+                    <input
+                      id="ls-f-beds"
+                      className="ls-input"
+                      value={form.beds}
+                      onChange={(e) => setField('beds', e.target.value)}
+                      inputMode="numeric"
+                    />
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-baths">{t('ls_field_baths')}</label>
+                    <input
+                      id="ls-f-baths"
+                      className="ls-input"
+                      value={form.baths}
+                      onChange={(e) => setField('baths', e.target.value)}
+                      inputMode="numeric"
+                    />
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-area">{t('ls_field_area')}</label>
+                    <input
+                      id="ls-f-area"
+                      className="ls-input"
+                      value={form.area}
+                      onChange={(e) => setField('area', e.target.value)}
+                      inputMode="numeric"
+                    />
+                  </div>
                 </div>
-                <div className="ls-field">
-                  <label className="ls-label" htmlFor="ls-f-baths">{t('ls_field_baths')}</label>
-                  <input
-                    id="ls-f-baths"
-                    className="ls-input"
-                    value={form.baths}
-                    onChange={(e) => setField('baths', e.target.value)}
-                    inputMode="numeric"
-                  />
-                </div>
-                <div className="ls-field">
-                  <label className="ls-label" htmlFor="ls-f-area">{t('ls_field_area')}</label>
-                  <input
-                    id="ls-f-area"
-                    className="ls-input"
-                    value={form.area}
-                    onChange={(e) => setField('area', e.target.value)}
-                    inputMode="numeric"
-                  />
-                </div>
-              </div>
 
-              <div className="ls-field ls-field-full">
-                <label className="ls-label" htmlFor="ls-f-agent">{t('ls_field_agent')}</label>
-                <input
-                  id="ls-f-agent"
-                  className="ls-input"
-                  value={form.agent}
-                  onChange={(e) => setField('agent', e.target.value)}
-                  placeholder={t('ls_field_agent_ph')}
-                />
-              </div>
+                <div className="ls-form-row">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-parking-count">{t('ls_field_parking_count')}</label>
+                    <input
+                      id="ls-f-parking-count"
+                      className="ls-input"
+                      value={form.parkingCount}
+                      onChange={(e) => setField('parkingCount', e.target.value)}
+                      inputMode="numeric"
+                    />
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-parking-type">{t('ls_field_parking')}</label>
+                    <select id="ls-f-parking-type" className="ls-input" value={form.parkingType} onChange={(e) => setField('parkingType', e.target.value)}>
+                      {PARKING_TYPES.map((p) => (
+                        <option key={p} value={p}>{t('ls_parking_' + p)}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-              <div className="ls-field ls-field-full">
-                <span className="ls-label">{t('ls_field_image')}</span>
-                <p className="ls-img-hint">{t('ls_image_hint')}</p>
+                <div className="ls-form-row">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-furnished">{t('ls_field_furnished')}</label>
+                    <select id="ls-f-furnished" className="ls-input" value={form.furnishedLevel} onChange={(e) => setField('furnishedLevel', e.target.value)}>
+                      {FURNISHED_LEVELS.map((f) => (
+                        <option key={f} value={f}>{t('ls_furn_' + f)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="ls-field ls-field-check">
+                    <span className="ls-label">{t('ls_field_pets')}</span>
+                    <label className="ls-check">
+                      <input
+                        type="checkbox"
+                        checked={form.petsAllowed}
+                        onChange={(e) => setField('petsAllowed', e.target.checked)}
+                      />
+                      <span>{form.petsAllowed ? t('ls_pets_yes') : t('ls_pets_no')}</span>
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset className="ls-form-section">
+                <legend className="ls-form-section-title">{t('ls_section_photos')}</legend>
+                <p className="ls-img-hint">{t('ls_photos_hint')}</p>
                 <div className="ls-img-picker">
                   {IMAGES.map((img) => (
                     <button
                       type="button"
                       key={img}
-                      className={'ls-img-thumb' + (form.image === img ? ' ls-img-thumb-sel' : '')}
-                      onClick={() => setField('image', img)}
-                      aria-pressed={form.image === img}
+                      className={'ls-img-thumb' + (form.photos.indexOf(img) >= 0 ? ' ls-img-thumb-sel' : '')}
+                      onClick={() => togglePhoto(img)}
+                      aria-pressed={form.photos.indexOf(img) >= 0}
                       aria-label={img.split('/').pop().replace('.jpg', '')}
                     >
                       <img src={img} alt="" loading="lazy" />
                     </button>
                   ))}
                 </div>
-              </div>
+                <p className="ls-img-hint">{t('ls_photos_selected')}</p>
+                {form.photos.length ? (
+                  <div className="ls-cover-row">
+                    {form.photos.map((img) => (
+                      <button
+                        type="button"
+                        key={img}
+                        className={'ls-cover-chip' + (form.cover === img ? ' ls-cover-chip-sel' : '')}
+                        onClick={() => setCover(img)}
+                        aria-pressed={form.cover === img}
+                        title={t('ls_photos_set_cover')}
+                      >
+                        <img src={img} alt="" loading="lazy" />
+                        <span className="ls-cover-chip-star">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2.5 15 9 22 9.7 16.8 14.3 18.3 21.2 12 17.6 5.7 21.2 7.2 14.3 2 9.7 9 9" /></svg>
+                          <span>{form.cover === img ? t('ls_photos_cover') : t('ls_photos_set_cover')}</span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="ls-img-hint">{t('ls_photos_empty')}</p>
+                )}
+              </fieldset>
+
+              <fieldset className="ls-form-section">
+                <legend className="ls-form-section-title">{t('ls_section_agent')}</legend>
+                <div className="ls-field ls-field-full">
+                  <label className="ls-label" htmlFor="ls-f-agent">{t('ls_field_agent')}</label>
+                  <input
+                    id="ls-f-agent"
+                    className="ls-input"
+                    value={form.agent}
+                    onChange={(e) => setField('agent', e.target.value)}
+                    placeholder={t('ls_field_agent_ph')}
+                  />
+                </div>
+              </fieldset>
+
+              <fieldset className="ls-form-section ls-form-private">
+                <legend className="ls-form-section-title">
+                  {t('ls_section_owner')}
+                  <span className="ls-private-tag">{t('ls_private_tag')}</span>
+                </legend>
+                <div className="ls-form-row">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-owner-name">{t('ls_field_owner_name')}</label>
+                    <input
+                      id="ls-f-owner-name"
+                      className="ls-input"
+                      value={form.ownerName}
+                      onChange={(e) => setField('ownerName', e.target.value)}
+                      placeholder={t('ls_field_owner_name_ph')}
+                    />
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-owner-phone">{t('ls_field_owner_phone')}</label>
+                    <input
+                      id="ls-f-owner-phone"
+                      className="ls-input"
+                      value={form.ownerPhone}
+                      onChange={(e) => setField('ownerPhone', e.target.value)}
+                      placeholder={t('ls_field_owner_phone_ph')}
+                      inputMode="tel"
+                    />
+                  </div>
+                </div>
+                <div className="ls-field ls-field-full">
+                  <label className="ls-label" htmlFor="ls-f-notes">{t('ls_field_notes')}</label>
+                  <textarea
+                    id="ls-f-notes"
+                    className="ls-input ls-textarea"
+                    rows={3}
+                    value={form.notes}
+                    onChange={(e) => setField('notes', e.target.value)}
+                    placeholder={t('ls_field_notes_ph')}
+                  />
+                </div>
+              </fieldset>
 
               <div className="ls-modal-actions">
                 <button type="button" className="ls-btn ls-btn-outline" onClick={() => setModal(null)}>{t('ls_btn_cancel')}</button>
