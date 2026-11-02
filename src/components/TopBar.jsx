@@ -24,6 +24,7 @@ export default function TopBar() {
         </Link>
         <nav className="tb-nav">
           <Link to="/listings" className={navClass(pathname === '/' || pathname.startsWith('/listings'))}>{t('ls_nav_listings')}</Link>
+          <Link to="/agents" className={navClass(pathname.startsWith('/agents'))}>{t('ls_nav_agents')}</Link>
           <Link to="/feed" className={navClass(pathname.startsWith('/feed'))}>{t('ls_nav_posts')}</Link>
         </nav>
         <div className="tb-top-actions">

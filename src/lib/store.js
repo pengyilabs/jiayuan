@@ -25,6 +25,7 @@ function normalize(item) {
   return Object.assign({}, item, {
     propertyType: item.propertyType || '',
     unitNumber: item.unitNumber || '',
+    agentIds: Array.isArray(item.agentIds) ? item.agentIds.slice() : [],
     parking: Object.assign({ count: 0, type: 'none' }, item.parking || {}),
     furnishedLevel: item.furnishedLevel || 'none',
     petsAllowed: !!item.petsAllowed,
@@ -243,4 +244,76 @@ export async function createPost(data) {
 export async function deletePost(id) {
   persistPosts(loadPosts().filter((p) => p.id !== id));
   emit();
+}
+
+// Agents data layer. Listings reference agents by id (agentIds) and keep a
+// denormalized `agent` display string so older pages keep working.
+const AGENTS_KEY = 'pp-agents';
+
+const AGENTS_SEED = [
+  { id: 'a-1', name: 'Chen Wei', phone: '+86 138 0000 1111', email: 'chen.wei@homedirect.cn' },
+  { id: 'a-2', name: 'Lin Yue', phone: '+86 138 0000 2222', email: 'lin.yue@homedirect.cn' },
+  { id: 'a-3', name: 'Zhao Min', phone: '+86 138 0000 3333', email: 'zhao.min@homedirect.cn' }
+];
+
+function loadAgents() {
+  try {
+    const raw = localStorage.getItem(AGENTS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {}
+  persistAgents(AGENTS_SEED);
+  return AGENTS_SEED.slice();
+}
+
+function persistAgents(list) {
+  try { localStorage.setItem(AGENTS_KEY, JSON.stringify(list)); } catch (e) {}
+}
+
+export async function listAgents() {
+  return loadAgents();
+}
+
+export async function createAgent(data) {
+  const items = loadAgents();
+  const item = {
+    id: 'a-' + Date.now().toString(36),
+    name: (data.name || '').trim(),
+    phone: (data.phone || '').trim(),
+    email: (data.email || '').trim()
+  };
+  items.push(item);
+  persistAgents(items);
+  emit();
+  return item;
+}
+
+export async function updateAgent(id, patch) {
+  const items = loadAgents();
+  const idx = items.findIndex((a) => a.id === id);
+  if (idx < 0) return null;
+  items[idx] = Object.assign({}, items[idx], {
+    name: (patch.name ?? items[idx].name).trim(),
+    phone: (patch.phone ?? items[idx].phone).trim(),
+    email: (patch.email ?? items[idx].email).trim()
+  });
+  persistAgents(items);
+  emit();
+  return items[idx];
+}
+
+export async function deleteAgent(id) {
+  persistAgents(loadAgents().filter((a) => a.id !== id));
+  emit();
+}
+
+// Denormalizes agentIds[] into the legacy `agent` display string.
+export function agentDisplayNames(agentIds) {
+  const agents = loadAgents();
+  return (agentIds || [])
+    .map((id) => (agents.find((a) => a.id === id) || {}).name || '')
+    .filter(Boolean)
+    .join(', ');
 }
