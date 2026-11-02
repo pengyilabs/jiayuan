@@ -435,15 +435,15 @@
   flex-shrink: 0;
 }
 .ls-page .ls-table-wrap {
-  max-width: 1240px;
-  width: 100%;
+  width: calc(100% - 56px);
+  max-width: 1184px;
   margin: 10px auto 0;
   overflow-x: auto;
 }
 .ls-page .ls-table {
   width: 100%;
   min-width: 1120px;
-  margin: 0 28px;
+  margin: 0;
   border-collapse: separate;
   border-spacing: 0;
   background: var(--bg);
@@ -482,17 +482,18 @@
 .ls-page .ls-table tbody tr {
   background: var(--bg);
 }
+/* left: 1px matches the table's left border so sticky engages with no jump */
 .ls-page .ls-table thead th:first-child {
   position: sticky;
   z-index: 3;
-  left: 0;
+  left: 1px;
   box-shadow: 1px 0 0 var(--border);
 }
 .ls-page .ls-table tbody td:first-child {
   position: sticky;
   z-index: 2;
   background: inherit;
-  left: 0;
+  left: 1px;
   box-shadow: 1px 0 0 var(--border-soft);
 }
 .ls-page .ls-table-prop {
@@ -1207,8 +1208,8 @@
     padding-left: 20px;
     padding-right: 20px;
   }
-  .ls-page .ls-table {
-    margin: 0 20px;
+  .ls-page .ls-table-wrap {
+    width: calc(100% - 40px);
   }
 }
 @media (max-width: 640px) {
