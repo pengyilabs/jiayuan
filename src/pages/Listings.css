@@ -315,6 +315,12 @@
 .ls-page .ls-badge-sold {
   color: var(--dark);
 }
+.ls-page .ls-badge-rented {
+  color: #1f4f9c;
+}
+.ls-page .ls-badge-other_agent {
+  color: #6b21a8;
+}
 .ls-page .ls-badge-sale {
   color: var(--accent);
 }
@@ -504,6 +510,9 @@
   background: var(--surface-warm);
 }
 .ls-page .ls-table-title {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.35;
@@ -512,6 +521,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.ls-page .ls-table-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--meta);
 }
 .ls-page .ls-table-price {
   font-size: 13px;
@@ -744,6 +758,37 @@
 .ls-page .ls-form {
   padding: 20px 24px 24px;
 }
+.ls-page .ls-form-section {
+  min-width: 0;
+  margin: 0 0 18px;
+  padding: 16px 16px 4px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.ls-page .ls-form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+}
+.ls-page .ls-form-private {
+  background: var(--surface-warm);
+  border-color: var(--border);
+}
+.ls-page .ls-private-tag {
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
 .ls-page .ls-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -806,46 +851,264 @@
   color: #d92d20;
 }
 
-/* ── Image picker ── */
+/* ── Segmented toggle buttons ── */
+.ls-page .ls-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ls-page .ls-seg-btn {
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.ls-page .ls-seg-btn:hover {
+  border-color: var(--dark);
+  color: var(--fg);
+}
+.ls-page .ls-seg-btn.ls-seg-on {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: #fff;
+}
+.ls-page .ls-seg-sm .ls-seg-btn {
+  padding: 8px 13px;
+  font-size: 12.5px;
+}
+.ls-page .ls-field-grow {
+  flex: 1;
+}
+
+/* ── Property type icon picker ── */
+.ls-page .ls-ptype-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 8px;
+}
+.ls-page .ls-ptype-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.ls-page .ls-ptype-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ls-page .ls-ptype-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ls-page .ls-ptype-btn.ls-ptype-on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Photo manager ── */
 .ls-page .ls-img-hint {
   font-size: 12px;
   color: var(--meta);
   margin: -2px 0 8px;
 }
-.ls-page .ls-img-picker {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 4px 2px 10px;
+.ls-page .ls-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
 }
-.ls-page .ls-img-thumb {
+.ls-page .ls-photo-tile {
   position: relative;
-  flex-shrink: 0;
-  width: 78px;
-  height: 54px;
-  padding: 0;
-  border: 2px solid transparent;
+  aspect-ratio: 4 / 3;
+  border: 2px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
   background: var(--surface-warm);
-  cursor: pointer;
-  opacity: 0.72;
-  transition: opacity var(--motion), border-color var(--motion), box-shadow var(--motion), transform var(--motion);
 }
-.ls-page .ls-img-thumb img {
+.ls-page .ls-photo-tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.ls-page .ls-img-thumb:hover {
-  opacity: 1;
-  transform: translateY(-1px);
-}
-.ls-page .ls-img-thumb.ls-img-thumb-sel {
-  opacity: 1;
+.ls-page .ls-photo-tile.ls-photo-cover {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.22);
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.18);
+}
+.ls-page .ls-photo-cover-tag {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.ls-page .ls-photo-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 5px;
+}
+.ls-page .ls-photo-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--muted);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  transition: all var(--motion);
+}
+.ls-page .ls-photo-btn svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ls-page .ls-photo-btn:hover {
+  color: var(--accent);
+}
+.ls-page .ls-photo-btn.ls-photo-btn-on {
+  color: var(--accent);
+}
+.ls-page .ls-photo-btn.ls-photo-btn-on svg {
+  fill: currentColor;
+}
+.ls-page .ls-photo-btn.ls-photo-btn-danger:hover {
+  color: #d92d20;
+}
+.ls-page .ls-photo-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  aspect-ratio: 4 / 3;
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.ls-page .ls-photo-add:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ls-page .ls-photo-add svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ls-page .ls-photo-add input {
+  display: none;
+}
+
+/* ── Agent chips ── */
+.ls-page .ls-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ls-page .ls-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.ls-page .ls-link:hover {
+  text-decoration: underline;
+}
+.ls-page .ls-agent-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ls-page .ls-agent-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.ls-page .ls-agent-chip:hover {
+  border-color: var(--accent);
+}
+.ls-page .ls-agent-avatar {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+.ls-page .ls-agent-chip.ls-agent-on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Small inputs / textarea ── */
+.ls-page .ls-input-sm {
+  max-width: 160px;
+}
+.ls-page .ls-textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.5;
 }
 
 /* ── Modal actions / delete confirm ── */

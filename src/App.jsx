@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/Login.jsx';
 import AgentFeed from './pages/AgentFeed.jsx';
 import Listings from './pages/Listings.jsx';
+import Agents from './pages/Agents.jsx';
 
 function RequireRole({ children }) {
   let role = null;
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/listings" element={<RequireRole><Listings /></RequireRole>} />
       <Route path="/dashboard" element={<Navigate to="/" replace />} />
       <Route path="/feed" element={<RequireRole><AgentFeed /></RequireRole>} />
+      <Route path="/agents" element={<RequireRole><Agents /></RequireRole>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
