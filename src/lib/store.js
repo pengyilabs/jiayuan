@@ -4,38 +4,234 @@
 const KEY = 'pp-listings';
 const listeners = new Set();
 
+// Single-company deployment with a multi-tenant seam: every entity carries
+// `companyId` so a future backend can scope rows without a schema migration.
+export const COMPANY_ID = 'c-home-direct';
+
+export const PET_POLICIES = ['yes', 'no', 'restricted'];
+export const DEAL_MODES = ['owner_100', 'split_50', 'fixed'];
+export const POST_STATUSES = ['draft', 'planned', 'published'];
+export const AMENITIES = ['pool', 'gym', 'guest_parking', 'lobby', 'football', 'tennis', 'event_room', 'bbq'];
+export const AGENT_ROLES = ['owner', 'agent'];
+
 const SEED = [
-  { id: 'l-1001', title: 'Riverside Garden Villa', type: 'sale', status: 'active', price: 12800000, currency: 'CNY', location: '上海 · 徐汇滨江', unitNumber: 'No. 12', propertyType: 'house', beds: 4, baths: 3, area: 268, parking: { count: 2, type: 'covered' }, furnishedLevel: 'semi', petsAllowed: true, photos: ['/images/listings/villa1.jpg', '/images/listings/villa2.jpg', '/images/listings/villa3.jpg'], cover: '/images/listings/villa1.jpg', agent: 'Chen Wei', ownerName: 'Wang Jianguo', ownerPhone: '+86 138 0013 8000', notes: 'Owner prefers weekend viewings.', updatedAt: '2026-10-20' },
-  { id: 'l-1002', title: 'Emerald Lake Residence', type: 'sale', status: 'active', price: 8600000, currency: 'CNY', location: '上海 · 翠湖天地', unitNumber: 'Bldg 3 · 1202', propertyType: 'apartment', beds: 3, baths: 2, area: 186, parking: { count: 1, type: 'covered' }, furnishedLevel: 'full', petsAllowed: false, photos: ['/images/listings/garden1.jpg', '/images/listings/garden3.jpg'], cover: '/images/listings/garden1.jpg', agent: 'Lin Yue', ownerName: 'Li Hongmei', ownerPhone: '+86 139 2200 3311', notes: '', updatedAt: '2026-10-21' },
-  { id: 'l-1003', title: 'Downtown Loft 12F', type: 'rent', status: 'active', price: 28000, currency: 'CNY', location: '上海 · 静安寺', unitNumber: '12F-A', propertyType: 'loft', beds: 2, baths: 1, area: 96, parking: { count: 1, type: 'available' }, furnishedLevel: 'full', petsAllowed: false, photos: ['/images/listings/loft1.jpg', '/images/listings/loft2.jpg'], cover: '/images/listings/loft1.jpg', agent: 'Chen Wei', ownerName: 'Zhou Min', ownerPhone: '+86 137 5566 7788', notes: 'Short-term lease possible.', updatedAt: '2026-10-22' },
-  { id: 'l-1004', title: 'Skyline View Apartment', type: 'sale', status: 'pending', price: 6300000, currency: 'CNY', location: '上海 · 陆家嘴', unitNumber: 'Tower 2 · 3305', propertyType: 'apartment', beds: 2, baths: 2, area: 128, parking: { count: 1, type: 'private' }, furnishedLevel: 'appliances', petsAllowed: true, photos: ['/images/listings/view1.jpg', '/images/listings/view2.jpg'], cover: '/images/listings/view1.jpg', agent: 'Zhao Min', ownerName: 'Chen Guoqiang', ownerPhone: '+86 136 9090 1212', notes: '', updatedAt: '2026-10-23' },
-  { id: 'l-1005', title: 'Garden Townhouse', type: 'sale', status: 'sold', price: 9900000, currency: 'CNY', location: '上海 · 虹桥', unitNumber: 'Row 5 · 7', propertyType: 'townhouse', beds: 4, baths: 3, area: 220, parking: { count: 2, type: 'private' }, furnishedLevel: 'none', petsAllowed: true, photos: ['/images/listings/town1.jpg', '/images/listings/town2.jpg'], cover: '/images/listings/town1.jpg', agent: 'Lin Yue', ownerName: 'Sun Yaping', ownerPhone: '+86 135 4433 2211', notes: 'Closed 2026-10-18.', updatedAt: '2026-10-18' },
-  { id: 'l-1006', title: 'Modern Condo 8F', type: 'rent', status: 'rented', price: 16500, currency: 'CNY', location: '上海 · 长宁', unitNumber: '8F-B', propertyType: 'apartment', beds: 1, baths: 1, area: 62, parking: { count: 0, type: 'none' }, furnishedLevel: 'semi', petsAllowed: false, photos: ['/images/listings/condo1.jpg', '/images/listings/condo2.jpg'], cover: '/images/listings/condo1.jpg', agent: 'Zhao Min', ownerName: 'He Ling', ownerPhone: '+86 134 7788 9900', notes: 'Lease ends 2027-04.', updatedAt: '2026-10-24' },
-  { id: 'l-1007', title: 'Lakeview Family Home', type: 'sale', status: 'active', price: 7400000, currency: 'CNY', location: '上海 · 苏州湾', unitNumber: '', propertyType: 'house', beds: 3, baths: 2, area: 174, parking: { count: 1, type: 'covered' }, furnishedLevel: 'appliances', petsAllowed: true, photos: ['/images/listings/garden2.jpg', '/images/listings/garden4.jpg'], cover: '/images/listings/garden2.jpg', agent: 'Chen Wei', ownerName: 'Xu Wenbo', ownerPhone: '+86 133 2020 4040', notes: '', updatedAt: '2026-10-25' },
-  { id: 'l-1008', title: 'Penthouse Duplex', type: 'sale', status: 'pending', price: 15600000, currency: 'CNY', location: '上海 · 外滩', unitNumber: 'PH-2', propertyType: 'apartment', beds: 5, baths: 4, area: 320, parking: { count: 3, type: 'private' }, furnishedLevel: 'full', petsAllowed: true, photos: ['/images/listings/villa2.jpg', '/images/listings/villa4.jpg', '/images/listings/view3.jpg'], cover: '/images/listings/villa2.jpg', agent: 'Lin Yue', ownerName: 'Gao Peng', ownerPhone: '+86 132 6677 8899', notes: 'Dual currency offers discussed.', updatedAt: '2026-10-26' }
+  {
+    id: 'l-2001',
+    title: 'Skygarden 2-Bed Condo',
+    type: 'rent',
+    status: 'active',
+    price: 1000,
+    currency: 'USD',
+    country: 'CR',
+    location: 'Curridabat · Skygarden',
+    unitNumber: 'Tower A · 704',
+    propertyType: 'apartment',
+    buildingId: 'b-001',
+    beds: 2,
+    baths: 2,
+    area: 85,
+    parking: { count: 1, type: 'covered' },
+    furnishedLevel: 'full',
+    petsAllowed: true,
+    petPolicy: 'restricted',
+    dealTerms: { mode: 'split_50', amount: 0, currency: 'USD' },
+    isOwnerProperty: true,
+    photos: ['/images/listings/condo1.jpg', '/images/listings/condo2.jpg', '/images/listings/view1.jpg'],
+    cover: '/images/listings/condo1.jpg',
+    agent: 'Chen Wei, Lin Yue',
+    agentIds: ['a-1', 'a-2'],
+    ownerName: 'Carlos Jiménez',
+    ownerPhone: '+506 8888-1234',
+    notes: 'Unit faces the garden. Owner accepts 50% split.',
+    updatedAt: '2026-11-01',
+  },
+  {
+    id: 'l-2002',
+    title: 'Skygarden Studio',
+    type: 'rent',
+    status: 'active',
+    price: 650,
+    currency: 'USD',
+    country: 'CR',
+    location: 'Curridabat · Skygarden',
+    unitNumber: 'Tower B · 210',
+    propertyType: 'apartment',
+    buildingId: 'b-001',
+    beds: 1,
+    baths: 1,
+    area: 45,
+    parking: { count: 1, type: 'covered' },
+    furnishedLevel: 'none',
+    petsAllowed: false,
+    petPolicy: 'no',
+    dealTerms: { mode: 'fixed', amount: 150, currency: 'USD' },
+    isOwnerProperty: false,
+    photos: ['/images/listings/condo3.jpg', '/images/listings/condo4.jpg'],
+    cover: '/images/listings/condo3.jpg',
+    agent: 'Zhao Min',
+    agentIds: ['a-3'],
+    ownerName: 'María Rojas',
+    ownerPhone: '+506 8777-5678',
+    notes: 'Managed for third-party owner. Fixed $150 per rental.',
+    updatedAt: '2026-11-02',
+  },
+  {
+    id: 'l-2003',
+    title: 'Curridabat Family House',
+    type: 'sale',
+    status: 'active',
+    price: 185000,
+    currency: 'USD',
+    country: 'CR',
+    location: 'Curridabat · 800m east of Plaza del Sol',
+    unitNumber: '',
+    propertyType: 'house',
+    buildingId: '',
+    beds: 3,
+    baths: 2,
+    area: 220,
+    parking: { count: 2, type: 'private' },
+    furnishedLevel: 'none',
+    petsAllowed: true,
+    petPolicy: 'yes',
+    dealTerms: { mode: 'owner_100', amount: 0, currency: 'USD' },
+    isOwnerProperty: true,
+    photos: ['/images/listings/villa1.jpg', '/images/listings/villa2.jpg', '/images/listings/garden1.jpg'],
+    cover: '/images/listings/villa1.jpg',
+    agent: 'Chen Wei',
+    agentIds: ['a-1'],
+    ownerName: 'Carlos Jiménez',
+    ownerPhone: '+506 8888-1234',
+    notes: 'Pet-friendly garden. Owner pays 100% of commission.',
+    updatedAt: '2026-11-03',
+  },
+  {
+    id: 'l-2004',
+    title: 'Toronto Downtown Condo',
+    type: 'rent',
+    status: 'active',
+    price: 2600,
+    currency: 'CAD',
+    country: 'CA',
+    location: 'Toronto · Harbourfront',
+    unitNumber: '3205',
+    propertyType: 'apartment',
+    buildingId: 'b-002',
+    beds: 2,
+    baths: 1,
+    area: 70,
+    parking: { count: 1, type: 'covered' },
+    furnishedLevel: 'full',
+    petsAllowed: true,
+    petPolicy: 'restricted',
+    dealTerms: { mode: 'split_50', amount: 0, currency: 'CAD' },
+    isOwnerProperty: true,
+    photos: ['/images/listings/view2.jpg', '/images/listings/view3.jpg'],
+    cover: '/images/listings/view2.jpg',
+    agent: 'Lin Yue, Zhao Min',
+    agentIds: ['a-2', 'a-3'],
+    ownerName: 'Wei Zhang',
+    ownerPhone: '+1 416-555-0198',
+    notes: 'Owned by Chinese partner, managed by HOME DIRECT.',
+    updatedAt: '2026-11-03',
+  },
+  {
+    id: 'l-2005',
+    title: 'Vancouver Townhouse',
+    type: 'rent',
+    status: 'pending',
+    price: 3200,
+    currency: 'CAD',
+    country: 'CA',
+    location: 'Vancouver · Oak Street',
+    unitNumber: '',
+    propertyType: 'townhouse',
+    buildingId: '',
+    beds: 3,
+    baths: 2,
+    area: 140,
+    parking: { count: 2, type: 'private' },
+    furnishedLevel: 'none',
+    petsAllowed: true,
+    petPolicy: 'yes',
+    dealTerms: { mode: 'fixed', amount: 300, currency: 'CAD' },
+    isOwnerProperty: false,
+    photos: ['/images/listings/town1.jpg', '/images/listings/town2.jpg', '/images/listings/town3.jpg'],
+    cover: '/images/listings/town1.jpg',
+    agent: 'Chen Wei',
+    agentIds: ['a-1'],
+    ownerName: 'Li Hua',
+    ownerPhone: '+1 604-555-0142',
+    notes: '',
+    updatedAt: '2026-11-04',
+  },
+  {
+    id: 'l-2006',
+    title: 'Skygarden 3-Bed Corner',
+    type: 'sale',
+    status: 'other_agent',
+    price: 210000,
+    currency: 'USD',
+    country: 'CR',
+    location: 'Curridabat · Skygarden',
+    unitNumber: 'Tower A · 1102',
+    propertyType: 'apartment',
+    buildingId: 'b-001',
+    beds: 3,
+    baths: 2,
+    area: 120,
+    parking: { count: 2, type: 'covered' },
+    furnishedLevel: 'semi',
+    petsAllowed: true,
+    petPolicy: 'restricted',
+    dealTerms: { mode: 'split_50', amount: 0, currency: 'USD' },
+    isOwnerProperty: true,
+    photos: ['/images/listings/villa3.jpg', '/images/listings/villa4.jpg'],
+    cover: '/images/listings/villa3.jpg',
+    agent: 'Lin Yue',
+    agentIds: ['a-2'],
+    ownerName: 'Carlos Jiménez',
+    ownerPhone: '+506 8888-1234',
+    notes: 'Sold by another agency; kept for market tracking.',
+    updatedAt: '2026-11-05',
+  },
 ];
 
 // Fills newer listing fields on old localStorage records and keeps the legacy
 // `image` field in sync with the cover so pages not yet migrated keep working.
 function normalize(item) {
-  const photos = Array.isArray(item.photos) && item.photos.length
-    ? item.photos.slice()
-    : (item.image ? [item.image] : []);
-  const cover = photos.indexOf(item.cover) >= 0 ? item.cover : (photos[0] || '');
+  const photos =
+    Array.isArray(item.photos) && item.photos.length ? item.photos.slice() : item.image ? [item.image] : [];
+  const cover = photos.indexOf(item.cover) >= 0 ? item.cover : photos[0] || '';
+  const petPolicy =
+    ['yes', 'no', 'restricted'].indexOf(item.petPolicy) >= 0
+      ? item.petPolicy
+      : item.petsAllowed === false
+        ? 'no'
+        : 'yes';
   return Object.assign({}, item, {
+    companyId: item.companyId || COMPANY_ID,
+    country: item.country || '',
     propertyType: item.propertyType || '',
     unitNumber: item.unitNumber || '',
+    buildingId: item.buildingId || '',
     agentIds: Array.isArray(item.agentIds) ? item.agentIds.slice() : [],
     parking: Object.assign({ count: 0, type: 'none' }, item.parking || {}),
     furnishedLevel: item.furnishedLevel || 'none',
-    petsAllowed: !!item.petsAllowed,
+    petPolicy,
+    petsAllowed: petPolicy !== 'no', // legacy alias kept in sync
+    dealTerms: Object.assign(
+      { mode: 'owner_100', amount: 0, currency: item.currency || 'USD' },
+      ['owner_100', 'split_50', 'fixed'].indexOf(item.dealTerms?.mode) >= 0 ? item.dealTerms : {}
+    ),
+    isOwnerProperty: !!item.isOwnerProperty,
     photos,
     cover,
     image: cover,
     currency: item.currency || 'CNY',
     ownerName: item.ownerName || '',
     ownerPhone: item.ownerPhone || '',
-    notes: item.notes || ''
+    notes: item.notes || '',
   });
 }
 
@@ -52,12 +248,20 @@ function load() {
 }
 
 function persist(list) {
-  try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+  try {
+    localStorage.setItem(KEY, JSON.stringify(list));
+  } catch (e) {}
 }
 
 function emit() {
-  listeners.forEach((fn) => { try { fn(); } catch (e) {} });
-  try { window.dispatchEvent(new Event('pp-listings-change')); } catch (e) {}
+  listeners.forEach((fn) => {
+    try {
+      fn();
+    } catch (e) {}
+  });
+  try {
+    window.dispatchEvent(new Event('pp-listings-change'));
+  } catch (e) {}
 }
 
 export function subscribe(fn) {
@@ -68,13 +272,35 @@ export function subscribe(fn) {
 export async function listListings(filter) {
   let items = load();
   if (filter) {
-    const { status, type, q } = filter;
+    const { status, type, q, country, agentId, buildingId } = filter;
     if (status && status !== 'all') items = items.filter((i) => i.status === status);
     if (type && type !== 'all') items = items.filter((i) => i.type === type);
+    if (country && country !== 'all') items = items.filter((i) => i.country === country);
+    if (buildingId) items = items.filter((i) => i.buildingId === buildingId);
+    if (agentId) items = items.filter((i) => i.agentIds.indexOf(agentId) >= 0);
     if (q) {
       const needle = q.toLowerCase();
-      items = items.filter((i) =>
-        (i.title + ' ' + i.location + ' ' + i.agent).toLowerCase().indexOf(needle) >= 0
+      const buildingName = {};
+      (loadBuildings() || []).forEach((b) => {
+        buildingName[b.id] = b.name;
+      });
+      items = items.filter(
+        (i) =>
+          (
+            i.title +
+            ' ' +
+            i.location +
+            ' ' +
+            i.agent +
+            ' ' +
+            i.unitNumber +
+            ' ' +
+            i.notes +
+            ' ' +
+            (buildingName[i.buildingId] || '')
+          )
+            .toLowerCase()
+            .indexOf(needle) >= 0
       );
     }
   }
@@ -87,10 +313,12 @@ export async function getListing(id) {
 
 export async function createListing(data) {
   const items = load();
-  const item = normalize(Object.assign({}, data, {
-    id: 'l-' + Date.now().toString(36),
-    updatedAt: new Date().toISOString().slice(0, 10)
-  }));
+  const item = normalize(
+    Object.assign({}, data, {
+      id: 'l-' + Date.now().toString(36),
+      updatedAt: new Date().toISOString().slice(0, 10),
+    })
+  );
   items.unshift(item);
   persist(items);
   emit();
@@ -101,9 +329,11 @@ export async function updateListing(id, patch) {
   const items = load();
   const idx = items.findIndex((i) => i.id === id);
   if (idx < 0) return null;
-  items[idx] = normalize(Object.assign({}, items[idx], patch, {
-    updatedAt: new Date().toISOString().slice(0, 10)
-  }));
+  items[idx] = normalize(
+    Object.assign({}, items[idx], patch, {
+      updatedAt: new Date().toISOString().slice(0, 10),
+    })
+  );
   persist(items);
   emit();
   return items[idx];
@@ -130,19 +360,31 @@ export async function getStats() {
     forRent: items.filter((i) => i.type === 'rent').length,
     totalValue: items.reduce((sum, i) => sum + (Number(i.price) || 0), 0),
     soldValue: sold.reduce((sum, i) => sum + (Number(i.price) || 0), 0),
-    avgPrice: items.length ? Math.round(items.reduce((sum, i) => sum + (Number(i.price) || 0), 0) / items.length) : 0
+    avgPrice: items.length ? Math.round(items.reduce((sum, i) => sum + (Number(i.price) || 0), 0) / items.length) : 0,
   };
 }
 
-const CURRENCY_SYMBOLS = { CNY: '¥', USD: '$', EUR: '€' };
+const CURRENCY_SYMBOLS = { CNY: '¥', USD: '$', EUR: '€', CAD: 'C$' };
 
 export function formatPrice(n, currency) {
-  return (CURRENCY_SYMBOLS[currency] || '¥') + Number(n || 0).toLocaleString('en-US');
+  const code = CURRENCY_SYMBOLS[currency] ? currency : 'CNY';
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: code,
+      maximumFractionDigits: 0,
+    }).format(Number(n) || 0);
+  } catch (e) {
+    return (CURRENCY_SYMBOLS[code] || '¥') + Number(n || 0).toLocaleString('en-US');
+  }
 }
 
 // Posts data layer (social media posts created to promote listings).
 // Same localStorage-backed pattern as listings, own key, shared subscribe/emit
 // so every page refreshes when either entity changes.
+// Lifecycle: status 'draft' -> 'planned' -> 'published' (publish UI is a later
+// iteration; `destinations` is pre-wired for it). One record can target several
+// platforms via `platforms[]` (legacy singular `platform` kept in sync).
 const POSTS_KEY = 'pp-posts';
 
 function postDay(offset) {
@@ -151,61 +393,123 @@ function postDay(offset) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+function normalizePost(p, defaultStatus) {
+  const platforms =
+    Array.isArray(p.platforms) && p.platforms.length ? p.platforms.slice() : p.platform ? [p.platform] : ['Facebook'];
+  return Object.assign({}, p, {
+    companyId: p.companyId || COMPANY_ID,
+    listingId: p.listingId || '',
+    platforms,
+    platform: platforms[0], // legacy alias
+    status:
+      ['draft', 'planned', 'published'].indexOf(p.status) >= 0
+        ? p.status
+        : defaultStatus || (p.createdAt ? 'published' : 'draft'),
+    destinations: Array.isArray(p.destinations) ? p.destinations.slice() : [],
+    createdByAgentId: p.createdByAgentId || '',
+    generation: Object.assign({ mode: 'single', engine: 'template' }, p.generation || {}),
+    editedText: !!p.editedText,
+    publishedAt: p.publishedAt || null,
+  });
+}
+
 const POSTS_SEED = [
   {
-    id: 'p-2001', listingId: 'l-1001', listingTitle: 'Riverside Garden Villa',
-    title: 'Riverside Garden Villa · Featured home',
-    text: 'Wake up to river views every morning. 4 bedrooms, 3 baths and a private garden in Xuhui Riverside — book a private viewing this week.',
-    images: ['/images/listings/villa1.jpg', '/images/listings/villa2.jpg', '/images/listings/villa3.jpg', '/images/listings/villa4.jpg'],
-    media: 'carousel', platform: 'Facebook', templateId: 2,
-    hashtags: '#Shanghai #LuxuryVilla #XuhuiRiverside #DreamHome',
-    date: postDay(0), createdAt: postDay(0) + 'T09:20:00.000Z'
+    id: 'p-2001',
+    listingId: 'l-2001',
+    listingTitle: 'Skygarden 2-Bed Condo',
+    title: 'Skygarden 2-Bed Condo · Featured home',
+    text: 'Wake up to garden views in Curridabat. 2 bedrooms, 2 baths and full amenities at Skygarden — book a private viewing this week.',
+    images: ['/images/listings/condo1.jpg', '/images/listings/condo2.jpg', '/images/listings/view1.jpg'],
+    media: 'carousel',
+    platforms: ['Facebook', 'Instagram'],
+    templateId: 2,
+    hashtags: '#Curridabat #Skygarden #DreamHome #CostaRica',
+    status: 'planned',
+    createdByAgentId: 'a-1',
+    date: postDay(0),
+    createdAt: postDay(0) + 'T09:20:00.000Z',
   },
   {
-    id: 'p-2002', listingId: 'l-1003', listingTitle: 'Downtown Loft 12F',
-    title: 'Downtown Loft 12F · Video tour',
-    text: 'Full video tour of our Jing\'an loft — open plan, floor-to-ceiling windows, steps from the metro.',
-    images: ['/images/listings/loft1.jpg'],
-    media: 'video', platform: 'wxch', templateId: 3,
-    hashtags: '#静安寺 #LoftLife #CityLiving',
-    date: postDay(0), createdAt: postDay(0) + 'T06:05:00.000Z'
+    id: 'p-2002',
+    listingId: 'l-2002',
+    listingTitle: 'Skygarden Studio',
+    title: 'Skygarden Studio · Rent spotlight',
+    text: 'Compact, stylish and ready to move in. 45 m² studio in Skygarden from $650/month — ideal for young professionals.',
+    images: ['/images/listings/condo3.jpg'],
+    media: 'single',
+    platforms: ['Facebook'],
+    templateId: null,
+    hashtags: '#Curridabat #Renta #StudioGoals',
+    status: 'draft',
+    createdByAgentId: 'a-3',
+    date: postDay(-2),
+    createdAt: postDay(0) + 'T06:05:00.000Z',
   },
   {
-    id: 'p-2003', listingId: 'l-1002', listingTitle: 'Emerald Lake Residence',
-    title: 'Emerald Lake Residence · Just listed',
-    text: 'A calm, light-filled 3-bedroom residence beside the lake. Swipe for the garden, living room and skyline balcony.',
-    images: ['/images/listings/garden1.jpg', '/images/listings/garden2.jpg', '/images/listings/garden3.jpg', '/images/listings/garden4.jpg'],
-    media: 'carousel', platform: 'Instagram', templateId: 1,
-    hashtags: '#翠湖天地 #JustListed #LakeView #HomeTour',
-    date: postDay(1), createdAt: postDay(1) + 'T10:40:00.000Z'
+    id: 'p-2003',
+    listingId: 'l-2004',
+    listingTitle: 'Toronto Downtown Condo',
+    title: 'Toronto Downtown Condo · Just listed',
+    text: 'A light-filled 2-bedroom condo on Harbourfront with skyline views. Swipe for the living room and terrace.',
+    images: ['/images/listings/view2.jpg', '/images/listings/view3.jpg'],
+    media: 'carousel',
+    platforms: ['wxch', 'wx'],
+    templateId: 1,
+    hashtags: '#Toronto #Harbourfront #JustListed #加拿大房产',
+    status: 'planned',
+    createdByAgentId: 'a-2',
+    date: postDay(2),
+    createdAt: postDay(1) + 'T10:40:00.000Z',
   },
   {
-    id: 'p-2004', listingId: 'l-1006', listingTitle: 'Modern Condo 8F',
-    title: 'Modern Condo 8F · Rent spotlight',
-    text: 'Compact, stylish and ready to move in. 62 m² in Changning from ¥16,500/month — ideal for young professionals.',
-    images: ['/images/listings/condo1.jpg'],
-    media: 'single', platform: 'wx', templateId: null,
-    hashtags: '#长宁 #租房 #StudioGoals',
-    date: postDay(2), createdAt: postDay(2) + 'T08:15:00.000Z'
+    id: 'p-2004',
+    listingId: 'l-2003',
+    listingTitle: 'Curridabat Family House',
+    title: 'Curridabat Family House · Open house',
+    text: 'Join our open house this weekend in Curridabat. 3 bedrooms, pet-friendly garden and a quiet street near Plaza del Sol.',
+    images: ['/images/listings/villa1.jpg', '/images/listings/garden1.jpg'],
+    media: 'carousel',
+    platforms: ['Facebook', 'Instagram', 'wx'],
+    templateId: 5,
+    hashtags: '#Curridabat #OpenHouse #FamilyHome #PetFriendly',
+    status: 'planned',
+    createdByAgentId: 'a-1',
+    date: postDay(-5),
+    createdAt: postDay(2) + 'T11:00:00.000Z',
   },
   {
-    id: 'p-2005', listingId: 'l-1007', listingTitle: 'Lakeview Family Home',
-    title: 'Lakeview Family Home · Open house',
-    text: 'Join our open house this weekend at Suzhou Bay. 3 bedrooms, park views and top school districts nearby.',
-    images: ['/images/listings/garden2.jpg'],
-    media: 'single', platform: 'Facebook', templateId: 5,
-    hashtags: '#苏州湾 #OpenHouse #FamilyHome',
-    date: postDay(3), createdAt: postDay(3) + 'T11:00:00.000Z'
+    id: 'p-2005',
+    listingId: 'l-2005',
+    listingTitle: 'Vancouver Townhouse',
+    title: 'Vancouver Townhouse · Market insight',
+    text: 'Why Oak Street townhomes keep climbing — a short walkthrough of our newest Vancouver rental.',
+    images: ['/images/listings/town1.jpg'],
+    media: 'single',
+    platforms: ['Facebook'],
+    templateId: null,
+    hashtags: '#Vancouver #Townhouse #MarketUpdate',
+    status: 'draft',
+    createdByAgentId: 'a-1',
+    date: postDay(4),
+    createdAt: postDay(3) + 'T07:30:00.000Z',
   },
   {
-    id: 'p-2006', listingId: 'l-1008', listingTitle: 'Penthouse Duplex',
-    title: 'Penthouse Duplex · Market insight',
-    text: 'Why the Bund penthouse market keeps climbing — a short walkthrough of our newest duplex listing.',
-    images: ['/images/listings/villa2.jpg'],
-    media: 'video', platform: 'Instagram', templateId: null,
-    hashtags: '#外滩 #Penthouse #MarketUpdate',
-    date: postDay(4), createdAt: postDay(4) + 'T07:30:00.000Z'
-  }
+    id: 'p-2006',
+    listingId: 'l-2001',
+    listingTitle: 'Skygarden 2-Bed Condo',
+    title: 'Skygarden 2-Bed Condo · Amenities tour',
+    text: 'Pool, gym, tennis and an event room — the Skygarden amenities your next home comes with.',
+    images: ['/images/listings/garden1.jpg', '/images/listings/garden2.jpg', '/images/listings/garden3.jpg'],
+    media: 'carousel',
+    platforms: ['Instagram'],
+    templateId: 3,
+    hashtags: '#Skygarden #Amenities #Lifestyle',
+    status: 'planned',
+    createdByAgentId: 'a-2',
+    date: postDay(-8),
+    createdAt: postDay(4) + 'T08:00:00.000Z',
+  },
 ];
 
 function loadPosts() {
@@ -213,32 +517,54 @@ function loadPosts() {
     const raw = localStorage.getItem(POSTS_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) return parsed.map((p) => normalizePost(p));
     }
   } catch (e) {}
   persistPosts(POSTS_SEED);
-  return POSTS_SEED.slice();
+  return POSTS_SEED.map((p) => normalizePost(p));
 }
 
 function persistPosts(list) {
-  try { localStorage.setItem(POSTS_KEY, JSON.stringify(list)); } catch (e) {}
+  try {
+    localStorage.setItem(POSTS_KEY, JSON.stringify(list));
+  } catch (e) {}
 }
 
-export async function listPosts() {
-  return loadPosts();
+export async function listPosts(filter) {
+  let items = loadPosts();
+  if (filter) {
+    const { listingId, status, agentId } = filter;
+    if (listingId) items = items.filter((p) => p.listingId === listingId);
+    if (status && status !== 'all') items = items.filter((p) => p.status === status);
+    if (agentId) items = items.filter((p) => p.createdByAgentId === agentId);
+  }
+  return items;
 }
 
 export async function createPost(data) {
   const items = loadPosts();
-  const item = Object.assign({}, data, {
-    id: 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
-    date: data.date || new Date().toISOString().slice(0, 10),
-    createdAt: new Date().toISOString()
-  });
+  const item = normalizePost(
+    Object.assign({}, data, {
+      id: 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
+      date: data.date || new Date().toISOString().slice(0, 10),
+      createdAt: new Date().toISOString(),
+    }),
+    'draft'
+  );
   items.unshift(item);
   persistPosts(items);
   emit();
   return item;
+}
+
+export async function updatePost(id, patch) {
+  const items = loadPosts();
+  const idx = items.findIndex((p) => p.id === id);
+  if (idx < 0) return null;
+  items[idx] = normalizePost(Object.assign({}, items[idx], patch, { id }), items[idx].status);
+  persistPosts(items);
+  emit();
+  return items[idx];
 }
 
 export async function deletePost(id) {
@@ -251,9 +577,9 @@ export async function deletePost(id) {
 const AGENTS_KEY = 'pp-agents';
 
 const AGENTS_SEED = [
-  { id: 'a-1', name: 'Chen Wei', phone: '+86 138 0000 1111', email: 'chen.wei@homedirect.cn' },
-  { id: 'a-2', name: 'Lin Yue', phone: '+86 138 0000 2222', email: 'lin.yue@homedirect.cn' },
-  { id: 'a-3', name: 'Zhao Min', phone: '+86 138 0000 3333', email: 'zhao.min@homedirect.cn' }
+  { id: 'a-1', name: 'Chen Wei', phone: '+86 138 0000 1111', email: 'chen.wei@homedirect.cn', role: 'agent' },
+  { id: 'a-2', name: 'Lin Yue', phone: '+86 138 0000 2222', email: 'lin.yue@homedirect.cn', role: 'agent' },
+  { id: 'a-3', name: 'Zhao Min', phone: '+86 138 0000 3333', email: 'zhao.min@homedirect.cn', role: 'agent' },
 ];
 
 function loadAgents() {
@@ -269,7 +595,9 @@ function loadAgents() {
 }
 
 function persistAgents(list) {
-  try { localStorage.setItem(AGENTS_KEY, JSON.stringify(list)); } catch (e) {}
+  try {
+    localStorage.setItem(AGENTS_KEY, JSON.stringify(list));
+  } catch (e) {}
 }
 
 export async function listAgents() {
@@ -282,7 +610,8 @@ export async function createAgent(data) {
     id: 'a-' + Date.now().toString(36),
     name: (data.name || '').trim(),
     phone: (data.phone || '').trim(),
-    email: (data.email || '').trim()
+    email: (data.email || '').trim(),
+    role: AGENT_ROLES.indexOf(data.role) >= 0 ? data.role : 'agent',
   };
   items.push(item);
   persistAgents(items);
@@ -297,7 +626,8 @@ export async function updateAgent(id, patch) {
   items[idx] = Object.assign({}, items[idx], {
     name: (patch.name ?? items[idx].name).trim(),
     phone: (patch.phone ?? items[idx].phone).trim(),
-    email: (patch.email ?? items[idx].email).trim()
+    email: (patch.email ?? items[idx].email).trim(),
+    role: AGENT_ROLES.indexOf(patch.role) >= 0 ? patch.role : items[idx].role || 'agent',
   });
   persistAgents(items);
   emit();
@@ -316,4 +646,228 @@ export function agentDisplayNames(agentIds) {
     .map((id) => (agents.find((a) => a.id === id) || {}).name || '')
     .filter(Boolean)
     .join(', ');
+}
+
+// Buildings data layer. A listing links to 0..1 building (buildingId); the
+// building holds the shared amenity gallery that property/post photo pickers
+// can reuse instead of re-uploading per post.
+const BUILDINGS_KEY = 'pp-buildings';
+
+const BUILDINGS_SEED = [
+  {
+    id: 'b-001',
+    companyId: COMPANY_ID,
+    name: 'Skygarden',
+    city: 'Curridabat',
+    country: 'CR',
+    address: 'Curridabat, San José, Costa Rica',
+    amenities: ['pool', 'gym', 'guest_parking', 'lobby', 'football', 'tennis', 'event_room', 'bbq'],
+    photos: [
+      { src: '/images/listings/garden1.jpg', label: 'Pool' },
+      { src: '/images/listings/garden2.jpg', label: 'Gardens & BBQ area' },
+      { src: '/images/listings/condo2.jpg', label: 'Lobby' },
+      { src: '/images/listings/condo4.jpg', label: 'Gym' },
+      { src: '/images/listings/garden3.jpg', label: 'Football court' },
+      { src: '/images/listings/garden4.jpg', label: 'Tennis court' },
+      { src: '/images/listings/villa1.jpg', label: 'Event room' },
+      { src: '/images/listings/view1.jpg', label: 'Guest parking & views' },
+    ],
+    notes: 'Family-oriented towers with full amenities.',
+    updatedAt: '2026-11-01',
+  },
+  {
+    id: 'b-002',
+    companyId: COMPANY_ID,
+    name: 'Harbour Residences',
+    city: 'Toronto',
+    country: 'CA',
+    address: 'Harbourfront, Toronto, ON, Canada',
+    amenities: ['gym', 'guest_parking', 'lobby'],
+    photos: [
+      { src: '/images/listings/view2.jpg', label: 'Harbour view' },
+      { src: '/images/listings/loft1.jpg', label: 'Residence interior' },
+    ],
+    notes: 'Downtown tower managed for Chinese partners.',
+    updatedAt: '2026-11-03',
+  },
+];
+
+function normalizeBuilding(b) {
+  return Object.assign({}, b, {
+    companyId: b.companyId || COMPANY_ID,
+    city: b.city || '',
+    country: b.country || '',
+    address: b.address || '',
+    amenities: Array.isArray(b.amenities) ? b.amenities.filter((a) => AMENITIES.indexOf(a) >= 0) : [],
+    photos: Array.isArray(b.photos)
+      ? b.photos.map((p) =>
+          typeof p === 'string' ? { src: p, label: '' } : { src: p.src || '', label: p.label || '' }
+        )
+      : [],
+    notes: b.notes || '',
+  });
+}
+
+function loadBuildings() {
+  try {
+    const raw = localStorage.getItem(BUILDINGS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.map(normalizeBuilding);
+    }
+  } catch (e) {}
+  persistBuildings(BUILDINGS_SEED.map(normalizeBuilding));
+  return BUILDINGS_SEED.map(normalizeBuilding);
+}
+
+function persistBuildings(list) {
+  try {
+    localStorage.setItem(BUILDINGS_KEY, JSON.stringify(list));
+  } catch (e) {}
+}
+
+export async function listBuildings() {
+  return loadBuildings();
+}
+
+export async function getBuilding(id) {
+  return loadBuildings().find((b) => b.id === id) || null;
+}
+
+export async function createBuilding(data) {
+  const items = loadBuildings();
+  const item = normalizeBuilding(
+    Object.assign({}, data, {
+      id: 'b-' + Date.now().toString(36),
+      updatedAt: new Date().toISOString().slice(0, 10),
+    })
+  );
+  items.unshift(item);
+  persistBuildings(items);
+  emit();
+  return item;
+}
+
+export async function updateBuilding(id, patch) {
+  const items = loadBuildings();
+  const idx = items.findIndex((b) => b.id === id);
+  if (idx < 0) return null;
+  items[idx] = normalizeBuilding(
+    Object.assign({}, items[idx], patch, {
+      updatedAt: new Date().toISOString().slice(0, 10),
+    })
+  );
+  persistBuildings(items);
+  emit();
+  return items[idx];
+}
+
+export async function deleteBuilding(id) {
+  persistBuildings(loadBuildings().filter((b) => b.id !== id));
+  emit();
+}
+
+// Destinations data layer. Facebook groups / channels a post can be published
+// to. Schema-only for now (Q4): the picker UI ships with the publish
+// transition in a later iteration.
+const DESTINATIONS_KEY = 'pp-destinations';
+
+const DESTINATIONS_SEED = [
+  { id: 'd-1', companyId: COMPANY_ID, platform: 'facebook', city: 'Curridabat', name: 'Curridabat Rentals & Sales' },
+  { id: 'd-2', companyId: COMPANY_ID, platform: 'facebook', city: 'San José', name: 'San José Real Estate CR' },
+  { id: 'd-3', companyId: COMPANY_ID, platform: 'facebook', city: 'Toronto', name: 'Toronto Downtown Condos' },
+];
+
+function normalizeDestination(d) {
+  return Object.assign({}, d, {
+    companyId: d.companyId || COMPANY_ID,
+    platform: d.platform || 'facebook',
+    city: d.city || '',
+    name: d.name || '',
+  });
+}
+
+function loadDestinations() {
+  try {
+    const raw = localStorage.getItem(DESTINATIONS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.map(normalizeDestination);
+    }
+  } catch (e) {}
+  persistDestinations(DESTINATIONS_SEED.map(normalizeDestination));
+  return DESTINATIONS_SEED.map(normalizeDestination);
+}
+
+function persistDestinations(list) {
+  try {
+    localStorage.setItem(DESTINATIONS_KEY, JSON.stringify(list));
+  } catch (e) {}
+}
+
+export async function listDestinations(filter) {
+  let items = loadDestinations();
+  if (filter) {
+    if (filter.city) items = items.filter((d) => d.city === filter.city);
+    if (filter.platform) items = items.filter((d) => d.platform === filter.platform);
+  }
+  return items;
+}
+
+export async function createDestination(data) {
+  const items = loadDestinations();
+  const item = normalizeDestination(Object.assign({}, data, { id: 'd-' + Date.now().toString(36) }));
+  items.push(item);
+  persistDestinations(items);
+  emit();
+  return item;
+}
+
+export async function deleteDestination(id) {
+  persistDestinations(loadDestinations().filter((d) => d.id !== id));
+  emit();
+}
+
+// Settings data layer. Holds the LLM config (Xiaomi MiMo) used by post
+// generation; a missing/disabled config falls back to template-based copy.
+const SETTINGS_KEY = 'pp-settings';
+
+const SETTINGS_DEFAULT = {
+  companyId: COMPANY_ID,
+  llm: {
+    provider: 'mimo',
+    apiKey: '',
+    model: 'mimo-v2.6-flash',
+    baseUrl: 'https://api.xiaomimimo.com/v1',
+    enabled: true,
+  },
+};
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        return Object.assign({}, SETTINGS_DEFAULT, parsed, {
+          llm: Object.assign({}, SETTINGS_DEFAULT.llm, parsed.llm || {}),
+        });
+      }
+    }
+  } catch (e) {}
+  return Object.assign({}, SETTINGS_DEFAULT, { llm: Object.assign({}, SETTINGS_DEFAULT.llm) });
+}
+
+export async function getSettings() {
+  return loadSettings();
+}
+
+export async function updateSettings(patch) {
+  const next = Object.assign(loadSettings(), patch, {
+    llm: Object.assign(loadSettings().llm, patch.llm || {}),
+  });
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+  } catch (e) {}
+  return next;
 }

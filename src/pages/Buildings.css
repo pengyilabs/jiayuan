@@ -1,0 +1,611 @@
+/* Buildings page — every selector scoped under .bg-page */
+
+.bg-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-warm);
+  color: var(--fg);
+  font-family: var(--font);
+}
+
+/* ── Header ── */
+.bg-page .bg-header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+}
+.bg-page .bg-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 15px 28px 8px;
+}
+.bg-page .bg-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.bg-page .bg-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.bg-page .bg-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.bg-page .bg-subheading {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 28px 15px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* ── Buttons ── */
+.bg-page .bg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--motion);
+}
+.bg-page .bg-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bg-page .bg-btn:active {
+  transform: scale(0.98);
+}
+.bg-page .bg-btn-accent {
+  background: var(--accent);
+  color: #fff;
+}
+.bg-page .bg-btn-accent:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+.bg-page .bg-btn-outline {
+  background: var(--bg);
+  border-color: var(--border);
+  color: var(--fg);
+}
+.bg-page .bg-btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.bg-page .bg-btn-danger {
+  background: #d92d20;
+  color: #fff;
+}
+.bg-page .bg-btn-danger:hover {
+  background: #b42318;
+  transform: translateY(-1px);
+}
+.bg-page .bg-btn-sm {
+  padding: 7px 13px;
+  font-size: 12.5px;
+}
+.bg-page .bg-btn-sm svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Cards grid ── */
+.bg-page .bg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 22px;
+  max-width: 1240px;
+  width: 100%;
+  margin: 18px auto 0;
+  padding: 0 28px;
+}
+.bg-page .bg-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    box-shadow var(--motion),
+    transform var(--motion);
+}
+.bg-page .bg-card:hover {
+  box-shadow: var(--shadow-card);
+  transform: translateY(-3px);
+}
+.bg-page .bg-card-media {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: var(--surface-warm);
+  cursor: pointer;
+}
+.bg-page .bg-card-media img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+}
+.bg-page .bg-card-media-empty {
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--meta);
+  font-size: 13px;
+  background: var(--surface-warm);
+}
+.bg-page .bg-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px 18px;
+}
+.bg-page .bg-card-name {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.bg-page .bg-card-loc {
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.bg-page .bg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bg-page .bg-chip {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-warm);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.bg-page .bg-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+}
+.bg-page .bg-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── Empty state ── */
+.bg-page .bg-empty {
+  max-width: 560px;
+  margin: 60px auto 40px;
+  padding: 44px 28px;
+  text-align: center;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+.bg-page .bg-empty-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.bg-page .bg-empty-body {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.bg-page .bg-foot {
+  margin-top: auto;
+  padding: 30px 28px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--meta);
+}
+
+/* ── Modal ── */
+.bg-page .bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(20, 16, 12, 0.45);
+  backdrop-filter: blur(3px);
+}
+.bg-page .bg-modal {
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  padding: 22px 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+.bg-page .bg-modal-wide {
+  max-width: 720px;
+}
+.bg-page .bg-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.bg-page .bg-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.bg-page .bg-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.bg-page .bg-icon-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.bg-page .bg-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ── Detail view ── */
+.bg-page .bg-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bg-page .bg-detail-loc {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.bg-page .bg-detail-notes {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--fg);
+  line-height: 1.55;
+}
+.bg-page .bg-detail-sub {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--meta);
+}
+.bg-page .bg-detail-empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--meta);
+  font-style: italic;
+}
+.bg-page .bg-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.bg-page .bg-gallery-item {
+  margin: 0;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-warm);
+}
+.bg-page .bg-gallery-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+.bg-page .bg-gallery-label {
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.bg-page .bg-units {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bg-page .bg-unit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.bg-page .bg-unit-thumb {
+  flex-shrink: 0;
+  width: 52px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+.bg-page .bg-unit-id {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bg-page .bg-unit-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bg-page .bg-unit-no {
+  font-size: 11.5px;
+  color: var(--meta);
+}
+.bg-page .bg-unit-price {
+  font-size: 13px;
+  font-weight: 700;
+}
+.bg-page .bg-badge {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.bg-page .bg-badge-active {
+  background: #e8f7ee;
+  color: #157f3d;
+}
+.bg-page .bg-badge-reserved {
+  background: #fff4e0;
+  color: #a86207;
+}
+.bg-page .bg-badge-sold,
+.bg-page .bg-badge-rented {
+  background: var(--surface-warm);
+  color: var(--muted);
+}
+.bg-page .bg-badge-off {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ── Form ── */
+.bg-page .bg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bg-page .bg-form-row {
+  display: flex;
+  gap: 12px;
+}
+.bg-page .bg-form-row .bg-field {
+  flex: 1;
+}
+.bg-page .bg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bg-page .bg-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.bg-page .bg-req {
+  margin-left: 3px;
+  color: var(--accent);
+}
+.bg-page .bg-input {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--fg);
+  transition:
+    border-color var(--motion),
+    box-shadow var(--motion);
+}
+.bg-page .bg-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.14);
+}
+.bg-page .bg-input-invalid {
+  border-color: #d92d20;
+}
+.bg-page .bg-textarea {
+  resize: vertical;
+}
+.bg-page .bg-hint {
+  margin: -2px 0 0;
+  font-size: 11.5px;
+  color: var(--meta);
+}
+.bg-page .bg-error {
+  font-size: 12px;
+  color: #d92d20;
+}
+
+/* ── Amenity chips ── */
+.bg-page .bg-amenity-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bg-page .bg-amenity-chip {
+  padding: 7px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.bg-page .bg-amenity-chip:hover {
+  border-color: var(--accent-soft);
+  color: var(--accent);
+}
+.bg-page .bg-amenity-chip.bg-amenity-on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Photo management ── */
+.bg-page .bg-photo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bg-page .bg-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bg-page .bg-photo-thumb {
+  flex-shrink: 0;
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+.bg-page .bg-photo-remove {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.bg-page .bg-photo-remove:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.bg-page .bg-photo-remove svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.bg-page .bg-photo-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--motion);
+}
+.bg-page .bg-photo-add:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.bg-page .bg-photo-add input {
+  display: none;
+}
+.bg-page .bg-photo-add svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Delete confirm ── */
+.bg-page .bg-confirm-body {
+  margin: 10px 0 4px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.bg-page .bg-confirm-target {
+  margin: 0 0 14px;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.bg-page .bg-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
