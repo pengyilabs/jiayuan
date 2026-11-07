@@ -435,15 +435,15 @@
   flex-shrink: 0;
 }
 .ls-page .ls-table-wrap {
-  max-width: 1240px;
-  width: 100%;
+  width: calc(100% - 56px);
+  max-width: 1184px;
   margin: 10px auto 0;
   overflow-x: auto;
 }
 .ls-page .ls-table {
   width: 100%;
   min-width: 1120px;
-  margin: 0 28px;
+  margin: 0;
   border-collapse: separate;
   border-spacing: 0;
   background: var(--bg);
@@ -482,17 +482,18 @@
 .ls-page .ls-table tbody tr {
   background: var(--bg);
 }
+/* left: 1px matches the table's left border so sticky engages with no jump */
 .ls-page .ls-table thead th:first-child {
   position: sticky;
   z-index: 3;
-  left: 0;
+  left: 1px;
   box-shadow: 1px 0 0 var(--border);
 }
 .ls-page .ls-table tbody td:first-child {
   position: sticky;
   z-index: 2;
   background: inherit;
-  left: 0;
+  left: 1px;
   box-shadow: 1px 0 0 var(--border-soft);
 }
 .ls-page .ls-table-prop {
@@ -536,6 +537,135 @@
   font-size: 12px;
   color: var(--meta);
   white-space: nowrap;
+}
+
+/* ── Inline cell editing (table view) ── */
+.ls-page .ls-cell-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--motion), background var(--motion);
+}
+.ls-page .ls-cell-edit svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+.ls-page .ls-cell-edit:hover {
+  border-color: currentColor;
+}
+.ls-page .ls-cell-menu {
+  position: fixed;
+  z-index: 95;
+  min-width: 170px;
+  padding: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 14px 34px rgba(20, 12, 8, 0.18);
+}
+.ls-page .ls-cell-menu-up {
+  transform: translateY(-100%);
+}
+.ls-page .ls-cell-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--fg);
+  cursor: pointer;
+}
+.ls-page .ls-cell-menu-item:hover {
+  background: var(--surface-warm);
+}
+.ls-page .ls-cell-menu-on {
+  font-weight: 700;
+}
+.ls-page .ls-cell-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── Table cell extras: icons, area unit, agent pills ── */
+.ls-page .ls-cell-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ls-page .ls-cell-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--muted);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ls-page .ls-area-unit {
+  margin-left: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--meta);
+}
+.ls-page .ls-agent-none {
+  color: var(--meta);
+}
+.ls-page .ls-agent-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.ls-page .ls-agent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 3px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  background: var(--surface-warm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.ls-page .ls-agent-pill-avatar {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.ls-page .ls-agent-pill-link {
+  width: 11px;
+  height: 11px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
 }
 
 /* ── Empty state ── */
@@ -1207,8 +1337,8 @@
     padding-left: 20px;
     padding-right: 20px;
   }
-  .ls-page .ls-table {
-    margin: 0 20px;
+  .ls-page .ls-table-wrap {
+    width: calc(100% - 40px);
   }
 }
 @media (max-width: 640px) {

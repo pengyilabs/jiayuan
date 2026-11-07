@@ -75,6 +75,15 @@ function chipFilter(id) {
   return { status: id };
 }
 
+const TYPE_OPTIONS = ['sale', 'rent'];
+
+const BED_ICON = (
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4v16" /><path d="M2 8h18a2 2 0 0 1 2 2v10" /><path d="M2 17h20" /><path d="M6 8v9" /></svg>
+);
+const BATH_ICON = (
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-2z" /><path d="M7 12V6a2 2 0 0 1 4 0" /><path d="M7 18l-1.5 2.5M17 18l1.5 2.5" /></svg>
+);
+
 export default function Listings() {
   const { t } = useLang();
 
@@ -89,6 +98,7 @@ export default function Listings() {
   const [errors, setErrors] = useState({});
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [menu, setMenu] = useState(null);
+  const [editCell, setEditCell] = useState(null);
   const [agents, setAgents] = useState([]);
   const reqRef = useRef(0);
 
@@ -121,16 +131,17 @@ export default function Listings() {
   useEffect(() => { document.title = t('ls_page_title'); }, [t]);
 
   useEffect(() => {
-    if (!modal && !deleteTarget && !menu) return undefined;
+    if (!modal && !deleteTarget && !menu && !editCell) return undefined;
     function onKey(e) {
       if (e.key !== 'Escape') return;
-      if (menu) setMenu(null);
+      if (editCell) setEditCell(null);
+      else if (menu) setMenu(null);
       else if (deleteTarget) setDeleteTarget(null);
       else setModal(null);
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [modal, deleteTarget, menu]);
+  }, [modal, deleteTarget, menu, editCell]);
 
   useEffect(() => {
     if (!menu) return undefined;
@@ -149,6 +160,24 @@ export default function Listings() {
       window.removeEventListener('resize', onClose);
     };
   }, [menu]);
+
+  useEffect(() => {
+    if (!editCell) return undefined;
+    function onDown(e) {
+      const el = e.target;
+      if (el.closest && (el.closest('.ls-cell-menu') || el.closest('.ls-cell-edit'))) return;
+      setEditCell(null);
+    }
+    function onClose() { setEditCell(null); }
+    document.addEventListener('mousedown', onDown);
+    window.addEventListener('scroll', onClose, true);
+    window.addEventListener('resize', onClose);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      window.removeEventListener('scroll', onClose, true);
+      window.removeEventListener('resize', onClose);
+    };
+  }, [editCell]);
 
   function setField(name, value) {
     setForm((f) => ({ ...f, [name]: value }));
@@ -243,6 +272,43 @@ export default function Listings() {
       left: openRight ? rect.left : rect.right,
       openRight
     }));
+  }
+
+  function toggleCellEdit(e, item, field) {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const openUp = rect.bottom + 200 > window.innerHeight;
+    setEditCell((cur) => (cur && cur.item.id === item.id && cur.field === field ? null : {
+      item,
+      field,
+      top: openUp ? rect.top - 6 : rect.bottom + 6,
+      left: rect.left,
+      openUp
+    }));
+  }
+
+  async function applyCellEdit(field, value) {
+    const { item } = editCell;
+    setEditCell(null);
+    await updateListing(item.id, { [field]: value });
+    refresh();
+  }
+
+  function agentPills(item) {
+    const ids = item.agentIds || [];
+    const names = ids
+      .map((id) => (agents.find((a) => a.id === id) || {}).name)
+      .filter(Boolean);
+    const legacy = names.length ? [] : String(item.agent || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const list = names.length ? names : legacy;
+    if (!list.length) return <span className="ls-agent-none">—</span>;
+    return list.map((name) => (
+      <span className="ls-agent-pill" key={name} title={t('ls_agent_linked')}>
+        <span className="ls-agent-pill-avatar">{name.charAt(0).toUpperCase()}</span>
+        <span className="ls-agent-pill-name">{name}</span>
+        <svg className="ls-agent-pill-link" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+      </span>
+    ));
   }
 
   async function handleSubmit(e) {
@@ -458,16 +524,30 @@ export default function Listings() {
                     </div>
                   </td>
                   <td>{item.location}</td>
-                  <td><span className={'ls-badge ls-badge-' + item.status}>{t('ls_status_' + item.status)}</span></td>
-                  <td><span className={'ls-badge ls-badge-' + item.type}>{t('ls_type_' + item.type)}</span></td>
+                  <td>
+                    <button type="button" className={'ls-cell-edit ls-badge ls-badge-' + item.status} onClick={(e) => toggleCellEdit(e, item, 'status')}>
+                      <span>{t('ls_status_' + item.status)}</span>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+                    </button>
+                  </td>
+                  <td>
+                    <button type="button" className={'ls-cell-edit ls-badge ls-badge-' + item.type} onClick={(e) => toggleCellEdit(e, item, 'type')}>
+                      <span>{t('ls_type_' + item.type)}</span>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+                    </button>
+                  </td>
                   <td className="ls-table-price">
                     {formatPrice(item.price, item.currency)}
                     {item.type === 'rent' ? <span className="ls-price-unit">{t('ls_unit_month')}</span> : null}
                   </td>
-                  <td>{item.beds}</td>
-                  <td>{item.baths}</td>
-                  <td>{item.area}</td>
-                  <td>{item.agent}</td>
+                  <td><span className="ls-cell-icon">{BED_ICON}{item.beds}</span></td>
+                  <td><span className="ls-cell-icon">{BATH_ICON}{item.baths}</span></td>
+                  <td>{item.area}<span className="ls-area-unit">{t('ls_unit_area')}</span></td>
+                  <td>
+                    <div className="ls-agent-pills">
+                      {agentPills(item)}
+                    </div>
+                  </td>
                   <td className="ls-table-updated">{item.updatedAt}</td>
                 </tr>
               ))}
@@ -512,6 +592,29 @@ export default function Listings() {
             <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
             <span>{t('ls_card_delete')}</span>
           </button>
+        </div>
+      ) : null}
+
+      {editCell ? (
+        <div
+          className={'ls-cell-menu' + (editCell.openUp ? ' ls-cell-menu-up' : '')}
+          role="menu"
+          style={{ top: editCell.top, left: editCell.left }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {(editCell.field === 'type' ? TYPE_OPTIONS : STATUSES).map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              role="menuitemradio"
+              aria-checked={editCell.item[editCell.field] === opt}
+              className={'ls-cell-menu-item' + (editCell.item[editCell.field] === opt ? ' ls-cell-menu-on' : '')}
+              onClick={() => applyCellEdit(editCell.field, opt)}
+            >
+              <span className={'ls-cell-dot ls-badge-' + opt} />
+              <span>{t((editCell.field === 'type' ? 'ls_type_' : 'ls_status_') + opt)}</span>
+            </button>
+          ))}
         </div>
       ) : null}
 
