@@ -1,19 +1,36 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '../lib/i18n.jsx';
+import { listAgents } from '../lib/store.js';
 import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
 import './Login.css';
 
 export default function LoginPage() {
   const { t } = useLang();
   const navigate = useNavigate();
+  const [agents, setAgents] = useState([]);
+  const [picking, setPicking] = useState(false);
 
   useEffect(() => {
     document.title = t('login_page_title');
   }, [t]);
 
-  function pickRole(role, path) {
-    try { sessionStorage.setItem('pp-role', role); } catch (e) {}
+  useEffect(() => {
+    let alive = true;
+    listAgents().then((list) => {
+      if (alive) setAgents(list);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  function pickRole(role, path, agentId) {
+    try {
+      sessionStorage.setItem('pp-role', role);
+      if (role === 'agent' && agentId) sessionStorage.setItem('pp-agent-id', agentId);
+      else sessionStorage.removeItem('pp-agent-id');
+    } catch (e) {}
     navigate(path);
   }
 
@@ -43,9 +60,20 @@ export default function LoginPage() {
             <p className="login-sub">{t('sub')}</p>
 
             <div className="roles">
-              <a className="role-card" href="/" onClick={(e) => { e.preventDefault(); pickRole('owner', '/'); }}>
+              <a
+                className="role-card"
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  pickRole('owner', '/');
+                }}
+              >
                 <span className="role-icon">
-                  <svg viewBox="0 0 24 24"><path d="M3 21h18" /><path d="M5 21V8l7-5 7 5v13" /><path d="M9 21v-7h6v7" /></svg>
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3 21h18" />
+                    <path d="M5 21V8l7-5 7 5v13" />
+                    <path d="M9 21v-7h6v7" />
+                  </svg>
                 </span>
                 <span className="role-body">
                   <span className="role-name">Owner</span>
@@ -53,13 +81,27 @@ export default function LoginPage() {
                 </span>
                 <span className="role-side">
                   <span className="role-tag">{t('tag_desktop')}</span>
-                  <span className="role-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg></span>
+                  <span className="role-arrow">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </span>
                 </span>
               </a>
 
-              <a className="role-card" href="/feed" onClick={(e) => { e.preventDefault(); pickRole('agent', '/feed'); }}>
+              <a
+                className="role-card"
+                href="/feed"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPicking(true);
+                }}
+              >
                 <span className="role-icon">
-                  <svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5" /><line x1="10.5" y1="18.5" x2="13.5" y2="18.5" /></svg>
+                  <svg viewBox="0 0 24 24">
+                    <rect x="6" y="2" width="12" height="20" rx="2.5" />
+                    <line x1="10.5" y1="18.5" x2="13.5" y2="18.5" />
+                  </svg>
                 </span>
                 <span className="role-body">
                   <span className="role-name">Agent</span>
@@ -67,13 +109,47 @@ export default function LoginPage() {
                 </span>
                 <span className="role-side">
                   <span className="role-tag">{t('tag_mobile')}</span>
-                  <span className="role-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg></span>
+                  <span className="role-arrow">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </span>
                 </span>
               </a>
+
+              {picking ? (
+                <div className="agent-pick" role="group" aria-label={t('agent_pick')}>
+                  <p className="agent-pick-title">{t('agent_pick')}</p>
+                  {agents.map((a) => (
+                    <button
+                      key={a.id}
+                      type="button"
+                      className="agent-pick-item"
+                      onClick={() => pickRole('agent', '/feed', a.id)}
+                    >
+                      <span className="agent-pick-avatar">{(a.name || '?').trim().slice(0, 1).toUpperCase()}</span>
+                      <span className="agent-pick-name">{a.name}</span>
+                      <span className="role-arrow">
+                        <svg viewBox="0 0 24 24">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </span>
+                    </button>
+                  ))}
+                  {agents.length === 0 ? <p className="agent-pick-empty">{t('agent_pick_empty')}</p> : null}
+                  <button type="button" className="agent-pick-cancel" onClick={() => setPicking(false)}>
+                    {t('agent_pick_back')}
+                  </button>
+                </div>
+              ) : null}
             </div>
 
             <p className="login-note">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><line x1="12" y1="11" x2="12" y2="16" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" />
+                <line x1="12" y1="11" x2="12" y2="16" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
               <span>{t('note')}</span>
             </p>
           </div>
