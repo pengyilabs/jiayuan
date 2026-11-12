@@ -201,6 +201,81 @@
   letter-spacing: -0.01em;
   min-width: 170px;
   text-align: center;
+  background: none;
+  border: none;
+  color: var(--fg);
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.af-month-label:hover {
+  color: var(--accent);
+}
+
+/* ===== Month/year picker popover ===== */
+
+.af-month-pick-wrap {
+  position: relative;
+}
+
+.af-month-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: 264px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  padding: 12px;
+}
+
+.af-mp-year {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.af-mp-year-label {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.af-mp-months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.af-mp-month {
+  padding: 8px 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.af-mp-month:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.af-mp-month.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
 /* ===== Unscheduled drafts strip ===== */
@@ -333,8 +408,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow-y: auto;
-  max-height: 160px;
 }
 
 .af-tile {

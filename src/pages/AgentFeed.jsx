@@ -340,6 +340,8 @@ export default function AgentFeed() {
   const [activeDay, setActiveDay] = useState('');
   const [liked, setLiked] = useState(() => new Set());
   const [toast, setToast] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const pickerRef = useRef(null);
   const toastTimer = useRef(null);
 
   useEffect(() => {
@@ -379,6 +381,30 @@ export default function AgentFeed() {
     },
     []
   );
+
+  // Close the month picker on click outside.
+  useEffect(() => {
+    if (!pickerOpen) return;
+    function onDown(e) {
+      if (pickerRef.current && !pickerRef.current.contains(e.target)) setPickerOpen(false);
+    }
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, [pickerOpen]);
+
+  // ←/→ jump between months on the calendar (when not typing or in a modal).
+  useEffect(() => {
+    if (view !== 'calendar') return;
+    function onKey(e) {
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (pickerOpen || sheetOpen || editorPost || publishFlow || settingsOpen) return;
+      if (e.key === 'ArrowLeft') prevMonth();
+      else if (e.key === 'ArrowRight') nextMonth();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [view, pickerOpen, sheetOpen, editorPost, publishFlow, settingsOpen]);
 
   const today = localISO(new Date());
 
@@ -434,6 +460,14 @@ export default function AgentFeed() {
   }, [lang, cursor]);
 
   const cells = useMemo(() => monthCells(cursor.y, cursor.m, weekStart), [cursor, weekStart]);
+
+  // Short month names for the month picker grid.
+  const monthNames = useMemo(() => {
+    const fmt = new Intl.DateTimeFormat(LOCALES[lang] || 'en-US', { month: 'short' });
+    const names = [];
+    for (let m = 0; m < 12; m++) names.push(fmt.format(new Date(2024, m, 1)));
+    return names;
+  }, [lang]);
 
   function agentName(id) {
     return (agents.find((a) => a.id === id) || {}).name || '';
@@ -1280,7 +1314,59 @@ export default function AgentFeed() {
                   <polyline points="15 18 9 12 15 6" />
                 </svg>
               </button>
-              <div className="af-month-label">{monthLabel}</div>
+              <div className="af-month-pick-wrap" ref={pickerRef}>
+                <button
+                  type="button"
+                  className="af-month-label"
+                  aria-label={t('af_month_picker_label')}
+                  aria-expanded={pickerOpen}
+                  onClick={() => setPickerOpen((v) => !v)}
+                >
+                  {monthLabel}
+                </button>
+                {pickerOpen && (
+                  <div className="af-month-picker" role="dialog" aria-label={t('af_month_picker_label')}>
+                    <div className="af-mp-year">
+                      <button
+                        type="button"
+                        className="af-nav-btn"
+                        aria-label={t('af_prev_year')}
+                        onClick={() => setCursor((c) => ({ y: c.y - 1, m: c.m }))}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                      </button>
+                      <span className="af-mp-year-label">{cursor.y}</span>
+                      <button
+                        type="button"
+                        className="af-nav-btn"
+                        aria-label={t('af_next_year')}
+                        onClick={() => setCursor((c) => ({ y: c.y + 1, m: c.m }))}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="af-mp-months">
+                      {monthNames.map((name, m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          className={'af-mp-month' + (m === cursor.m ? ' active' : '')}
+                          onClick={() => {
+                            setCursor((c) => ({ y: c.y, m }));
+                            setPickerOpen(false);
+                          }}
+                        >
+                          {name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
               <button type="button" className="af-nav-btn" aria-label={t('af_next_month')} onClick={nextMonth}>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <polyline points="9 18 15 12 9 6" />
