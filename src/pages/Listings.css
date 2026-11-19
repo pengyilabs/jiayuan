@@ -226,7 +226,9 @@
   font-family: var(--font);
   font-size: 13.5px;
   color: var(--fg);
-  transition: border-color var(--motion), box-shadow var(--motion);
+  transition:
+    border-color var(--motion),
+    box-shadow var(--motion);
 }
 .ls-page .ls-search-input::placeholder {
   color: var(--meta);
@@ -266,7 +268,9 @@
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: box-shadow var(--motion), transform var(--motion);
+  transition:
+    box-shadow var(--motion),
+    transform var(--motion);
 }
 .ls-page .ls-card:hover {
   box-shadow: var(--shadow-card);
@@ -547,7 +551,9 @@
   border: 1px solid transparent;
   font-family: inherit;
   cursor: pointer;
-  transition: border-color var(--motion), background var(--motion);
+  transition:
+    border-color var(--motion),
+    background var(--motion);
 }
 .ls-page .ls-cell-edit svg {
   width: 11px;
@@ -722,6 +728,10 @@
 .ls-page .ls-table tbody tr {
   cursor: pointer;
 }
+.ls-page .ls-card.ls-card-readonly,
+.ls-page .ls-table tbody tr.ls-row-readonly {
+  cursor: default;
+}
 .ls-page .ls-row-menu-btn {
   width: 30px;
   height: 30px;
@@ -786,7 +796,9 @@
   font-weight: 600;
   text-align: left;
   cursor: pointer;
-  transition: background var(--motion), color var(--motion);
+  transition:
+    background var(--motion),
+    color var(--motion);
 }
 .ls-page .ls-row-menu-item:hover {
   background: var(--accent-soft);
@@ -960,7 +972,9 @@
   font-family: var(--font);
   font-size: 14px;
   color: var(--fg);
-  transition: border-color var(--motion), box-shadow var(--motion);
+  transition:
+    border-color var(--motion),
+    box-shadow var(--motion);
 }
 .ls-page .ls-input::placeholder {
   color: var(--meta);
@@ -1306,20 +1320,42 @@
 
 /* ── Motion ── */
 @keyframes ls-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes ls-modal-in {
-  from { opacity: 0; transform: translateY(16px) scale(0.985); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 @keyframes ls-menu-in {
-  from { opacity: 0; transform: translateX(-100%) translateY(-4px); }
-  to { opacity: 1; transform: translateX(-100%); }
+  from {
+    opacity: 0;
+    transform: translateX(-100%) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
 }
 @keyframes ls-menu-in-right {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── Responsive ── */
@@ -1383,4 +1419,111 @@
     width: calc(100% - 40px);
     padding: 36px 22px;
   }
+}
+
+/* ── Building selector, deal terms, own-property & gallery picker ── */
+.ls-page .ls-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  cursor: pointer;
+}
+.ls-page .ls-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+.ls-page .ls-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ls-page .ls-btn:disabled:hover {
+  transform: none;
+}
+.ls-page .ls-badge-own {
+  color: var(--accent);
+}
+.ls-page .ls-chip-pet,
+.ls-page .ls-chip-deal {
+  white-space: nowrap;
+}
+.ls-page .ls-chip-deal {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ls-page .ls-table-flags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 3px;
+}
+.ls-page .ls-table-flag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--meta);
+}
+.ls-page .ls-photo-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ls-page .ls-photo-toolbar .ls-img-hint {
+  margin: 0;
+}
+.ls-page .ls-gallery-modal {
+  max-width: 640px;
+}
+.ls-page .ls-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  padding: 16px 20px 0;
+}
+.ls-page .ls-gallery-item {
+  position: relative;
+  padding: 0;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-warm);
+  cursor: pointer;
+  transition:
+    border-color var(--motion),
+    box-shadow var(--motion);
+}
+.ls-page .ls-gallery-item:hover {
+  border-color: var(--accent-soft);
+}
+.ls-page .ls-gallery-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+.ls-page .ls-gallery-item.ls-gallery-on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.18);
+}
+.ls-page .ls-gallery-label {
+  display: block;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ls-page .ls-gallery-modal .ls-modal-actions {
+  margin-left: 20px;
+  margin-right: 20px;
 }

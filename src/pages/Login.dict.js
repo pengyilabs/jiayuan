@@ -11,11 +11,15 @@ export default {
     agent_desc: '经纪人 · 移动内容流',
     tag_mobile: '移动端',
     note: '演示环境 · 暂不需要密码',
-    login_page_title: '登录 — 加园地产团队 · HOME DIRECT'
+    agent_pick: '选择你的经纪人身份',
+    agent_pick_empty: '暂无经纪人，请先由业主添加',
+    agent_pick_back: '返回',
+    login_page_title: '登录 — 加园地产团队 · HOME DIRECT',
   },
   en: {
     brand_name: 'HOME DIRECT Team',
-    brand_tagline: 'Listings, content and team collaboration in one real-estate workspace. Pick your role to enter your interface.',
+    brand_tagline:
+      'Listings, content and team collaboration in one real-estate workspace. Pick your role to enter your interface.',
     brand_foot: '© 2026 HOME DIRECT Real Estate',
     eyebrow: 'Welcome back',
     title: 'Choose your role',
@@ -25,25 +29,33 @@ export default {
     agent_desc: 'Agent · Mobile content feed',
     tag_mobile: 'Mobile',
     note: 'Demo environment · No password required',
-    login_page_title: 'Login — HOME DIRECT Team'
+    agent_pick: 'Choose which agent you are',
+    agent_pick_empty: 'No agents yet — ask the owner to add one',
+    agent_pick_back: 'Back',
+    login_page_title: 'Login — HOME DIRECT Team',
   },
   fr: {
     brand_name: 'Équipe HOME DIRECT',
-    brand_tagline: 'Annonces, contenu et collaboration d\'équipe dans un espace de travail immobilier. Choisissez votre rôle pour entrer.',
+    brand_tagline:
+      "Annonces, contenu et collaboration d'équipe dans un espace de travail immobilier. Choisissez votre rôle pour entrer.",
     brand_foot: '© 2026 HOME DIRECT Immobilier',
     eyebrow: 'Bon retour',
     title: 'Choisissez votre rôle',
-    sub: 'Sélectionnez un rôle pour accéder à l\'espace correspondant',
-    owner_desc: 'Propriétaire · Tableau de bord d\'équipe',
+    sub: "Sélectionnez un rôle pour accéder à l'espace correspondant",
+    owner_desc: "Propriétaire · Tableau de bord d'équipe",
     tag_desktop: 'Ordinateur',
     agent_desc: 'Agent · Fil de contenu mobile',
     tag_mobile: 'Mobile',
     note: 'Environnement de démo · Aucun mot de passe requis',
-    login_page_title: 'Connexion — Équipe HOME DIRECT'
+    agent_pick: "Choisissez votre identité d'agent",
+    agent_pick_empty: "Aucun agent — demandez au propriétaire d'en ajouter",
+    agent_pick_back: 'Retour',
+    login_page_title: 'Connexion — Équipe HOME DIRECT',
   },
   es: {
     brand_name: 'Equipo HOME DIRECT',
-    brand_tagline: 'Listings, contenido y colaboración del equipo en un espacio de trabajo inmobiliario. Elige tu rol para entrar.',
+    brand_tagline:
+      'Listings, contenido y colaboración del equipo en un espacio de trabajo inmobiliario. Elige tu rol para entrar.',
     brand_foot: '© 2026 HOME DIRECT Inmobiliaria',
     eyebrow: 'Bienvenido de nuevo',
     title: 'Elige tu rol',
@@ -53,6 +65,9 @@ export default {
     agent_desc: 'Agente · Feed de contenido móvil',
     tag_mobile: 'Móvil',
     note: 'Entorno de demostración · No se requiere contraseña',
-    login_page_title: 'Acceso — Equipo HOME DIRECT'
-  }
+    agent_pick: 'Elige qué agente eres',
+    agent_pick_empty: 'Sin agentes — pide al propietario que añada uno',
+    agent_pick_back: 'Volver',
+    login_page_title: 'Acceso — Equipo HOME DIRECT',
+  },
 };

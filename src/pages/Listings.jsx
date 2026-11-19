@@ -3,10 +3,20 @@ import { Link } from 'react-router-dom';
 import { useLang } from '../lib/i18n.jsx';
 import TopBar from '../components/TopBar.jsx';
 import {
-  subscribe, listListings, createListing, updateListing,
-  deleteListing, getStats, formatPrice,
-  listAgents, agentDisplayNames
+  subscribe,
+  listListings,
+  createListing,
+  updateListing,
+  deleteListing,
+  getStats,
+  formatPrice,
+  listAgents,
+  agentDisplayNames,
+  listBuildings,
+  PET_POLICIES,
+  DEAL_MODES,
 } from '../lib/store.js';
+import { getRole, getAgentId } from '../lib/session.js';
 import './Listings.css';
 
 const DEFAULT_IMAGE = '/images/listings/condo1.jpg';
@@ -15,15 +25,50 @@ const PROPERTY_TYPES = ['apartment', 'house', 'townhouse', 'loft', 'lot', 'comme
 const STATUSES = ['active', 'pending', 'sold', 'rented', 'other_agent'];
 const PARKING_TYPES = ['none', 'covered', 'private', 'available'];
 const FURNISHED_LEVELS = ['none', 'appliances', 'semi', 'full'];
-const CURRENCIES = ['CNY', 'USD', 'EUR'];
+const CURRENCIES = ['CNY', 'USD', 'EUR', 'CAD'];
 
 const PTYPE_ICONS = {
-  apartment: <><rect x="6" y="3" width="12" height="18" rx="1" /><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3" /></>,
-  house: <><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" /></>,
-  townhouse: <><path d="M2 21V10l4-3 4 3v11" /><path d="M10 21V10l4-3 4 3v11" /><path d="M6 21v-5h4v5" /><path d="M14 21v-5h4v5" /></>,
-  loft: <><path d="M3 21V8l9-5 9 5v13" /><path d="M3 21h18" /><path d="M7 21v-7h4v7" /><path d="M14 12h3v4h-3z" /></>,
-  lot: <><path d="M3 19l5-8 4 5 3-4 6 7z" /><circle cx="17" cy="6" r="2" /></>,
-  commercial: <><path d="M4 9h16" /><path d="M5 9l1.5-5h11L19 9" /><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" /><path d="M9 21v-6h6v6" /></>
+  apartment: (
+    <>
+      <rect x="6" y="3" width="12" height="18" rx="1" />
+      <path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3" />
+    </>
+  ),
+  house: (
+    <>
+      <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />
+    </>
+  ),
+  townhouse: (
+    <>
+      <path d="M2 21V10l4-3 4 3v11" />
+      <path d="M10 21V10l4-3 4 3v11" />
+      <path d="M6 21v-5h4v5" />
+      <path d="M14 21v-5h4v5" />
+    </>
+  ),
+  loft: (
+    <>
+      <path d="M3 21V8l9-5 9 5v13" />
+      <path d="M3 21h18" />
+      <path d="M7 21v-7h4v7" />
+      <path d="M14 12h3v4h-3z" />
+    </>
+  ),
+  lot: (
+    <>
+      <path d="M3 19l5-8 4 5 3-4 6 7z" />
+      <circle cx="17" cy="6" r="2" />
+    </>
+  ),
+  commercial: (
+    <>
+      <path d="M4 9h16" />
+      <path d="M5 9l1.5-5h11L19 9" />
+      <path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" />
+      <path d="M9 21v-6h6v6" />
+    </>
+  ),
 };
 
 // Segmented toggle-button group — replaces plain dropdowns in the form.
@@ -49,14 +94,30 @@ function SegField({ label, options, value, onChange, getLabel, small }) {
 }
 
 const EMPTY_FORM = {
-  title: '', type: 'sale', status: 'active', price: '', currency: 'CNY', location: '',
-  propertyType: 'apartment', unitNumber: '',
-  beds: '', baths: '', area: '',
-  parkingCount: '0', parkingType: 'none',
-  furnishedLevel: 'none', petsAllowed: false,
-  photos: [], cover: '',
+  title: '',
+  type: 'sale',
+  status: 'active',
+  price: '',
+  currency: 'CNY',
+  location: '',
+  propertyType: 'apartment',
+  unitNumber: '',
+  buildingId: '',
+  beds: '',
+  baths: '',
+  area: '',
+  parkingCount: '0',
+  parkingType: 'none',
+  furnishedLevel: 'none',
+  petPolicy: 'yes',
+  dealTerms: { mode: 'owner_100', amount: '', currency: 'USD' },
+  isOwnerProperty: false,
+  photos: [],
+  cover: '',
   agentIds: [],
-  ownerName: '', ownerPhone: '', notes: ''
+  ownerName: '',
+  ownerPhone: '',
+  notes: '',
 };
 
 const CHIPS = [
@@ -66,7 +127,7 @@ const CHIPS = [
   { id: 'sold', labelKey: 'ls_status_sold', get: (s) => s.sold },
   { id: 'rented', labelKey: 'ls_status_rented', get: (s) => s.rented },
   { id: 'sale', labelKey: 'ls_type_sale', get: (s) => s.forSale },
-  { id: 'rent', labelKey: 'ls_type_rent', get: (s) => s.forRent }
+  { id: 'rent', labelKey: 'ls_type_rent', get: (s) => s.forRent },
 ];
 
 function chipFilter(id) {
@@ -78,14 +139,27 @@ function chipFilter(id) {
 const TYPE_OPTIONS = ['sale', 'rent'];
 
 const BED_ICON = (
-  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4v16" /><path d="M2 8h18a2 2 0 0 1 2 2v10" /><path d="M2 17h20" /><path d="M6 8v9" /></svg>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M2 4v16" />
+    <path d="M2 8h18a2 2 0 0 1 2 2v10" />
+    <path d="M2 17h20" />
+    <path d="M6 8v9" />
+  </svg>
 );
 const BATH_ICON = (
-  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-2z" /><path d="M7 12V6a2 2 0 0 1 4 0" /><path d="M7 18l-1.5 2.5M17 18l1.5 2.5" /></svg>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 12h18v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-2z" />
+    <path d="M7 12V6a2 2 0 0 1 4 0" />
+    <path d="M7 18l-1.5 2.5M17 18l1.5 2.5" />
+  </svg>
 );
 
 export default function Listings() {
   const { t } = useLang();
+
+  // M5 roles: agents only see their assigned listings and get no write path.
+  const isAgent = getRole() === 'agent';
+  const myAgentId = getAgentId();
 
   const [items, setItems] = useState([]);
   const [stats, setStats] = useState(null);
@@ -100,12 +174,18 @@ export default function Listings() {
   const [menu, setMenu] = useState(null);
   const [editCell, setEditCell] = useState(null);
   const [agents, setAgents] = useState([]);
+  const [buildings, setBuildings] = useState([]);
+  const [gallery, setGallery] = useState(null);
   const reqRef = useRef(0);
 
   useEffect(() => {
     let alive = true;
-    listAgents().then((list) => { if (alive) setAgents(list); });
-    return () => { alive = false; };
+    listAgents().then((list) => {
+      if (alive) setAgents(list);
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -116,32 +196,38 @@ export default function Listings() {
   const refresh = useCallback(async () => {
     const req = ++reqRef.current;
     const filter = Object.assign({}, chipFilter(chip), q ? { q } : {});
-    const [list, s] = await Promise.all([
-      listListings(filter),
-      getStats()
-    ]);
+    // Agents see only their assigned listings. Stats stay company-wide
+    // (getStats has no agent scope; acceptable for the demo).
+    if (isAgent) filter.agentId = myAgentId;
+    const [list, s, blds] = await Promise.all([listListings(filter), getStats(), listBuildings()]);
     if (req !== reqRef.current) return;
     setItems(list);
     setStats(s);
+    setBuildings(blds);
   }, [chip, q]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
   useEffect(() => subscribe(refresh), [refresh]);
 
-  useEffect(() => { document.title = t('ls_page_title'); }, [t]);
+  useEffect(() => {
+    document.title = t('ls_page_title');
+  }, [t]);
 
   useEffect(() => {
-    if (!modal && !deleteTarget && !menu && !editCell) return undefined;
+    if (!modal && !deleteTarget && !menu && !editCell && !gallery) return undefined;
     function onKey(e) {
       if (e.key !== 'Escape') return;
-      if (editCell) setEditCell(null);
+      if (gallery) setGallery(null);
+      else if (editCell) setEditCell(null);
       else if (menu) setMenu(null);
       else if (deleteTarget) setDeleteTarget(null);
       else setModal(null);
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [modal, deleteTarget, menu, editCell]);
+  }, [modal, deleteTarget, menu, editCell, gallery]);
 
   useEffect(() => {
     if (!menu) return undefined;
@@ -150,7 +236,9 @@ export default function Listings() {
       if (el.closest && (el.closest('.ls-row-menu') || el.closest('.ls-row-menu-btn'))) return;
       setMenu(null);
     }
-    function onClose() { setMenu(null); }
+    function onClose() {
+      setMenu(null);
+    }
     document.addEventListener('mousedown', onDown);
     window.addEventListener('scroll', onClose, true);
     window.addEventListener('resize', onClose);
@@ -168,7 +256,9 @@ export default function Listings() {
       if (el.closest && (el.closest('.ls-cell-menu') || el.closest('.ls-cell-edit'))) return;
       setEditCell(null);
     }
-    function onClose() { setEditCell(null); }
+    function onClose() {
+      setEditCell(null);
+    }
     document.addEventListener('mousedown', onDown);
     window.addEventListener('scroll', onClose, true);
     window.addEventListener('resize', onClose);
@@ -202,7 +292,7 @@ export default function Listings() {
   function removePhoto(img) {
     setForm((f) => {
       const photos = f.photos.filter((p) => p !== img);
-      const cover = f.cover === img ? (photos[0] || '') : f.cover;
+      const cover = f.cover === img ? photos[0] || '' : f.cover;
       return { ...f, photos, cover };
     });
   }
@@ -214,10 +304,36 @@ export default function Listings() {
   function toggleAgent(id) {
     setForm((f) => ({
       ...f,
-      agentIds: f.agentIds.indexOf(id) >= 0
-        ? f.agentIds.filter((a) => a !== id)
-        : f.agentIds.concat(id)
+      agentIds: f.agentIds.indexOf(id) >= 0 ? f.agentIds.filter((a) => a !== id) : f.agentIds.concat(id),
     }));
+  }
+
+  function toggleGallerySel(src) {
+    setGallery((g) =>
+      g
+        ? {
+            ...g,
+            sel: g.sel.indexOf(src) >= 0 ? g.sel.filter((s) => s !== src) : g.sel.concat(src),
+          }
+        : g
+    );
+  }
+
+  function confirmGallery() {
+    if (!gallery) return;
+    setForm((f) => {
+      const add = gallery.sel.filter((src) => f.photos.indexOf(src) < 0);
+      if (!add.length) return f;
+      const photos = f.photos.concat(add);
+      return { ...f, photos, cover: f.cover || photos[0] || '' };
+    });
+    setGallery(null);
+  }
+
+  function dealSummary(item) {
+    const d = item.dealTerms || {};
+    if (d.mode === 'fixed') return t('ls_deal_fixed_short') + ' ' + formatPrice(d.amount, d.currency);
+    return t(d.mode === 'split_50' ? 'ls_deal_split_50' : 'ls_deal_owner_100');
   }
 
   function openAdd() {
@@ -236,19 +352,29 @@ export default function Listings() {
       location: item.location,
       propertyType: item.propertyType || 'apartment',
       unitNumber: item.unitNumber || '',
+      buildingId: item.buildingId || '',
       beds: String(item.beds ?? ''),
       baths: String(item.baths ?? ''),
       area: String(item.area ?? ''),
       parkingCount: String(item.parking?.count ?? 0),
       parkingType: item.parking?.type || 'none',
       furnishedLevel: item.furnishedLevel || 'none',
-      petsAllowed: !!item.petsAllowed,
+      petPolicy: PET_POLICIES.indexOf(item.petPolicy) >= 0 ? item.petPolicy : 'yes',
+      dealTerms: {
+        mode: item.dealTerms && DEAL_MODES.indexOf(item.dealTerms.mode) >= 0 ? item.dealTerms.mode : 'owner_100',
+        amount:
+          item.dealTerms && item.dealTerms.amount != null && item.dealTerms.amount !== ''
+            ? String(item.dealTerms.amount)
+            : '',
+        currency: (item.dealTerms && item.dealTerms.currency) || item.currency || 'USD',
+      },
+      isOwnerProperty: !!item.isOwnerProperty,
       photos: (item.photos || []).slice(),
       cover: item.cover || '',
       agentIds: (item.agentIds || []).slice(),
       ownerName: item.ownerName || '',
       ownerPhone: item.ownerPhone || '',
-      notes: item.notes || ''
+      notes: item.notes || '',
     });
     setErrors({});
     setModal({ mode: 'edit', id: item.id });
@@ -266,25 +392,33 @@ export default function Listings() {
     const MENU_H = 136;
     const openUp = rect.bottom + MENU_H > window.innerHeight;
     const openRight = rect.left < 200;
-    setMenu((cur) => (cur && cur.item.id === item.id ? null : {
-      item,
-      top: openUp ? rect.top - MENU_H - 6 : rect.bottom + 6,
-      left: openRight ? rect.left : rect.right,
-      openRight
-    }));
+    setMenu((cur) =>
+      cur && cur.item.id === item.id
+        ? null
+        : {
+            item,
+            top: openUp ? rect.top - MENU_H - 6 : rect.bottom + 6,
+            left: openRight ? rect.left : rect.right,
+            openRight,
+          }
+    );
   }
 
   function toggleCellEdit(e, item, field) {
     e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     const openUp = rect.bottom + 200 > window.innerHeight;
-    setEditCell((cur) => (cur && cur.item.id === item.id && cur.field === field ? null : {
-      item,
-      field,
-      top: openUp ? rect.top - 6 : rect.bottom + 6,
-      left: rect.left,
-      openUp
-    }));
+    setEditCell((cur) =>
+      cur && cur.item.id === item.id && cur.field === field
+        ? null
+        : {
+            item,
+            field,
+            top: openUp ? rect.top - 6 : rect.bottom + 6,
+            left: rect.left,
+            openUp,
+          }
+    );
   }
 
   async function applyCellEdit(field, value) {
@@ -296,17 +430,23 @@ export default function Listings() {
 
   function agentPills(item) {
     const ids = item.agentIds || [];
-    const names = ids
-      .map((id) => (agents.find((a) => a.id === id) || {}).name)
-      .filter(Boolean);
-    const legacy = names.length ? [] : String(item.agent || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const names = ids.map((id) => (agents.find((a) => a.id === id) || {}).name).filter(Boolean);
+    const legacy = names.length
+      ? []
+      : String(item.agent || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
     const list = names.length ? names : legacy;
     if (!list.length) return <span className="ls-agent-none">—</span>;
     return list.map((name) => (
       <span className="ls-agent-pill" key={name} title={t('ls_agent_linked')}>
         <span className="ls-agent-pill-avatar">{name.charAt(0).toUpperCase()}</span>
         <span className="ls-agent-pill-name">{name}</span>
-        <svg className="ls-agent-pill-link" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+        <svg className="ls-agent-pill-link" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        </svg>
       </span>
     ));
   }
@@ -331,19 +471,26 @@ export default function Listings() {
       location: form.location.trim(),
       propertyType: form.propertyType,
       unitNumber: form.unitNumber.trim(),
+      buildingId: form.buildingId,
       beds: Number(form.beds) || 0,
       baths: Number(form.baths) || 0,
       area: Number(form.area) || 0,
       parking: { count: Number(form.parkingCount) || 0, type: form.parkingType },
       furnishedLevel: form.furnishedLevel,
-      petsAllowed: !!form.petsAllowed,
+      petPolicy: form.petPolicy,
+      dealTerms: {
+        mode: form.dealTerms.mode,
+        amount: Number(form.dealTerms.amount) || 0,
+        currency: form.dealTerms.currency,
+      },
+      isOwnerProperty: !!form.isOwnerProperty,
       photos,
       cover: photos.indexOf(form.cover) >= 0 ? form.cover : photos[0],
       agentIds: form.agentIds.slice(),
       agent: agentDisplayNames(form.agentIds),
       ownerName: form.ownerName.trim(),
       ownerPhone: form.ownerPhone.trim(),
-      notes: form.notes.trim()
+      notes: form.notes.trim(),
     };
     if (modal.mode === 'add') await createListing(payload);
     else await updateListing(modal.id, payload);
@@ -356,18 +503,23 @@ export default function Listings() {
     setDeleteTarget(null);
   }
 
-  const rowMenuBtn = (item) => (
-    <button
-      type="button"
-      className="ls-row-menu-btn"
-      aria-haspopup="menu"
-      aria-expanded={!!(menu && menu.item.id === item.id)}
-      aria-label={t('ls_menu_more')}
-      onClick={(e) => toggleMenu(e, item)}
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" /></svg>
-    </button>
-  );
+  const rowMenuBtn = (item) =>
+    isAgent ? null : (
+      <button
+        type="button"
+        className="ls-row-menu-btn"
+        aria-haspopup="menu"
+        aria-expanded={!!(menu && menu.item.id === item.id)}
+        aria-label={t('ls_menu_more')}
+        onClick={(e) => toggleMenu(e, item)}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="5" r="1.6" />
+          <circle cx="12" cy="12" r="1.6" />
+          <circle cx="12" cy="19" r="1.6" />
+        </svg>
+      </button>
+    );
 
   return (
     <div className="ls-page">
@@ -379,10 +531,15 @@ export default function Listings() {
             <span className="ls-eyebrow">{t('ls_eyebrow')}</span>
             <h1 className="ls-title">{t('ls_heading')}</h1>
           </div>
-          <button type="button" className="ls-btn ls-btn-accent" onClick={openAdd}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-            <span>{t('ls_add_listing')}</span>
-          </button>
+          {!isAgent ? (
+            <button type="button" className="ls-btn ls-btn-accent" onClick={openAdd}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span>{t('ls_add_listing')}</span>
+            </button>
+          ) : null}
         </div>
       </header>
 
@@ -402,7 +559,10 @@ export default function Listings() {
           ))}
         </div>
         <div className="ls-search">
-          <svg className="ls-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><line x1="20" y1="20" x2="16.5" y2="16.5" /></svg>
+          <svg className="ls-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="20" y1="20" x2="16.5" y2="16.5" />
+          </svg>
           <input
             id="ls-search"
             className="ls-search-input"
@@ -422,7 +582,12 @@ export default function Listings() {
             aria-label={t('od_view_grid')}
             aria-pressed={view === 'grid'}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
           </button>
           <button
             type="button"
@@ -432,7 +597,12 @@ export default function Listings() {
             aria-label={t('ls_view_table')}
             aria-pressed={view === 'table'}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><line x1="3" y1="10" x2="21" y2="10" /><line x1="3" y1="15" x2="21" y2="15" /><line x1="9" y1="4" x2="9" y2="20" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+              <line x1="3" y1="15" x2="21" y2="15" />
+              <line x1="9" y1="4" x2="9" y2="20" />
+            </svg>
           </button>
         </div>
         <div className="ls-results">
@@ -444,24 +614,41 @@ export default function Listings() {
       {items.length === 0 ? (
         <section className="ls-empty">
           <div className="ls-empty-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18" /><path d="M5 21V8l7-5 7 5v13" /><path d="M9 21v-7h6v7" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 21h18" />
+              <path d="M5 21V8l7-5 7 5v13" />
+              <path d="M9 21v-7h6v7" />
+            </svg>
           </div>
           <h2 className="ls-empty-title">{t('ls_empty_title')}</h2>
           <p className="ls-empty-body">{t('ls_empty_body')}</p>
           <div className="ls-empty-actions">
-            <button type="button" className="ls-btn ls-btn-outline" onClick={clearFilters}>{t('ls_empty_clear')}</button>
-            <button type="button" className="ls-btn ls-btn-accent" onClick={openAdd}>{t('ls_add_listing')}</button>
+            <button type="button" className="ls-btn ls-btn-outline" onClick={clearFilters}>
+              {t('ls_empty_clear')}
+            </button>
+            {!isAgent ? (
+              <button type="button" className="ls-btn ls-btn-accent" onClick={openAdd}>
+                {t('ls_add_listing')}
+              </button>
+            ) : null}
           </div>
         </section>
       ) : view === 'grid' ? (
         <section className="ls-grid">
           {items.map((item) => (
-            <article className="ls-card" key={item.id} onClick={() => openEdit(item)}>
+            <article
+              className={'ls-card' + (isAgent ? ' ls-card-readonly' : '')}
+              key={item.id}
+              onClick={isAgent ? undefined : () => openEdit(item)}
+            >
               <div className="ls-card-media">
                 <img className="ls-card-img" src={item.cover} alt={item.title} loading="lazy" />
                 <div className="ls-card-badges">
                   <span className={'ls-badge ls-badge-' + item.status}>{t('ls_status_' + item.status)}</span>
                   <span className={'ls-badge ls-badge-' + item.type}>{t('ls_type_' + item.type)}</span>
+                  {item.isOwnerProperty && !isAgent ? (
+                    <span className="ls-badge ls-badge-own">{t('ls_badge_own')}</span>
+                  ) : null}
                 </div>
                 <div className="ls-card-price">
                   {formatPrice(item.price, item.currency)}
@@ -471,26 +658,46 @@ export default function Listings() {
               <div className="ls-card-body">
                 <h2 className="ls-card-title">{item.title}</h2>
                 <p className="ls-card-location">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-5.2-7-11a7 7 0 1 1 14 0c0 5.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
-                  <span>{item.location}{item.unitNumber ? ' · ' + item.unitNumber : ''}</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 21s-7-5.2-7-11a7 7 0 1 1 14 0c0 5.8-7 11-7 11z" />
+                    <circle cx="12" cy="10" r="2.5" />
+                  </svg>
+                  <span>
+                    {item.location}
+                    {item.unitNumber ? ' · ' + item.unitNumber : ''}
+                  </span>
                 </p>
                 <div className="ls-card-meta">
                   {item.propertyType ? <span>{t('ls_ptype_' + item.propertyType)}</span> : null}
-                  <span>{item.beds} {t('ls_unit_beds')}</span>
-                  <span>{item.baths} {t('ls_unit_baths')}</span>
-                  <span>{item.area} {t('ls_unit_area')}</span>
+                  <span>
+                    {item.beds} {t('ls_unit_beds')}
+                  </span>
+                  <span>
+                    {item.baths} {t('ls_unit_baths')}
+                  </span>
+                  <span>
+                    {item.area} {t('ls_unit_area')}
+                  </span>
                   {item.parking && item.parking.count > 0 ? (
-                    <span>{item.parking.count} {t('ls_unit_parking')}</span>
+                    <span>
+                      {item.parking.count} {t('ls_unit_parking')}
+                    </span>
                   ) : null}
+                  {PET_POLICIES.indexOf(item.petPolicy) >= 0 ? (
+                    <span className="ls-chip-pet">{t('ls_pet_chip_' + item.petPolicy)}</span>
+                  ) : null}
+                  {!isAgent ? <span className="ls-chip-deal">{dealSummary(item)}</span> : null}
                 </div>
                 <div className="ls-card-foot">
                   <div className="ls-card-info">
-                    <span className="ls-card-agent">{t('ls_agent_label')} · {item.agent}</span>
-                    <span className="ls-card-updated">{t('ls_updated')} {item.updatedAt}</span>
+                    <span className="ls-card-agent">
+                      {t('ls_agent_label')} · {item.agent}
+                    </span>
+                    <span className="ls-card-updated">
+                      {t('ls_updated')} {item.updatedAt}
+                    </span>
                   </div>
-                  <div className="ls-card-actions">
-                    {rowMenuBtn(item)}
-                  </div>
+                  <div className="ls-card-actions">{rowMenuBtn(item)}</div>
                 </div>
               </div>
             </article>
@@ -515,38 +722,85 @@ export default function Listings() {
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr key={item.id} onClick={() => openEdit(item)}>
+                <tr
+                  key={item.id}
+                  className={isAgent ? 'ls-row-readonly' : undefined}
+                  onClick={isAgent ? undefined : () => openEdit(item)}
+                >
                   <td>
                     <div className="ls-table-prop">
                       {rowMenuBtn(item)}
                       <img className="ls-table-thumb" src={item.cover} alt={item.title} loading="lazy" />
-                      <span className="ls-table-title">{item.title}{item.unitNumber ? <small className="ls-table-unit">{item.unitNumber}</small> : null}</span>
+                      <span className="ls-table-title">
+                        {item.title}
+                        {item.unitNumber ? <small className="ls-table-unit">{item.unitNumber}</small> : null}
+                      </span>
+                    </div>
+                    <div className="ls-table-flags">
+                      {item.isOwnerProperty && !isAgent ? (
+                        <span className="ls-badge ls-badge-own">{t('ls_badge_own')}</span>
+                      ) : null}
+                      {PET_POLICIES.indexOf(item.petPolicy) >= 0 ? (
+                        <span className="ls-table-flag">{t('ls_pet_chip_' + item.petPolicy)}</span>
+                      ) : null}
+                      {!isAgent ? <span className="ls-table-flag">{dealSummary(item)}</span> : null}
                     </div>
                   </td>
                   <td>{item.location}</td>
                   <td>
-                    <button type="button" className={'ls-cell-edit ls-badge ls-badge-' + item.status} onClick={(e) => toggleCellEdit(e, item, 'status')}>
-                      <span>{t('ls_status_' + item.status)}</span>
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
-                    </button>
+                    {isAgent ? (
+                      <span className={'ls-badge ls-badge-' + item.status}>{t('ls_status_' + item.status)}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        className={'ls-cell-edit ls-badge ls-badge-' + item.status}
+                        onClick={(e) => toggleCellEdit(e, item, 'status')}
+                      >
+                        <span>{t('ls_status_' + item.status)}</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </button>
+                    )}
                   </td>
                   <td>
-                    <button type="button" className={'ls-cell-edit ls-badge ls-badge-' + item.type} onClick={(e) => toggleCellEdit(e, item, 'type')}>
-                      <span>{t('ls_type_' + item.type)}</span>
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
-                    </button>
+                    {isAgent ? (
+                      <span className={'ls-badge ls-badge-' + item.type}>{t('ls_type_' + item.type)}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        className={'ls-cell-edit ls-badge ls-badge-' + item.type}
+                        onClick={(e) => toggleCellEdit(e, item, 'type')}
+                      >
+                        <span>{t('ls_type_' + item.type)}</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </button>
+                    )}
                   </td>
                   <td className="ls-table-price">
                     {formatPrice(item.price, item.currency)}
                     {item.type === 'rent' ? <span className="ls-price-unit">{t('ls_unit_month')}</span> : null}
                   </td>
-                  <td><span className="ls-cell-icon">{BED_ICON}{item.beds}</span></td>
-                  <td><span className="ls-cell-icon">{BATH_ICON}{item.baths}</span></td>
-                  <td>{item.area}<span className="ls-area-unit">{t('ls_unit_area')}</span></td>
                   <td>
-                    <div className="ls-agent-pills">
-                      {agentPills(item)}
-                    </div>
+                    <span className="ls-cell-icon">
+                      {BED_ICON}
+                      {item.beds}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="ls-cell-icon">
+                      {BATH_ICON}
+                      {item.baths}
+                    </span>
+                  </td>
+                  <td>
+                    {item.area}
+                    <span className="ls-area-unit">{t('ls_unit_area')}</span>
+                  </td>
+                  <td>
+                    <div className="ls-agent-pills">{agentPills(item)}</div>
                   </td>
                   <td className="ls-table-updated">{item.updatedAt}</td>
                 </tr>
@@ -569,27 +823,47 @@ export default function Listings() {
             type="button"
             role="menuitem"
             className="ls-row-menu-item"
-            onClick={() => { setMenu(null); openEdit(menu.item); }}
+            onClick={() => {
+              setMenu(null);
+              openEdit(menu.item);
+            }}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" /><circle cx="12" cy="12" r="3" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
             <span>{t('ls_menu_view')}</span>
           </button>
           <button
             type="button"
             role="menuitem"
             className="ls-row-menu-item"
-            onClick={() => { setMenu(null); openEdit(menu.item); }}
+            onClick={() => {
+              setMenu(null);
+              openEdit(menu.item);
+            }}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+            </svg>
             <span>{t('ls_card_edit')}</span>
           </button>
           <button
             type="button"
             role="menuitem"
             className="ls-row-menu-item ls-row-menu-danger"
-            onClick={() => { setMenu(null); setDeleteTarget(menu.item); }}
+            onClick={() => {
+              setMenu(null);
+              setDeleteTarget(menu.item);
+            }}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6M14 11v6" />
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+            </svg>
             <span>{t('ls_card_delete')}</span>
           </button>
         </div>
@@ -621,13 +895,30 @@ export default function Listings() {
       {modal ? (
         <div
           className="ls-overlay"
-          onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setModal(null);
+          }}
         >
-          <div className="ls-modal" role="dialog" aria-modal="true" aria-label={modal.mode === 'add' ? t('ls_modal_add_title') : t('ls_modal_edit_title')}>
+          <div
+            className="ls-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={modal.mode === 'add' ? t('ls_modal_add_title') : t('ls_modal_edit_title')}
+          >
             <div className="ls-modal-head">
-              <h2 className="ls-modal-title">{modal.mode === 'add' ? t('ls_modal_add_title') : t('ls_modal_edit_title')}</h2>
-              <button type="button" className="ls-icon-btn" onClick={() => setModal(null)} aria-label={t('ls_btn_cancel')}>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+              <h2 className="ls-modal-title">
+                {modal.mode === 'add' ? t('ls_modal_add_title') : t('ls_modal_edit_title')}
+              </h2>
+              <button
+                type="button"
+                className="ls-icon-btn"
+                onClick={() => setModal(null)}
+                aria-label={t('ls_btn_cancel')}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                </svg>
               </button>
             </div>
 
@@ -635,7 +926,10 @@ export default function Listings() {
               <fieldset className="ls-form-section">
                 <legend className="ls-form-section-title">{t('ls_section_basic')}</legend>
                 <div className="ls-field ls-field-full">
-                  <label className="ls-label" htmlFor="ls-f-title">{t('ls_field_title')}<span className="ls-req">*</span></label>
+                  <label className="ls-label" htmlFor="ls-f-title">
+                    {t('ls_field_title')}
+                    <span className="ls-req">*</span>
+                  </label>
                   <input
                     id="ls-f-title"
                     className={'ls-input' + (errors.title ? ' ls-input-invalid' : '')}
@@ -664,7 +958,10 @@ export default function Listings() {
 
                 <div className="ls-form-row">
                   <div className="ls-field">
-                    <label className="ls-label" htmlFor="ls-f-price">{t('ls_field_price')}<span className="ls-req">*</span></label>
+                    <label className="ls-label" htmlFor="ls-f-price">
+                      {t('ls_field_price')}
+                      <span className="ls-req">*</span>
+                    </label>
                     <input
                       id="ls-f-price"
                       className={'ls-input' + (errors.price ? ' ls-input-invalid' : '')}
@@ -685,14 +982,19 @@ export default function Listings() {
                           className={'ls-seg-btn' + (form.currency === c ? ' ls-seg-on' : '')}
                           aria-pressed={form.currency === c}
                           onClick={() => setField('currency', c)}
-                        >{c}</button>
+                        >
+                          {c}
+                        </button>
                       ))}
                     </div>
                   </div>
                 </div>
 
                 <div className="ls-field ls-field-full">
-                  <label className="ls-label" htmlFor="ls-f-location">{t('ls_field_location')}<span className="ls-req">*</span></label>
+                  <label className="ls-label" htmlFor="ls-f-location">
+                    {t('ls_field_location')}
+                    <span className="ls-req">*</span>
+                  </label>
                   <input
                     id="ls-f-location"
                     className={'ls-input' + (errors.location ? ' ls-input-invalid' : '')}
@@ -714,22 +1016,46 @@ export default function Listings() {
                         aria-pressed={form.propertyType === p}
                         onClick={() => setField('propertyType', p)}
                       >
-                        <svg viewBox="0 0 24 24" aria-hidden="true">{PTYPE_ICONS[p]}</svg>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          {PTYPE_ICONS[p]}
+                        </svg>
                         <span>{t('ls_ptype_' + p)}</span>
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="ls-field">
-                  <label className="ls-label" htmlFor="ls-f-unit">{t('ls_field_unit')}</label>
-                  <input
-                    id="ls-f-unit"
-                    className="ls-input ls-input-sm"
-                    value={form.unitNumber}
-                    onChange={(e) => setField('unitNumber', e.target.value)}
-                    placeholder={t('ls_field_unit_ph')}
-                  />
+                <div className="ls-form-row">
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-unit">
+                      {t('ls_field_unit')}
+                    </label>
+                    <input
+                      id="ls-f-unit"
+                      className="ls-input ls-input-sm"
+                      value={form.unitNumber}
+                      onChange={(e) => setField('unitNumber', e.target.value)}
+                      placeholder={t('ls_field_unit_ph')}
+                    />
+                  </div>
+                  <div className="ls-field">
+                    <label className="ls-label" htmlFor="ls-f-building">
+                      {t('ls_field_building')}
+                    </label>
+                    <select
+                      id="ls-f-building"
+                      className="ls-input ls-input-sm"
+                      value={form.buildingId}
+                      onChange={(e) => setField('buildingId', e.target.value)}
+                    >
+                      <option value="">{t('ls_building_none')}</option>
+                      {buildings.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </fieldset>
 
@@ -737,7 +1063,9 @@ export default function Listings() {
                 <legend className="ls-form-section-title">{t('ls_section_details')}</legend>
                 <div className="ls-form-row ls-form-row-thirds">
                   <div className="ls-field">
-                    <label className="ls-label" htmlFor="ls-f-beds">{t('ls_field_beds')}</label>
+                    <label className="ls-label" htmlFor="ls-f-beds">
+                      {t('ls_field_beds')}
+                    </label>
                     <input
                       id="ls-f-beds"
                       className="ls-input ls-input-sm"
@@ -747,7 +1075,9 @@ export default function Listings() {
                     />
                   </div>
                   <div className="ls-field">
-                    <label className="ls-label" htmlFor="ls-f-baths">{t('ls_field_baths')}</label>
+                    <label className="ls-label" htmlFor="ls-f-baths">
+                      {t('ls_field_baths')}
+                    </label>
                     <input
                       id="ls-f-baths"
                       className="ls-input ls-input-sm"
@@ -757,7 +1087,9 @@ export default function Listings() {
                     />
                   </div>
                   <div className="ls-field">
-                    <label className="ls-label" htmlFor="ls-f-area">{t('ls_field_area')}</label>
+                    <label className="ls-label" htmlFor="ls-f-area">
+                      {t('ls_field_area')}
+                    </label>
                     <input
                       id="ls-f-area"
                       className="ls-input ls-input-sm"
@@ -770,7 +1102,9 @@ export default function Listings() {
 
                 <div className="ls-form-row">
                   <div className="ls-field">
-                    <label className="ls-label" htmlFor="ls-f-parking-count">{t('ls_field_parking_count')}</label>
+                    <label className="ls-label" htmlFor="ls-f-parking-count">
+                      {t('ls_field_parking_count')}
+                    </label>
                     <input
                       id="ls-f-parking-count"
                       className="ls-input ls-input-sm"
@@ -789,7 +1123,9 @@ export default function Listings() {
                           className={'ls-seg-btn' + (form.parkingType === p ? ' ls-seg-on' : '')}
                           aria-pressed={form.parkingType === p}
                           onClick={() => setField('parkingType', p)}
-                        >{t('ls_parking_' + p)}</button>
+                        >
+                          {t('ls_parking_' + p)}
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -803,18 +1139,44 @@ export default function Listings() {
                   getLabel={(v) => t('ls_furn_' + v)}
                 />
 
-                <SegField
-                  label={t('ls_field_pets')}
-                  options={['yes', 'no']}
-                  value={form.petsAllowed ? 'yes' : 'no'}
-                  onChange={(v) => setField('petsAllowed', v === 'yes')}
-                  getLabel={(v) => (v === 'yes' ? t('ls_pets_yes') : t('ls_pets_no'))}
-                />
+                <div className="ls-field">
+                  <label className="ls-label" htmlFor="ls-f-pets">
+                    {t('ls_field_pets')}
+                  </label>
+                  <select
+                    id="ls-f-pets"
+                    className="ls-input ls-input-sm"
+                    value={form.petPolicy}
+                    onChange={(e) => setField('petPolicy', e.target.value)}
+                  >
+                    {PET_POLICIES.map((p) => (
+                      <option key={p} value={p}>
+                        {t('ls_pets_' + p)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </fieldset>
 
               <fieldset className="ls-form-section">
                 <legend className="ls-form-section-title">{t('ls_section_photos')}</legend>
                 <p className="ls-img-hint">{t('ls_photos_hint')}</p>
+                <div className="ls-photo-toolbar">
+                  <button
+                    type="button"
+                    className="ls-btn ls-btn-outline ls-btn-sm"
+                    disabled={!form.buildingId}
+                    onClick={() => setGallery({ sel: [] })}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <circle cx="9" cy="11" r="2" />
+                      <path d="M21 16l-5-5-9 8" />
+                    </svg>
+                    <span>{t('ls_photos_from_building')}</span>
+                  </button>
+                  {!form.buildingId ? <span className="ls-img-hint">{t('ls_photos_no_building')}</span> : null}
+                </div>
                 <div className="ls-photo-grid">
                   {form.photos.map((img) => (
                     <div key={img} className={'ls-photo-tile' + (form.cover === img ? ' ls-photo-cover' : '')}>
@@ -829,7 +1191,9 @@ export default function Listings() {
                           aria-label={t('ls_photos_set_cover')}
                           aria-pressed={form.cover === img}
                         >
-                          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2.5 15 9 22 9.7 16.8 14.3 18.3 21.2 12 17.6 5.7 21.2 7.2 14.3 2 9.7 9 9" /></svg>
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <polygon points="12 2.5 15 9 22 9.7 16.8 14.3 18.3 21.2 12 17.6 5.7 21.2 7.2 14.3 2 9.7 9 9" />
+                          </svg>
                         </button>
                         <button
                           type="button"
@@ -838,14 +1202,22 @@ export default function Listings() {
                           title={t('ls_photos_delete')}
                           aria-label={t('ls_photos_delete')}
                         >
-                          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /></svg>
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6M14 11v6" />
+                          </svg>
                         </button>
                       </div>
                     </div>
                   ))}
                   <label className="ls-photo-add">
                     <input type="file" accept="image/*" multiple onChange={addPhotos} />
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="11" r="2" /><path d="M21 16l-5-5-9 8" /></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <circle cx="9" cy="11" r="2" />
+                      <path d="M21 16l-5-5-9 8" />
+                    </svg>
                     <span>{t('ls_photos_add')}</span>
                   </label>
                 </div>
@@ -857,7 +1229,9 @@ export default function Listings() {
                 <div className="ls-field ls-field-full">
                   <div className="ls-label-row">
                     <span className="ls-label">{t('ls_field_agents')}</span>
-                    <Link className="ls-link" to="/agents">{t('ls_agents_manage')}</Link>
+                    <Link className="ls-link" to="/agents">
+                      {t('ls_agents_manage')}
+                    </Link>
                   </div>
                   <div className="ls-agent-row" role="group" aria-label={t('ls_field_agents')}>
                     {agents.map((a) => (
@@ -877,71 +1251,214 @@ export default function Listings() {
                 </div>
               </fieldset>
 
-              <fieldset className="ls-form-section ls-form-private">
-                <legend className="ls-form-section-title">
-                  {t('ls_section_owner')}
-                  <span className="ls-private-tag">{t('ls_private_tag')}</span>
-                </legend>
-                <div className="ls-form-row">
-                  <div className="ls-field">
-                    <label className="ls-label" htmlFor="ls-f-owner-name">{t('ls_field_owner_name')}</label>
-                    <input
-                      id="ls-f-owner-name"
-                      className="ls-input"
-                      value={form.ownerName}
-                      onChange={(e) => setField('ownerName', e.target.value)}
-                      placeholder={t('ls_field_owner_name_ph')}
-                    />
-                  </div>
-                  <div className="ls-field">
-                    <label className="ls-label" htmlFor="ls-f-owner-phone">{t('ls_field_owner_phone')}</label>
-                    <input
-                      id="ls-f-owner-phone"
-                      className="ls-input"
-                      value={form.ownerPhone}
-                      onChange={(e) => setField('ownerPhone', e.target.value)}
-                      placeholder={t('ls_field_owner_phone_ph')}
-                      inputMode="tel"
-                    />
-                  </div>
-                </div>
-                <div className="ls-field ls-field-full">
-                  <label className="ls-label" htmlFor="ls-f-notes">{t('ls_field_notes')}</label>
-                  <textarea
-                    id="ls-f-notes"
-                    className="ls-input ls-textarea"
-                    rows={3}
-                    value={form.notes}
-                    onChange={(e) => setField('notes', e.target.value)}
-                    placeholder={t('ls_field_notes_ph')}
+              {!isAgent ? (
+                <fieldset className="ls-form-section ls-form-private">
+                  <legend className="ls-form-section-title">
+                    {t('ls_section_owner')}
+                    <span className="ls-private-tag">{t('ls_private_tag')}</span>
+                  </legend>
+                  <SegField
+                    label={t('ls_field_deal')}
+                    options={DEAL_MODES}
+                    value={form.dealTerms.mode}
+                    onChange={(v) => setForm((f) => ({ ...f, dealTerms: { ...f.dealTerms, mode: v } }))}
+                    getLabel={(v) => t('ls_deal_' + v)}
                   />
-                </div>
-              </fieldset>
+                  {form.dealTerms.mode === 'fixed' ? (
+                    <div className="ls-form-row">
+                      <div className="ls-field">
+                        <label className="ls-label" htmlFor="ls-f-deal-amount">
+                          {t('ls_field_deal_amount')}
+                        </label>
+                        <input
+                          id="ls-f-deal-amount"
+                          className="ls-input"
+                          value={form.dealTerms.amount}
+                          onChange={(e) =>
+                            setForm((f) => ({ ...f, dealTerms: { ...f.dealTerms, amount: e.target.value } }))
+                          }
+                          inputMode="numeric"
+                        />
+                      </div>
+                      <div className="ls-field">
+                        <label className="ls-label" htmlFor="ls-f-deal-currency">
+                          {t('ls_field_currency')}
+                        </label>
+                        <select
+                          id="ls-f-deal-currency"
+                          className="ls-input"
+                          value={form.dealTerms.currency}
+                          onChange={(e) =>
+                            setForm((f) => ({ ...f, dealTerms: { ...f.dealTerms, currency: e.target.value } }))
+                          }
+                        >
+                          {CURRENCIES.map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  ) : null}
+                  <label className="ls-check">
+                    <input
+                      type="checkbox"
+                      checked={form.isOwnerProperty}
+                      onChange={(e) => setField('isOwnerProperty', e.target.checked)}
+                    />
+                    <span>{t('ls_field_own_property')}</span>
+                  </label>
+                  <div className="ls-form-row">
+                    <div className="ls-field">
+                      <label className="ls-label" htmlFor="ls-f-owner-name">
+                        {t('ls_field_owner_name')}
+                      </label>
+                      <input
+                        id="ls-f-owner-name"
+                        className="ls-input"
+                        value={form.ownerName}
+                        onChange={(e) => setField('ownerName', e.target.value)}
+                        placeholder={t('ls_field_owner_name_ph')}
+                      />
+                    </div>
+                    <div className="ls-field">
+                      <label className="ls-label" htmlFor="ls-f-owner-phone">
+                        {t('ls_field_owner_phone')}
+                      </label>
+                      <input
+                        id="ls-f-owner-phone"
+                        className="ls-input"
+                        value={form.ownerPhone}
+                        onChange={(e) => setField('ownerPhone', e.target.value)}
+                        placeholder={t('ls_field_owner_phone_ph')}
+                        inputMode="tel"
+                      />
+                    </div>
+                  </div>
+                  <div className="ls-field ls-field-full">
+                    <label className="ls-label" htmlFor="ls-f-notes">
+                      {t('ls_field_notes')}
+                    </label>
+                    <textarea
+                      id="ls-f-notes"
+                      className="ls-input ls-textarea"
+                      rows={3}
+                      value={form.notes}
+                      onChange={(e) => setField('notes', e.target.value)}
+                      placeholder={t('ls_field_notes_ph')}
+                    />
+                  </div>
+                </fieldset>
+              ) : null}
 
               <div className="ls-modal-actions">
-                <button type="button" className="ls-btn ls-btn-outline" onClick={() => setModal(null)}>{t('ls_btn_cancel')}</button>
-                <button type="submit" className="ls-btn ls-btn-accent">{t('ls_btn_save')}</button>
+                <button type="button" className="ls-btn ls-btn-outline" onClick={() => setModal(null)}>
+                  {t('ls_btn_cancel')}
+                </button>
+                <button type="submit" className="ls-btn ls-btn-accent">
+                  {t('ls_btn_save')}
+                </button>
               </div>
             </form>
           </div>
         </div>
       ) : null}
 
+      {gallery
+        ? (() => {
+            const b = buildings.find((x) => x.id === form.buildingId) || null;
+            return (
+              <div
+                className="ls-overlay"
+                onMouseDown={(e) => {
+                  if (e.target === e.currentTarget) setGallery(null);
+                }}
+              >
+                <div
+                  className="ls-modal ls-gallery-modal"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={t('ls_gallery_title')}
+                >
+                  <div className="ls-modal-head">
+                    <h2 className="ls-modal-title">
+                      {t('ls_gallery_title')}
+                      {b ? ' · ' + b.name : ''}
+                    </h2>
+                    <button
+                      type="button"
+                      className="ls-icon-btn"
+                      onClick={() => setGallery(null)}
+                      aria-label={t('ls_btn_cancel')}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                  {b && b.photos.length ? (
+                    <div className="ls-gallery-grid">
+                      {b.photos.map((p) => {
+                        const on = gallery.sel.indexOf(p.src) >= 0;
+                        return (
+                          <button
+                            key={p.src}
+                            type="button"
+                            className={'ls-gallery-item' + (on ? ' ls-gallery-on' : '')}
+                            aria-pressed={on}
+                            onClick={() => toggleGallerySel(p.src)}
+                          >
+                            <img src={p.src} alt={p.label || ''} loading="lazy" />
+                            {p.label ? <span className="ls-gallery-label">{p.label}</span> : null}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="ls-img-hint">{t('ls_gallery_empty')}</p>
+                  )}
+                  <div className="ls-modal-actions">
+                    <button type="button" className="ls-btn ls-btn-outline" onClick={() => setGallery(null)}>
+                      {t('ls_btn_cancel')}
+                    </button>
+                    <button type="button" className="ls-btn ls-btn-accent" onClick={confirmGallery}>
+                      {t('ls_gallery_confirm')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()
+        : null}
+
       {deleteTarget ? (
         <div
           className="ls-overlay"
-          onMouseDown={(e) => { if (e.target === e.currentTarget) setDeleteTarget(null); }}
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setDeleteTarget(null);
+          }}
         >
           <div className="ls-modal ls-confirm" role="alertdialog" aria-modal="true" aria-label={t('ls_delete_title')}>
             <div className="ls-confirm-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+              </svg>
             </div>
             <h2 className="ls-confirm-title">{t('ls_delete_title')}</h2>
             <p className="ls-confirm-body">{t('ls_delete_body')}</p>
             <p className="ls-confirm-target">{deleteTarget.title}</p>
             <div className="ls-modal-actions ls-modal-actions-center">
-              <button type="button" className="ls-btn ls-btn-outline" onClick={() => setDeleteTarget(null)}>{t('ls_delete_cancel')}</button>
-              <button type="button" className="ls-btn ls-btn-danger" onClick={confirmDelete}>{t('ls_delete_confirm')}</button>
+              <button type="button" className="ls-btn ls-btn-outline" onClick={() => setDeleteTarget(null)}>
+                {t('ls_delete_cancel')}
+              </button>
+              <button type="button" className="ls-btn ls-btn-danger" onClick={confirmDelete}>
+                {t('ls_delete_confirm')}
+              </button>
             </div>
           </div>
         </div>
